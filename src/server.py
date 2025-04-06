@@ -5,6 +5,12 @@ This server provides tools, resources, and prompts for interacting with
 the Financial Modeling Prep API via the Model Context Protocol.
 """
 import os
+import pathlib
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+env_path = pathlib.Path(__file__).parent.parent / '.env'
+load_dotenv(dotenv_path=env_path)
 from mcp.server.fastmcp import FastMCP, Context
 
 # Import tools

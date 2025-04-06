@@ -19,9 +19,10 @@ ENV/
 *.swp
 *.swo
 
-# Environment variables
+# Environment variables - ignore actual env files but keep the template
 .env
 .env.local
+!.env.template
 
 # Testing
 .coverage

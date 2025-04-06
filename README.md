@@ -13,17 +13,31 @@ A Model Context Protocol (MCP) server that provides tools, resources, and prompt
 ## Installation
 
 1. Clone the repository
-2. Install dependencies
+2. Set up the environment using [uv](https://github.com/astral-sh/uv):
 
 ```bash
-pip install -r requirements.txt
+# Install uv if you don't have it yet
+curl -sSf https://astral.sh/uv/install.sh | bash
+
+# Create and activate the environment
+uv venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install dependencies
+uv pip install -e .
 ```
 
-3. Set your Financial Modeling Prep API key as an environment variable:
+3. Set up your Financial Modeling Prep API key:
 
 ```bash
-export FMP_API_KEY=your_api_key_here
+# Copy the template
+cp .env.template .env
+
+# Edit the .env file to add your API key
+# Replace 'your_api_key_here' with your actual API key from FMP
 ```
+
+You can get an API key by registering at [Financial Modeling Prep](https://site.financialmodelingprep.com/developer/docs/).
 
 ## Development
 
