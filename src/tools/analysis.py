@@ -4,6 +4,7 @@ Analysis-related tools for the FMP MCP server
 from typing import Dict, Any, Optional
 
 from src.api.client import fmp_api_request
+from src.tools.company import format_number
 
 
 async def get_financial_ratios(symbol: str) -> str:
@@ -18,10 +19,10 @@ async def get_financial_ratios(symbol: str) -> str:
     """
     data = await fmp_api_request("ratios", {"symbol": symbol})
     
-    if not data or "error" in data:
+    if isinstance(data, dict) and "error" in data:
         return f"Error fetching ratios for {symbol}: {data.get('message', 'Unknown error')}"
     
-    if not isinstance(data, list) or len(data) == 0:
+    if not data or not isinstance(data, list) or len(data) == 0:
         return f"No financial ratio data found for symbol {symbol}"
     
     ratios = data[0]
