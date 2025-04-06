@@ -22,15 +22,12 @@ jobs:
         python-version: ${{ matrix.python-version }}
     
     - name: Install uv
-      run: |
-        curl -sSf https://astral.sh/uv/install.sh | bash
-        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
-        source "$HOME/.cargo/env"
-        uv --version
+      uses: astral-sh/setup-uv-action@v1
+      with:
+        uv-version: latest
     
     - name: Install dependencies
       run: |
-        source "$HOME/.cargo/env"
         uv venv
         source .venv/bin/activate
         uv pip install -e ".[dev]"
@@ -39,7 +36,6 @@ jobs:
       env:
         FMP_API_KEY: ${{ secrets.FMP_API_KEY || 'demo' }}
       run: |
-        source "$HOME/.cargo/env"
         source .venv/bin/activate
         python -m pytest --cov=src tests/ --cov-report=xml
     
