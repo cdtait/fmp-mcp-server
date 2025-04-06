@@ -85,8 +85,12 @@ mcp_server/
 
 ### Running the Server
 
+You can run the server in different ways:
+
+#### Local Development (stdio)
+
 ```bash
-# Run the server directly
+# Run the server directly (stdio mode)
 python -m src.server
 
 # Or use the MCP CLI for development
@@ -94,6 +98,25 @@ mcp dev src/server.py
 
 # Install in Claude Desktop
 mcp install src/server.py
+```
+
+#### SSE Server Mode
+
+```bash
+# Run as an SSE server
+python -m src.server --sse --port 8000
+```
+
+#### Using Docker
+
+```bash
+# Build and run with Docker
+docker build -t fmp-mcp-server .
+docker run -p 8000:8000 -e FMP_API_KEY=your_api_key_here fmp-mcp-server
+
+# Or use docker-compose
+export FMP_API_KEY=your_api_key_here
+docker-compose up
 ```
 
 ### Example Queries
@@ -124,3 +147,23 @@ The server uses the following environment variables:
 2. Write tests for your feature
 3. Implement your feature, ensuring tests pass
 4. Submit a pull request
+
+## CI/CD Pipeline
+
+This project uses GitHub Actions for continuous integration and delivery:
+
+- Automated testing on multiple Python versions
+- Code coverage reporting
+- Automatic Docker image building and publishing to GitHub Container Registry
+
+The workflow configuration is located in `.github/workflows/ci.yml`.
+
+### Container Registry
+
+Docker images are automatically built and published to GitHub Container Registry when changes are pushed to the main branch. You can pull the latest image with:
+
+```bash
+docker pull ghcr.io/yourusername/fmp-mcp-server:latest
+```
+
+Replace `yourusername` with your GitHub username.

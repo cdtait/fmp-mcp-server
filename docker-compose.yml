@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  mcp-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - FMP_API_KEY=${FMP_API_KEY:-demo}
+    volumes:
+      - ./src:/app/src
+    restart: unless-stopped

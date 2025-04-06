@@ -68,4 +68,34 @@ mcp.prompt()(economic_indicator_analysis)
 
 # Run the server if executed directly
 if __name__ == "__main__":
-    mcp.run()
+    import argparse
+    import sys
+    
+    parser = argparse.ArgumentParser(description="Run the FMP MCP Server")
+    parser.add_argument("--sse", action="store_true", help="Run as an SSE server")
+    parser.add_argument("--port", type=int, default=8000, help="Port for SSE server (default: 8000)")
+    parser.add_argument("--host", type=str, default="0.0.0.0", help="Host for SSE server (default: 0.0.0.0)")
+    
+    args = parser.parse_args()
+    
+    if args.sse:
+        import uvicorn
+        from starlette.applications import Starlette
+        from starlette.routing import Mount
+        
+        # Create Starlette app with MCP server mounted as SSE app
+        app = Starlette(
+            routes=[
+                Mount("/", app=mcp.sse_app()),
+            ]
+        )
+        
+        # Print information message
+        print(f"Starting FMP MCP Server (SSE mode) on http://{args.host}:{args.port}")
+        print(f"API Key configured: {'Yes' if os.environ.get('FMP_API_KEY') else 'No - using demo mode'}")
+        
+        # Run the server
+        uvicorn.run(app, host=args.host, port=args.port)
+    else:
+        # Run as stdio server
+        mcp.run()
