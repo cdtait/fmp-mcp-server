@@ -30,4 +30,4 @@ htmlcov/
 .pytest_cache/
 
 # OS specific
-.DS_Store
+.DS_Storecoverage.xml
