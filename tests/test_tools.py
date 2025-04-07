@@ -1,6 +1,7 @@
 """
 Tests for MCP tools implementation
 """
+import sys
 import pytest
 from unittest.mock import patch, AsyncMock, MagicMock
 
@@ -8,6 +9,11 @@ from unittest.mock import patch, AsyncMock, MagicMock
 # from src.tools.company import get_company_profile, get_financial_statements
 # from src.tools.market import get_stock_quote, get_market_indexes
 # from src.tools.analysis import get_financial_ratios, get_key_metrics
+
+# Add more robust fixtures for test isolation
+
+
+# Module reset is now handled centrally in conftest.py
 
 
 @pytest.mark.asyncio

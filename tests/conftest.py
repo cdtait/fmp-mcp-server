@@ -3,7 +3,49 @@ Test fixtures for FMP MCP server testing
 """
 import pytest
 import os
+import sys
+import httpx
 from datetime import datetime
+from unittest.mock import patch, AsyncMock, MagicMock
+
+# Global fixture for module cleanup to ensure test isolation
+@pytest.fixture(scope="function", autouse=True)
+def clean_modules():
+    """
+    Clean up modules before and after each test to prevent state bleeding between tests.
+    This is crucial for tests that patch modules or modify global state.
+    """
+    # Store initial state of modules
+    initial_modules = set(sys.modules.keys())
+    
+    # Clean up specific modules if they exist
+    modules_to_clean = [
+        'src.server', 
+        'src.api.client', 
+        'src.tools.company', 
+        'src.tools.market', 
+        'src.tools.analysis',
+        'src.resources.company', 
+        'src.resources.market',
+        'src.prompts.templates'
+    ]
+    
+    for module in modules_to_clean:
+        if module in sys.modules:
+            del sys.modules[module]
+    
+    # Run the test
+    yield
+    
+    # Clean up any new modules that were imported during the test
+    current_modules = set(sys.modules.keys())
+    for module in current_modules - initial_modules:
+        if module.startswith('src.'):
+            if module in sys.modules:
+                del sys.modules[module]
+
+# We're not using a global HTTP client mock anymore since each test needs 
+# its own specific mock behavior
 
 
 @pytest.fixture

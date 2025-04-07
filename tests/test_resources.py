@@ -3,28 +3,63 @@ Tests for MCP resources implementation
 """
 import pytest
 import json
+import sys
+import importlib
+import copy
 from unittest.mock import patch, AsyncMock, MagicMock
 
-# Import modules to test (will be created in implementation phase)
-# from src.resources.company import get_stock_info_resource, get_financial_statement_resource
-# from src.resources.market import get_market_snapshot_resource, get_stock_peers_resource
+# Add more robust fixtures for test isolation
+
+# Module reset is now handled centrally in conftest.py
 
 
 @pytest.mark.asyncio
 async def test_stock_info_resource(mock_company_profile_response, mock_stock_quote_response):
     """Test stock info resource with mock data"""
-    with patch('src.api.client.fmp_api_request') as mock_request:
-        # Need to set up the mock to return different values for different calls
-        mock_request.side_effect = [
-            mock_company_profile_response,  # First call returns profile data
-            mock_stock_quote_response       # Second call returns quote data
-        ]
-        
+    # Create deep copies of the mock responses to prevent modification
+    profile_data = copy.deepcopy(mock_company_profile_response)
+    quote_data = copy.deepcopy(mock_stock_quote_response)
+    
+    # Mock the httpx client responses
+    response_sequence = [
+        # First response for profile
+        (lambda: MagicMock(
+            raise_for_status=AsyncMock(),
+            json=AsyncMock(return_value=profile_data)
+        )),
+        # Second response for quotes
+        (lambda: MagicMock(
+            raise_for_status=AsyncMock(),
+            json=AsyncMock(return_value=quote_data)
+        ))
+    ]
+    
+    # Create a client that will return our sequence of responses
+    call_count = 0
+    
+    async def mock_get(*args, **kwargs):
+        nonlocal call_count
+        response = response_sequence[min(call_count, len(response_sequence)-1)]()
+        call_count += 1
+        return response
+    
+    # Create a mock HTTP client
+    mock_client = AsyncMock()
+    mock_client.get = mock_get
+    
+    # Create a mock context manager
+    mock_async_client = MagicMock()
+    mock_async_client.__aenter__ = AsyncMock(return_value=mock_client)
+    mock_async_client.__aexit__ = AsyncMock(return_value=None)
+    
+    # Use the patch to replace the httpx.AsyncClient
+    with patch('httpx.AsyncClient', return_value=mock_async_client):
+        # Import the module after patching
         from src.resources.company import get_stock_info_resource
         
         # Execute the resource
         result = await get_stock_info_resource(symbol="AAPL")
-        
+
         # Verify result is valid JSON
         resource_data = json.loads(result)
         
@@ -43,31 +78,49 @@ async def test_stock_info_resource(mock_company_profile_response, mock_stock_quo
 @pytest.mark.asyncio
 async def test_stock_info_resource_error_handling():
     """Test stock info resource error handling"""
+    # Define the error response locally
+    error_response = {"error": "API error", "message": "Failed to fetch data"}
+    
     with patch('src.api.client.fmp_api_request') as mock_request:
         # Set up the mock to return an error for the profile call
-        mock_request.return_value = {"error": "API error", "message": "Failed to fetch data"}
+        mock_request.return_value = error_response
         
+        # Ensure we get a fresh import
+        if 'src.resources.company' in sys.modules:
+            del sys.modules['src.resources.company']
+            
         from src.resources.company import get_stock_info_resource
         
         # Execute the resource
         result = await get_stock_info_resource(symbol="AAPL")
         
+        # Parse the JSON result
+        resource_data = json.loads(result)
+        
         # Should return JSON with error information
-        assert "No profile data found for symbol AAPL" in result
+        assert "error" in resource_data
+        assert resource_data["error"] == "No profile data found for symbol AAPL"
 
 
 @pytest.mark.asyncio
 async def test_financial_statement_resource(mock_income_statement_response):
     """Test financial statement resource with mock data"""
+    # Create a clean copy of the response for this test
+    test_response = mock_income_statement_response.copy()
+    
     with patch('src.api.client.fmp_api_request') as mock_request:
-        mock_request.return_value = mock_income_statement_response
+        mock_request.return_value = test_response
         
+        # Ensure we get a fresh import
+        if 'src.resources.company' in sys.modules:
+            del sys.modules['src.resources.company']
+            
         from src.resources.company import get_financial_statement_resource
         
         # Execute the resource
         result = await get_financial_statement_resource(
-            symbol="AAPL", 
-            statement_type="income", 
+            symbol="AAPL",
+            statement_type="income",
             period="annual"
         )
         
@@ -86,12 +139,16 @@ async def test_financial_statement_resource(mock_income_statement_response):
         resource_data = json.loads(result)
         
         # Should return the raw API response as JSON
-        assert resource_data == mock_income_statement_response
+        assert resource_data == test_response
 
 
 @pytest.mark.asyncio
 async def test_financial_statement_resource_invalid_type():
     """Test financial statement resource with invalid statement type"""
+    # Ensure we get a fresh import
+    if 'src.resources.company' in sys.modules:
+        del sys.modules['src.resources.company']
+        
     from src.resources.company import get_financial_statement_resource
     
     # Execute with invalid statement type
@@ -110,14 +167,21 @@ async def test_financial_statement_resource_invalid_type():
 @pytest.mark.asyncio
 async def test_market_snapshot_resource(mock_market_indexes_response):
     """Test market snapshot resource with mock data"""
+    # Create fresh copies of mock data
+    index_data = mock_market_indexes_response.copy()
+    sector_data = []  # Empty sector data for simplicity
+    
     with patch('src.api.client.fmp_api_request') as mock_request:
         # Mock will need to handle multiple calls, so we'll use side_effect
-        # First call gets index data, second gets sector data
         mock_request.side_effect = [
-            mock_market_indexes_response,  # Index data
-            []  # Empty sector data for simplicity
+            index_data,   # Index data 
+            sector_data   # Empty sector data
         ]
         
+        # Ensure we get a fresh import
+        if 'src.resources.market' in sys.modules:
+            del sys.modules['src.resources.market']
+            
         from src.resources.market import get_market_snapshot_resource
         
         # Execute the resource
@@ -139,9 +203,16 @@ async def test_market_snapshot_resource(mock_market_indexes_response):
 @pytest.mark.asyncio
 async def test_stock_peers_resource(mock_company_profile_response):
     """Test stock peers resource with mock data"""
+    # Create a clean copy of the mock response for this test
+    test_response = mock_company_profile_response.copy()
+    
     with patch('src.api.client.fmp_api_request') as mock_request:
-        mock_request.return_value = mock_company_profile_response
+        mock_request.return_value = test_response
         
+        # Ensure we get a fresh import
+        if 'src.resources.company' in sys.modules:
+            del sys.modules['src.resources.company']
+            
         from src.resources.company import get_stock_peers_resource
         
         # Execute the resource
