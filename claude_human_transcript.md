@@ -1,3 +1,90 @@
+# Conversation Transcript: Building an MCP Server for Financial Modeling Prep API
+
+## Initial Requirements Gathering
+
+**Human**: I want to create a Model Context Protocol Server and first want you to read this file which describes what the MCP is all about in the current directory llms-full.txt
+
+**Assistant**: *[Read the MCP documentation file which was large and contained information about Model Context Protocol, clients, specifications, tools, resources, architecture, etc.]*
+
+## Project Planning
+
+**Human**: OK, so there is another part that I need you to consider. What this server.py will actually do. So I want an MCP server that implements tools, resources and prompts taking its implementation based on the the Financial Modelling Prep Data provider site. The API is described from the documenation here https://site.financialmodelingprep.com/developer/docs/stable. Can you have a go at reading this doc and creating a server with tools, resources (endpoints and meta data) and prompts for intelligent query?
+
+**Assistant**: *[Fetched information about the Financial Modeling Prep API and designed a server that would implement tools, resources, and prompts for financial data through MCP]*
+
+**Human**: OK, that preview looked quite impressive and I think that would be brilliant. However I want to add development approach that sets some good practices in the software process I want to follow a Test Driven Development/Design approach, so we write the tests first and make sure that these cover the prososals in the requirements and allow scope for refactoring of the server into smaller understandable pieces. This will be using pytest. Can you come up with and incremental approach to this?
+
+## Project Implementation with TDD
+
+**Assistant**: *[Created a comprehensive test-driven development plan for the MCP server, including test phases, project structure, and implementation strategy]*
+
+*[Created initial project structure with directories for source code and tests]*
+
+*[Implemented test files for various components: API client, tools, resources, prompts, and server integration]*
+
+*[Implemented the API client with appropriate error handling for connecting to FMP]*
+
+*[Implemented tools for company data, market data, and financial analysis]*
+
+*[Implemented resources for exposing financial data through MCP]*
+
+*[Implemented prompt templates for financial analysis queries]*
+
+*[Implemented the main server file to integrate all components]*
+
+*[Conducted tests to verify functionality]*
+
+## Preparing for GitHub Repository
+
+**Human**: OK, can create git project for my github account?
+
+**Assistant**: *[Set up git repository, created .gitignore, staged files, and made initial commit]*
+
+**Human**: This repo does not actually exist yet on my github, can you amend the git commands
+
+**Assistant**: *[Provided corrected git commands for setting up a new GitHub repository, checked current git configuration]*
+
+**Human**: I think what we really wanted is this command - git remote add origin git@github.com:cdtait/fmp-mcp-server.git. Anyway just ignore that, done already
+
+## Additional Features: Docker and CI/CD
+
+**Human**: Can you possibly add GitHub Actions as pipeline to build, test and create a docker file deployment
+
+**Assistant**: *[Created GitHub Actions workflow for CI/CD, added Dockerfile and docker-compose.yml, updated server to support SSE mode, updated documentation]*
+
+## Summary of Work Completed
+
+1. **Project Planning and Architecture**:
+   - Designed MCP server for Financial Modeling Prep API
+   - Created test-driven development approach
+   - Structured project with separation of concerns
+
+2. **Implementation**:
+   - API client for FMP API with error handling
+   - Financial tools including company profiles, financial statements, market data
+   - Resources for exposing financial data
+   - Prompt templates for intelligent financial queries
+   - Main server with proper MCP integration
+
+3. **Testing**:
+   - Comprehensive test suite with pytest
+   - Unit tests for each component
+   - Integration tests for entire server
+
+4. **DevOps**:
+   - Git repository setup
+   - GitHub Actions CI/CD pipeline
+   - Docker containerization
+   - Support for both stdio and SSE server modes
+
+5. **Documentation**:
+   - README with usage instructions
+   - Test plan and development strategy
+   - Docker usage guide
+   - Summary documentation
+
+The result is a fully functional MCP server that exposes Financial Modeling Prep data through the Model Context Protocol, allowing LLMs like Claude to access and analyze financial data in a structured way.
+
 # Conversation Transcript: Fixing MCP Server Tests
 
 ## Initial Request to Fix Server Tests
