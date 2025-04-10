@@ -17,7 +17,8 @@ A Model Context Protocol (MCP) server that provides tools, resources, and prompt
 
 ```bash
 # Install uv if you don't have it yet
-curl -sSf https://astral.sh/uv/install.sh | bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+export PATH=~/.local/bin/:${PATH}
 
 # Create and activate the environment
 uv venv
