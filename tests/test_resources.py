@@ -24,13 +24,13 @@ async def test_stock_info_resource(mock_company_profile_response, mock_stock_quo
     response_sequence = [
         # First response for profile
         (lambda: MagicMock(
-            raise_for_status=AsyncMock(),
-            json=AsyncMock(return_value=profile_data)
+            raise_for_status=lambda: None,
+            json=lambda: profile_data
         )),
         # Second response for quotes
         (lambda: MagicMock(
-            raise_for_status=AsyncMock(),
-            json=AsyncMock(return_value=quote_data)
+            raise_for_status=lambda: None,
+            json=lambda: quote_data
         ))
     ]
     
