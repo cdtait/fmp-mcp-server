@@ -124,8 +124,8 @@ async def test_tool_execution(mock_company_profile_response):
     
     # Mock the httpx client at a lower level to avoid API client issues
     mock_response = MagicMock()
-    mock_response.raise_for_status = AsyncMock()
-    mock_response.json = AsyncMock(return_value=profile_data)
+    mock_response.raise_for_status = lambda: None
+    mock_response.json = lambda: profile_data
     
     mock_client = AsyncMock()
     mock_client.get = AsyncMock(return_value=mock_response)
@@ -178,13 +178,13 @@ async def test_resource_handling(mock_company_profile_response, mock_stock_quote
     response_sequence = [
         # First response for profile
         (lambda: MagicMock(
-            raise_for_status=AsyncMock(),
-            json=AsyncMock(return_value=profile_data)
+            raise_for_status=lambda: None,
+            json=lambda: profile_data
         )),
         # Second response for quotes
         (lambda: MagicMock(
-            raise_for_status=AsyncMock(),
-            json=AsyncMock(return_value=quote_data)
+            raise_for_status=lambda: None,
+            json=lambda: quote_data
         ))
     ]
     

@@ -24,8 +24,8 @@ async def test_fmp_api_request_successful(mock_api_key, mock_company_profile_res
     
     # Create a mock response
     mock_resp = AsyncMock()
-    mock_resp.json = AsyncMock(return_value=profile_data)
-    mock_resp.raise_for_status = AsyncMock()
+    mock_resp.json = lambda: profile_data
+    mock_resp.raise_for_status = lambda: None
     
     # Mock the client's get method
     mock_client = AsyncMock()
@@ -67,7 +67,12 @@ async def test_fmp_api_request_http_error(monkeypatch):
     
     # Create a mock response
     mock_resp = AsyncMock()
-    mock_resp.raise_for_status.side_effect = http_error
+    
+    # Use a regular function instead of AsyncMock for raise_for_status
+    def raise_error():
+        raise http_error
+    
+    mock_resp.raise_for_status = raise_error
     
     # Mock the client's get method
     mock_client = AsyncMock()

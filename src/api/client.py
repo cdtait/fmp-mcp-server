@@ -6,7 +6,7 @@ import httpx
 from typing import Dict, Any, Optional
 
 # FMP API Base URL
-FMP_BASE_URL = "https://financialmodelingprep.com/api/v3"
+FMP_BASE_URL = "https://financialmodelingprep.com/stable"
 
 # Default API key - try to get from environment or use placeholder
 DEFAULT_API_KEY = os.environ.get("FMP_API_KEY", "demo")
@@ -36,8 +36,8 @@ async def fmp_api_request(endpoint: str, params: Dict = None, api_key: str = Non
     try:
         async with httpx.AsyncClient() as client:
             response = await client.get(url, params=params, timeout=30.0)
-            await response.raise_for_status()
-            return await response.json()
+            response.raise_for_status()  # Remove await here, httpx Response.raise_for_status() is not a coroutine
+            return response.json()  # Remove await here, httpx Response.json() is not a coroutine
     except httpx.HTTPStatusError as e:
         return {"error": f"HTTP error: {e.response.status_code}", "message": str(e)}
     except httpx.RequestError as e:
