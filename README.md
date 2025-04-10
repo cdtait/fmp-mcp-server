@@ -108,6 +108,8 @@ mcp install src/server.py
 python -m src.server --sse --port 8000
 ```
 
+This starts the server in SSE (Server-Sent Events) mode, which allows connecting the MCP Inspector or other MCP clients over HTTP.
+
 #### Using Docker
 
 ```bash
@@ -120,9 +122,44 @@ export FMP_API_KEY=your_api_key_here
 docker-compose up
 ```
 
+### Using MCP Inspector
+
+The MCP Inspector is a useful tool for testing your MCP server. You can use it to explore available tools, resources, and prompts, and test them interactively.
+
+#### Running MCP Inspector with Node.js
+
+The easiest way to run the MCP Inspector is using Node.js:
+
+```bash
+# Using npx (no installation required)
+npx @modelcontextprotocol/inspector
+
+# Or if you have the package installed globally
+mcp-inspector
+```
+
+Once the MCP Inspector is running:
+
+1. In the Transport dropdown, select "HTTP/SSE"
+2. Enter your server URL: `http://localhost:8000/sse` (adjust port if needed)
+3. Click "Connect" to establish a connection with your server
+4. Explore available tools, resources, and prompts in their respective tabs
+
+#### Using MCP Inspector with Python
+
+If you prefer using Python, you can use the MCP CLI:
+
+```bash
+# Install the MCP CLI if you haven't already
+pip install mcp-cli
+
+# Run the inspector
+mcp inspect http://localhost:8000
+```
+
 ### Example Queries
 
-Once the server is running and connected to an MCP client like Claude Desktop, you can:
+Once the server is running and connected to an MCP client like Claude Desktop or the MCP Inspector, you can:
 
 1. Get company profiles:
    - "Tell me about Apple's financial profile using the FMP tools"
