@@ -112,6 +112,10 @@ This starts the server in SSE (Server-Sent Events) mode, which allows connecting
 
 #### Using Docker
 
+There are several ways to run the server with Docker:
+
+##### Option 1: Build and run locally
+
 ```bash
 # Build and run with Docker
 docker build -t fmp-mcp-server .
@@ -134,6 +138,26 @@ PORT=9000 docker-compose up
 # Using both .env file and custom port
 echo "FMP_API_KEY=your_api_key_here" > .env
 PORT=9000 docker-compose up
+```
+
+##### Option 2: Use the pre-built image from GitHub Container Registry
+
+```bash
+# Pull the latest image
+docker pull ghcr.io/cdtait/fmp-mcp-server:latest
+
+# Run with environment variable for API key
+docker run -p 8000:8000 -e FMP_API_KEY=your_api_key_here ghcr.io/cdtait/fmp-mcp-server:latest
+
+# Run with custom port
+docker run -p 9000:8000 -e FMP_API_KEY=your_api_key_here ghcr.io/cdtait/fmp-mcp-server:latest
+
+# Run with a mounted .env file (PREFERRED)
+# First create your .env file with your API key
+echo "FMP_API_KEY=your_api_key_here" > .env
+
+# Then mount it when running the container
+docker run -p 8000:8000 -v $(pwd)/.env:/app/.env ghcr.io/cdtait/fmp-mcp-server:latest
 ```
 
 The server will always listen on port 8000 inside the container, but Docker maps this to the specified host port (default 8000 or the value of the PORT environment variable).
@@ -200,7 +224,18 @@ Once the server is running and connected to an MCP client like Claude Desktop or
 The server uses the following environment variables:
 
 - `FMP_API_KEY`: Your Financial Modeling Prep API key (required)
+  - You can get an API key by registering at [Financial Modeling Prep](https://site.financialmodelingprep.com/developer/docs/)
+  - Can be passed via command line, environment variable, or .env file
 - `PORT`: Host port to use when running with Docker Compose (defaults to 8000)
+  - Only affects the host port mapping, the container always runs on port 8000 internally
+
+You can set these variables in a .env file in the project root:
+
+```bash
+# Example .env file contents
+FMP_API_KEY=your_api_key_here
+PORT=9000
+```
 
 ## Contributing
 
@@ -224,7 +259,7 @@ The workflow configuration is located in `.github/workflows/ci.yml`.
 Docker images are automatically built and published to GitHub Container Registry when changes are pushed to the main branch. You can pull the latest image with:
 
 ```bash
-docker pull ghcr.io/yourusername/fmp-mcp-server:latest
+docker pull ghcr.io/cdtait/fmp-mcp-server:latest
 ```
 
-Replace `yourusername` with your GitHub username.
+See the [Using Docker](#using-docker) section for detailed instructions on running the container.
