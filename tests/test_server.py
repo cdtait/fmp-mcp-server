@@ -37,6 +37,8 @@ async def test_tool_registration():
     expected_tools = [
         "get_company_profile",
         "get_stock_quote",
+        "get_quote_short",
+        "get_price_change", 
         "get_financial_ratios",
         "get_income_statement",
         "get_balance_sheet",
