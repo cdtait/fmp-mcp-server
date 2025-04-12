@@ -56,6 +56,28 @@ To see test coverage:
 pytest --cov=src tests/
 ```
 
+#### Acceptance Tests
+
+The project includes acceptance tests that validate integration with the real FMP API. These tests require a valid API key and are skipped by default.
+
+To run acceptance tests:
+
+```bash
+# Set your API key
+export FMP_API_KEY=your_api_key_here
+
+# Run the acceptance tests
+pytest tests/acceptance_tests.py -v
+```
+
+These tests verify:
+- API connectivity
+- Data format and structure
+- Error handling with invalid inputs
+- Tool formatting with real data
+
+The acceptance tests are designed to check format and structure without asserting specific values that may change over time (like stock prices). This makes them suitable for CI/CD pipelines with a valid API key secret.
+
 ### Project Structure
 
 ```

@@ -29,8 +29,11 @@ packages = ["src"]
 asyncio_mode = "strict"
 asyncio_default_fixture_loop_scope = "function"
 testpaths = ["tests"]
-python_files = "test_*.py"
+python_files = "test_*.py acceptance_*.py"
 python_functions = "test_*"
+markers = [
+    "acceptance: marks tests that require external API connectivity"
+]
 filterwarnings = [
     "ignore::DeprecationWarning:pydantic.*:",
     "ignore::DeprecationWarning:pytest_asyncio.*:"
