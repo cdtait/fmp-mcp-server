@@ -36,8 +36,8 @@ async def test_tool_registration():
     # Check that the expected tools are registered
     expected_tools = [
         "get_company_profile",
-        "get_stock_quote",
-        "get_quote_short",
+        "get_quote",
+        "get_quote_change",
         "get_price_change", 
         "get_financial_ratios",
         "get_income_statement",

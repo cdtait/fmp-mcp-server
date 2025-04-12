@@ -20,12 +20,7 @@ from src.tools.statements import (
     get_financial_ratios, get_key_metrics
 )
 from src.tools.market import get_market_indexes, get_stock_news, search_stocks, get_historical_price
-from src.tools.quote import (
-    get_stock_quote, get_quote_short, get_batch_quotes,
-    get_market_gainers, get_market_losers, get_most_active,
-    get_etf_quote, get_index_quote, get_commodity_quote,
-    get_forex_quote, get_crypto_quote
-)
+from src.tools.quote import get_quote, get_quote_change
 from src.tools.charts import get_price_change
 from src.tools.analyst import get_ratings_snapshot
 
@@ -49,17 +44,8 @@ mcp = FastMCP(
 
 # Register tools
 mcp.tool()(get_company_profile)
-mcp.tool()(get_stock_quote)
-mcp.tool()(get_quote_short)
-mcp.tool()(get_batch_quotes)
-mcp.tool()(get_market_gainers)
-mcp.tool()(get_market_losers)
-mcp.tool()(get_most_active)
-mcp.tool()(get_etf_quote)
-mcp.tool()(get_index_quote)
-mcp.tool()(get_commodity_quote)
-mcp.tool()(get_forex_quote)
-mcp.tool()(get_crypto_quote)
+mcp.tool()(get_quote)
+mcp.tool()(get_quote_change)
 mcp.tool()(get_price_change)
 mcp.tool()(get_financial_ratios)
 mcp.tool()(get_income_statement)
