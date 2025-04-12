@@ -15,7 +15,8 @@ from mcp.server.fastmcp import FastMCP, Context
 
 # Import tools
 from src.tools.company import get_company_profile, get_income_statement, get_balance_sheet, get_cash_flow
-from src.tools.market import get_stock_quote, get_quote_short, get_market_indexes, get_stock_news, search_stocks, get_historical_price
+from src.tools.market import get_market_indexes, get_stock_news, search_stocks, get_historical_price
+from src.tools.quote import get_stock_quote, get_quote_short, get_price_change
 from src.tools.analysis import get_financial_ratios, get_key_metrics
 
 # Import resources
@@ -40,6 +41,7 @@ mcp = FastMCP(
 mcp.tool()(get_company_profile)
 mcp.tool()(get_stock_quote)
 mcp.tool()(get_quote_short)
+mcp.tool()(get_price_change)
 mcp.tool()(get_financial_ratios)
 mcp.tool()(get_income_statement)
 mcp.tool()(get_balance_sheet)

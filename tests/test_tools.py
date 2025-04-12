@@ -7,7 +7,8 @@ from unittest.mock import patch, AsyncMock, MagicMock
 
 # Import modules to test (will be created in implementation phase)
 # from src.tools.company import get_company_profile, get_financial_statements
-# from src.tools.market import get_stock_quote, get_market_indexes
+# from src.tools.quote import get_stock_quote
+# from src.tools.market import get_market_indexes
 # from src.tools.analysis import get_financial_ratios, get_key_metrics
 
 # Add more robust fixtures for test isolation
@@ -60,7 +61,7 @@ async def test_get_quote_short_tool(mock_request, mock_quote_short_response):
     mock_request.return_value = mock_quote_short_response
     
     # Import after patching
-    from src.tools.market import get_quote_short
+    from src.tools.quote import get_quote_short
     
     # Execute the tool
     result = await get_quote_short(symbol="AAPL")
@@ -85,7 +86,7 @@ async def test_get_quote_short_tool_error(mock_request):
     mock_request.return_value = {"error": "API error", "message": "Failed to fetch data"}
     
     # Import after patching
-    from src.tools.market import get_quote_short
+    from src.tools.quote import get_quote_short
     
     # Execute the tool
     result = await get_quote_short(symbol="AAPL")
@@ -103,13 +104,74 @@ async def test_get_quote_short_tool_empty_response(mock_request):
     mock_request.return_value = []
     
     # Import after patching
-    from src.tools.market import get_quote_short
+    from src.tools.quote import get_quote_short
     
     # Execute the tool
     result = await get_quote_short(symbol="NONEXISTENT")
     
     # Assertions
     assert "No simplified quote data found for symbol NONEXISTENT" in result
+
+
+@pytest.mark.asyncio
+@patch('src.api.client.fmp_api_request')
+async def test_get_price_change_tool(mock_request, mock_quote_change_response):
+    """Test price change tool with mock data"""
+    # Set up the mock
+    mock_request.return_value = mock_quote_change_response
+    
+    # Import after patching
+    from src.tools.quote import get_price_change
+    
+    # Execute the tool
+    result = await get_price_change(symbol="AAPL")
+    
+    # Verify API was called with correct parameters
+    mock_request.assert_called_once_with("stock-price-change", {"symbol": "AAPL"})
+    
+    # Assertions about the result
+    assert isinstance(result, str)
+    assert "Price Changes for AAPL" in result
+    assert "**1 Day**: 🔻 -1.36%" in result
+    assert "**5 Days**: 🔺 0.73%" in result
+    assert "**Year to Date**: 🔺 18.45%" in result
+    assert "**1 Year**: 🔺 7.25%" in result
+    assert "**5 Years**: 🔺 120.82%" in result
+
+
+@pytest.mark.asyncio
+@patch('src.api.client.fmp_api_request')
+async def test_get_price_change_tool_error(mock_request):
+    """Test price change tool error handling"""
+    # Set up the mock
+    mock_request.return_value = {"error": "API error", "message": "Failed to fetch data"}
+    
+    # Import after patching
+    from src.tools.quote import get_price_change
+    
+    # Execute the tool
+    result = await get_price_change(symbol="AAPL")
+    
+    # Assertions
+    assert "Error fetching price change for AAPL" in result
+    assert "Failed to fetch data" in result
+
+
+@pytest.mark.asyncio
+@patch('src.api.client.fmp_api_request')
+async def test_get_price_change_tool_empty_response(mock_request):
+    """Test price change tool with empty response"""
+    # Set up the mock
+    mock_request.return_value = []
+    
+    # Import after patching
+    from src.tools.quote import get_price_change
+    
+    # Execute the tool
+    result = await get_price_change(symbol="NONEXISTENT")
+    
+    # Assertions
+    assert "No price change data found for symbol NONEXISTENT" in result
 
 
 @pytest.mark.asyncio
@@ -137,7 +199,7 @@ async def test_get_stock_quote_tool(mock_request, mock_stock_quote_response):
     mock_request.return_value = mock_stock_quote_response
     
     # Import after patching
-    from src.tools.market import get_stock_quote
+    from src.tools.quote import get_stock_quote
     
     # Execute the tool
     result = await get_stock_quote(symbol="AAPL")
