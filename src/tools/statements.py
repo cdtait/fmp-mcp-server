@@ -101,10 +101,10 @@ async def get_balance_sheet(symbol: str, period: str = "annual", limit: int = 1)
     params = {"symbol": symbol, "period": period, "limit": limit}
     data = await fmp_api_request(endpoint, params)
     
-    if not data or "error" in data:
+    if isinstance(data, dict) and "error" in data:
         return f"Error fetching balance sheet for {symbol}: {data.get('message', 'Unknown error')}"
     
-    if not isinstance(data, list) or len(data) == 0:
+    if not data or not isinstance(data, list) or len(data) == 0:
         return f"No balance sheet data found for symbol {symbol}"
     
     # Format the response
@@ -165,10 +165,10 @@ async def get_cash_flow(symbol: str, period: str = "annual", limit: int = 1) -> 
     params = {"symbol": symbol, "period": period, "limit": limit}
     data = await fmp_api_request(endpoint, params)
     
-    if not data or "error" in data:
+    if isinstance(data, dict) and "error" in data:
         return f"Error fetching cash flow statement for {symbol}: {data.get('message', 'Unknown error')}"
     
-    if not isinstance(data, list) or len(data) == 0:
+    if not data or not isinstance(data, list) or len(data) == 0:
         return f"No cash flow data found for symbol {symbol}"
     
     # Format the response
@@ -279,10 +279,10 @@ async def get_key_metrics(symbol: str, period: str = "annual", limit: int = 1) -
     params = {"symbol": symbol, "period": period, "limit": limit}
     data = await fmp_api_request(endpoint, params)
     
-    if not data or "error" in data:
+    if isinstance(data, dict) and "error" in data:
         return f"Error fetching key metrics for {symbol}: {data.get('message', 'Unknown error')}"
     
-    if not isinstance(data, list) or len(data) == 0:
+    if not data or not isinstance(data, list) or len(data) == 0:
         return f"No key metrics data found for symbol {symbol}"
     
     # Format the response
