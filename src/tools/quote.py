@@ -92,3 +92,45 @@ async def get_quote_short(symbol: str) -> str:
     ]
     
     return "\n".join(result)
+
+
+async def get_batch_quotes(symbols: str) -> str:
+    """
+    Get quotes for multiple stocks simultaneously
+    
+    Args:
+        symbols: Comma-separated list of stock ticker symbols (e.g., "AAPL,MSFT,TSLA")
+        
+    Returns:
+        Summary of multiple stock quotes
+    """
+    # Split the comma-separated symbols and rejoin to ensure proper formatting
+    symbol_list = [s.strip() for s in symbols.split(",")]
+    formatted_symbols = ",".join(symbol_list)
+    
+    data = await fmp_api_request("batch-quotes", {"symbol": formatted_symbols})
+    
+    if isinstance(data, dict) and "error" in data:
+        return f"Error fetching batch quotes: {data.get('message', 'Unknown error')}"
+    
+    if not data or not isinstance(data, list) or len(data) == 0:
+        return f"No quote data found for symbols: {symbols}"
+    
+    # Format the response
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    result = [f"# Batch Stock Quotes", f"*Data as of {current_time}*", ""]
+    
+    for quote in data:
+        symbol = quote.get('symbol', 'Unknown')
+        price = quote.get('price', 'N/A')
+        change = quote.get('change', 0)
+        change_percent = quote.get('changesPercentage', 0)
+        change_emoji = "🔺" if change > 0 else "🔻" if change < 0 else "➖"
+        
+        result.append(f"## {quote.get('name', symbol)} ({symbol})")
+        result.append(f"**Price**: ${format_number(price)}")
+        result.append(f"**Change**: {change_emoji} ${format_number(change)} ({change_percent}%)")
+        result.append(f"**Volume**: {format_number(quote.get('volume', 'N/A'))}")
+        result.append("")
+    
+    return "\n".join(result)

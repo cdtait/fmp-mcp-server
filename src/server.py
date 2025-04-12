@@ -20,7 +20,7 @@ from src.tools.statements import (
     get_financial_ratios, get_key_metrics
 )
 from src.tools.market import get_market_indexes, get_stock_news, search_stocks, get_historical_price
-from src.tools.quote import get_stock_quote, get_quote_short
+from src.tools.quote import get_stock_quote, get_quote_short, get_batch_quotes
 from src.tools.charts import get_price_change
 from src.tools.analyst import get_ratings_snapshot
 
@@ -46,6 +46,7 @@ mcp = FastMCP(
 mcp.tool()(get_company_profile)
 mcp.tool()(get_stock_quote)
 mcp.tool()(get_quote_short)
+mcp.tool()(get_batch_quotes)
 mcp.tool()(get_price_change)
 mcp.tool()(get_financial_ratios)
 mcp.tool()(get_income_statement)

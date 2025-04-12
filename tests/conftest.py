@@ -155,6 +155,37 @@ def mock_quote_short_response():
 
 
 @pytest.fixture
+def mock_batch_quotes_response():
+    """Mock response for batch quotes API endpoint"""
+    return [
+        {
+            "symbol": "AAPL",
+            "name": "Apple Inc.",
+            "price": 190.5,
+            "change": 2.5,
+            "changesPercentage": 1.25,
+            "volume": 58000000
+        },
+        {
+            "symbol": "MSFT",
+            "name": "Microsoft Corporation",
+            "price": 376.8,
+            "change": -1.2,
+            "changesPercentage": -0.32,
+            "volume": 22000000
+        },
+        {
+            "symbol": "GOOGL",
+            "name": "Alphabet Inc.",
+            "price": 142.3,
+            "change": 0.85,
+            "changesPercentage": 0.60,
+            "volume": 18500000
+        }
+    ]
+
+
+@pytest.fixture
 def mock_historical_price_response():
     """Mock response for historical price API endpoint"""
     return {

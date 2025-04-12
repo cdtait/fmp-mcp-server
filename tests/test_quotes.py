@@ -86,3 +86,65 @@ async def test_get_quote_short_tool_empty_response(mock_request):
     
     # Assertions
     assert "No simplified quote data found for symbol NONEXISTENT" in result
+
+
+@pytest.mark.asyncio
+@patch('src.api.client.fmp_api_request')
+async def test_get_batch_quotes_tool(mock_request, mock_batch_quotes_response):
+    """Test batch quotes tool with mock data"""
+    # Set up the mock
+    mock_request.return_value = mock_batch_quotes_response
+    
+    # Import after patching
+    from src.tools.quote import get_batch_quotes
+    
+    # Execute the tool
+    result = await get_batch_quotes(symbols="AAPL,MSFT,GOOGL")
+    
+    # Verify API was called with correct parameters
+    mock_request.assert_called_once_with("batch-quotes", {"symbol": "AAPL,MSFT,GOOGL"})
+    
+    # Assertions about the result
+    assert isinstance(result, str)
+    assert "# Batch Stock Quotes" in result
+    assert "## Apple Inc. (AAPL)" in result
+    assert "## Microsoft Corporation (MSFT)" in result
+    assert "## Alphabet Inc. (GOOGL)" in result
+    assert "**Price**: $190.5" in result
+    assert "🔺 $2.5" in result  # AAPL positive change
+    assert "🔻 $-1.2" in result  # MSFT negative change
+
+
+@pytest.mark.asyncio
+@patch('src.api.client.fmp_api_request')
+async def test_get_batch_quotes_tool_error(mock_request):
+    """Test batch quotes tool error handling"""
+    # Set up the mock
+    mock_request.return_value = {"error": "API error", "message": "Failed to fetch data"}
+    
+    # Import after patching
+    from src.tools.quote import get_batch_quotes
+    
+    # Execute the tool
+    result = await get_batch_quotes(symbols="INVALID,SYMBOLS")
+    
+    # Assertions
+    assert "Error fetching batch quotes" in result
+    assert "Failed to fetch data" in result
+
+
+@pytest.mark.asyncio
+@patch('src.api.client.fmp_api_request')
+async def test_get_batch_quotes_tool_empty_response(mock_request):
+    """Test batch quotes tool with empty response"""
+    # Set up the mock
+    mock_request.return_value = []
+    
+    # Import after patching
+    from src.tools.quote import get_batch_quotes
+    
+    # Execute the tool
+    result = await get_batch_quotes(symbols="NONEXISTENT,SYMBOLS")
+    
+    # Assertions
+    assert "No quote data found for symbols: NONEXISTENT,SYMBOLS" in result
