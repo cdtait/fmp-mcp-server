@@ -54,7 +54,25 @@ async def test_tool_registration():
         "get_financial_estimates",
         "get_price_target_news",
         "get_company_dividends",
-        "get_dividends_calendar"
+        "get_dividends_calendar",
+        "get_index_list",
+        "get_index_quote",
+        "get_biggest_gainers",
+        "get_biggest_losers",
+        "get_most_active",
+        "get_market_hours",
+        "get_holidays",
+        "get_etf_sectors",
+        "get_etf_countries",
+        "get_etf_holdings",
+        "get_commodities_list",
+        "get_commodities_prices",
+        "get_crypto_list",
+        "get_crypto_quotes",
+        "get_forex_list",
+        "get_forex_quotes",
+        "get_technical_indicators",
+        "get_technical_summary"
     ]
 
     for tool_name in expected_tools:

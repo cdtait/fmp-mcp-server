@@ -25,6 +25,14 @@ from src.tools.quote import get_quote, get_quote_change
 from src.tools.charts import get_price_change
 from src.tools.analyst import get_ratings_snapshot, get_financial_estimates, get_price_target_news
 from src.tools.calendar import get_company_dividends, get_dividends_calendar
+from src.tools.indices import get_index_list, get_index_quote
+from src.tools.market_performers import get_biggest_gainers, get_biggest_losers, get_most_active
+from src.tools.market_hours import get_market_hours, get_holidays
+from src.tools.etf import get_etf_sectors, get_etf_countries, get_etf_holdings
+from src.tools.commodities import get_commodities_list, get_commodities_prices
+from src.tools.crypto import get_crypto_list, get_crypto_quotes
+from src.tools.forex import get_forex_list, get_forex_quotes
+from src.tools.technical_indicators import get_technical_indicators, get_technical_summary
 
 # Import resources
 from src.resources.company import get_stock_info_resource, get_financial_statement_resource, get_stock_peers_resource, get_price_targets_resource
@@ -65,6 +73,24 @@ mcp.tool()(get_financial_estimates)
 mcp.tool()(get_price_target_news)
 mcp.tool()(get_company_dividends)
 mcp.tool()(get_dividends_calendar)
+mcp.tool()(get_index_list)
+mcp.tool()(get_index_quote)
+mcp.tool()(get_biggest_gainers)
+mcp.tool()(get_biggest_losers)
+mcp.tool()(get_most_active)
+mcp.tool()(get_market_hours)
+mcp.tool()(get_holidays)
+mcp.tool()(get_etf_sectors)
+mcp.tool()(get_etf_countries)
+mcp.tool()(get_etf_holdings)
+mcp.tool()(get_commodities_list)
+mcp.tool()(get_commodities_prices)
+mcp.tool()(get_crypto_list)
+mcp.tool()(get_crypto_quotes)
+mcp.tool()(get_forex_list)
+mcp.tool()(get_forex_quotes)
+mcp.tool()(get_technical_indicators)
+mcp.tool()(get_technical_summary)
 
 # Register resources
 mcp.resource("stock-info://{symbol}")(get_stock_info_resource)
