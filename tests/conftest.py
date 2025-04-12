@@ -151,6 +151,27 @@ def mock_quote_short_response():
 
 
 @pytest.fixture
+def mock_quote_change_response():
+    """Mock response for price change API endpoint"""
+    return [
+        {
+            "symbol": "AAPL",
+            "1D": -1.36,
+            "5D": 0.73,
+            "1M": -3.56,
+            "3M": 5.12,
+            "6M": 12.87,
+            "ytd": 18.45,
+            "1Y": 7.25,
+            "3Y": 45.36,
+            "5Y": 120.82,
+            "10Y": 780.45,
+            "max": 88570.21
+        }
+    ]
+
+
+@pytest.fixture
 def mock_financial_ratios_response():
     """Mock response for financial ratios API endpoint"""
     return [
