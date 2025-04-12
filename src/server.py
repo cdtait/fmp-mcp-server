@@ -15,7 +15,7 @@ from mcp.server.fastmcp import FastMCP, Context
 
 # Import tools
 from src.tools.company import get_company_profile, get_income_statement, get_balance_sheet, get_cash_flow
-from src.tools.market import get_stock_quote, get_market_indexes, get_stock_news, search_stocks, get_historical_price
+from src.tools.market import get_stock_quote, get_quote_short, get_market_indexes, get_stock_news, search_stocks, get_historical_price
 from src.tools.analysis import get_financial_ratios, get_key_metrics
 
 # Import resources
@@ -39,6 +39,7 @@ mcp = FastMCP(
 # Register tools
 mcp.tool()(get_company_profile)
 mcp.tool()(get_stock_quote)
+mcp.tool()(get_quote_short)
 mcp.tool()(get_financial_ratios)
 mcp.tool()(get_income_statement)
 mcp.tool()(get_balance_sheet)
@@ -73,7 +74,8 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser(description="Run the FMP MCP Server")
     parser.add_argument("--sse", action="store_true", help="Run as an SSE server")
-    parser.add_argument("--port", type=int, default=8000, help="Port for SSE server (default: 8000)")
+    default_port = int(os.environ.get("PORT", 8000))
+    parser.add_argument("--port", type=int, default=default_port, help=f"Port for SSE server (default: {default_port})")
     parser.add_argument("--host", type=str, default="0.0.0.0", help="Host for SSE server (default: 0.0.0.0)")
     
     args = parser.parse_args()

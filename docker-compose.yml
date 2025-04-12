@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.3'
 
 services:
   mcp-server:
@@ -6,9 +6,11 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8000:8000"
+      - "${PORT:-8000}:8000"
     environment:
       - FMP_API_KEY=${FMP_API_KEY:-demo}
     volumes:
       - ./src:/app/src
     restart: unless-stopped
+    # Always use command instead of relying on CMD in Dockerfile
+    command: python -m src.server --sse --port 8000 --host 0.0.0.0

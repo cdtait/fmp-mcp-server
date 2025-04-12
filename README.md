@@ -117,10 +117,28 @@ This starts the server in SSE (Server-Sent Events) mode, which allows connecting
 docker build -t fmp-mcp-server .
 docker run -p 8000:8000 -e FMP_API_KEY=your_api_key_here fmp-mcp-server
 
-# Or use docker-compose
+# Or use docker-compose with default port (8000)
+# Method 1: Export environment variables (less secure)
 export FMP_API_KEY=your_api_key_here
 docker-compose up
+
+# Method 2 (PREFERRED): Use a .env file (more secure)
+# First, create a .env file in the project root with your API key
+echo "FMP_API_KEY=your_api_key_here" > .env
+docker-compose up
+
+# Use docker-compose with a custom port
+# Using environment variable
+PORT=9000 docker-compose up
+
+# Using both .env file and custom port
+echo "FMP_API_KEY=your_api_key_here" > .env
+PORT=9000 docker-compose up
 ```
+
+The server will always listen on port 8000 inside the container, but Docker maps this to the specified host port (default 8000 or the value of the PORT environment variable).
+
+**Note:** It's preferable to use the .env file approach for storing your API key rather than exporting it in your shell, as it reduces the risk of accidentally leaking the key in your command history or environment variables.
 
 ### Using MCP Inspector
 
@@ -141,7 +159,8 @@ mcp-inspector
 Once the MCP Inspector is running:
 
 1. In the Transport dropdown, select "HTTP/SSE"
-2. Enter your server URL: `http://localhost:8000/sse` (adjust port if needed)
+2. Enter your server URL: `http://localhost:8000/sse` 
+   - If you started the server with a custom port (e.g., `PORT=9000`), use that port instead: `http://localhost:9000/sse`
 3. Click "Connect" to establish a connection with your server
 4. Explore available tools, resources, and prompts in their respective tabs
 
@@ -153,8 +172,11 @@ If you prefer using Python, you can use the MCP CLI:
 # Install the MCP CLI if you haven't already
 pip install mcp-cli
 
-# Run the inspector
+# Run the inspector (with default port)
 mcp inspect http://localhost:8000
+
+# Or with a custom port if you specified one
+mcp inspect http://localhost:9000
 ```
 
 ### Example Queries
@@ -177,7 +199,8 @@ Once the server is running and connected to an MCP client like Claude Desktop or
 
 The server uses the following environment variables:
 
-- `FMP_API_KEY`: Your Financial Modeling Prep API key
+- `FMP_API_KEY`: Your Financial Modeling Prep API key (required)
+- `PORT`: Host port to use when running with Docker Compose (defaults to 8000)
 
 ## Contributing
 

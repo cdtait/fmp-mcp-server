@@ -106,6 +106,51 @@ def mock_stock_quote_response():
 
 
 @pytest.fixture
+def mock_quote_order_response():
+    """Mock response for quote order API endpoint"""
+    return [
+        {
+            "symbol": "AAPL",
+            "name": "Apple Inc.",
+            "price": 190.5,
+            "changesPercentage": 1.25,
+            "change": 2.5,
+            "dayLow": 187.5,
+            "dayHigh": 191.2,
+            "yearHigh": 198.23,
+            "yearLow": 124.17,
+            "marketCap": 2840000000000,
+            "priceAvg50": 186.75,
+            "priceAvg200": 174.32,
+            "volume": 58000000,
+            "avgVolume": 62000000,
+            "exchange": "NASDAQ",
+            "open": 188.5,
+            "previousClose": 188.0,
+            "eps": 6.01,
+            "pe": 31.25,
+            "earningsAnnouncement": "2023-10-25T16:30:00.000Z",
+            "sharesOutstanding": 15680000000,
+            "timestamp": 1694008500
+        }
+    ]
+
+
+@pytest.fixture
+def mock_quote_short_response():
+    """Mock response for simplified quote API endpoint"""
+    return [
+        {
+            "symbol": "AAPL",
+            "price": 190.5,
+            "volume": 58000000,
+            "change": 2.5,
+            "changesPercentage": 1.25
+        }
+    ]
+
+
+@pytest.fixture
 def mock_financial_ratios_response():
     """Mock response for financial ratios API endpoint"""
     return [

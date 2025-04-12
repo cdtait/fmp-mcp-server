@@ -54,6 +54,44 @@ async def get_stock_quote(symbol: str) -> str:
     return "\n".join(result)
 
 
+async def get_quote_short(symbol: str) -> str:
+    """
+    Get simplified stock quote with just essential information
+    
+    Args:
+        symbol: Stock ticker symbol (e.g., AAPL, MSFT, TSLA)
+        
+    Returns:
+        Simplified stock quote with minimal data
+    """
+    data = await fmp_api_request("quote-short", {"symbol": symbol})
+    
+    if isinstance(data, dict) and "error" in data:
+        return f"Error fetching simplified quote for {symbol}: {data.get('message', 'Unknown error')}"
+    
+    if not data or not isinstance(data, list) or len(data) == 0:
+        return f"No simplified quote data found for symbol {symbol}"
+    
+    quote = data[0]
+    
+    # Format the response
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    change = quote.get('change', 0)
+    change_percent = quote.get('changesPercentage', 0)
+    change_emoji = "🔺" if change > 0 else "🔻" if change < 0 else "➖"
+    
+    result = [
+        f"# Stock Quote: {quote.get('symbol', 'Unknown')}",
+        f"**Price**: ${format_number(quote.get('price', 'N/A'))}",
+        f"**Change**: {change_emoji} ${format_number(change)} ({change_percent}%)",
+        f"**Volume**: {format_number(quote.get('volume', 'N/A'))}",
+        "",
+        f"*Data as of {current_time}*"
+    ]
+    
+    return "\n".join(result)
+
+
 async def get_market_indexes(ctx: Context) -> str:
     """
     Get current values of major market indexes
