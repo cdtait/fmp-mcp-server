@@ -4,11 +4,27 @@ A Model Context Protocol (MCP) server that provides tools, resources, and prompt
 
 ## Features
 
-- **Company Information**: Access detailed company profiles, stock quotes, and peer comparisons
+- **Company Information**: Access detailed company profiles and peer comparisons
 - **Financial Statements**: Retrieve and analyze income statements, balance sheets, and cash flow statements
 - **Financial Metrics**: Access key financial ratios and metrics for investment analysis
-- **Market Data**: Get market snapshots, historical prices, and current stock quotes
+- **Market Data**: Get market snapshots, indexes, and news
+- **Stock Quotes**: Get current stock quotes and simplified price information
+- **Stock Charts**: Access historical price data and calculate price changes
+- **Analyst Ratings**: Get analyst recommendations and rating details
 - **Analysis Prompts**: Generate investment analyses using predefined prompt templates
+
+## Code Organization
+
+The codebase is organized to align with the FMP API documentation structure found at [FMP API Documentation](https://site.financialmodelingprep.com/developer/docs/stable). Each module corresponds to a specific section of the API:
+
+- **company.py**: Company Profile API endpoints
+- **statements.py**: Financial Statements API endpoints (income statement, balance sheet, cash flow, ratios)
+- **quote.py**: Stock Quote API endpoints
+- **charts.py**: Stock Chart API endpoints
+- **market.py**: Market Data API endpoints
+- **analyst.py**: Analyst Recommendations API endpoints
+
+Tests are similarly organized with one test file per module.
 
 ## Installation
 
@@ -48,8 +64,9 @@ This project follows a Test-Driven Development (TDD) approach. The test suite is
 
 The project implements a comprehensive testing strategy with three distinct test types:
 
-1. **Unit Tests** (`test_tools.py`, etc.)
+1. **Unit Tests** (`test_company.py`, `test_quotes.py`, etc.)
    - Focus on testing individual functions in isolation
+   - Organized by module to match the code structure
    - Mock all external dependencies
    - Verify correct behavior for normal operation, edge cases, and error handling
    - Fast execution and no external dependencies
@@ -79,7 +96,7 @@ pytest
 pytest --cov=src tests/
 
 # Run specific test file
-pytest tests/test_tools.py
+pytest tests/test_company.py
 
 # Run tests with specific marker
 pytest -m acceptance
@@ -115,9 +132,13 @@ mcp_server/
 │   ├── api/                 # API client functionality 
 │   │   ├── client.py        # FMP API client
 │   ├── tools/               # MCP tools implementation
-│   │   ├── company.py       # Company profile, financials tools
+│   │   ├── company.py       # Company profile tools
+│   │   ├── statements.py    # Financial statements tools
 │   │   ├── market.py        # Market data tools
-│   │   └── analysis.py      # Analysis tools
+│   │   ├── quote.py         # Stock quote tools
+│   │   ├── charts.py        # Stock chart tools
+│   │   ├── analyst.py       # Analyst ratings tools
+│   │   └── analysis.py      # Compatibility module (deprecated)
 │   ├── resources/           # MCP resources implementation
 │   │   ├── company.py
 │   │   └── market.py
@@ -126,10 +147,16 @@ mcp_server/
 ├── tests/                    # Test suite
 │   ├── conftest.py          # Pytest fixtures
 │   ├── test_api_client.py   # Tests for API functionality
-│   ├── test_tools.py        # Tests for tools
+│   ├── test_company.py      # Tests for company profile tools
+│   ├── test_statements.py   # Tests for financial statements tools
+│   ├── test_quotes.py       # Tests for quote tools
+│   ├── test_charts.py       # Tests for chart tools
+│   ├── test_market.py       # Tests for market tools
+│   ├── test_analyst.py      # Tests for analyst tools
 │   ├── test_resources.py    # Tests for resources
 │   ├── test_prompts.py      # Tests for prompts
-│   └── test_server.py       # Integration tests
+│   ├── test_server.py       # Integration tests
+│   └── acceptance_tests.py  # API integration tests
 └── server.py                # Main server implementation
 ```
 
@@ -259,16 +286,27 @@ mcp inspect http://localhost:9000
 Once the server is running and connected to an MCP client like Claude Desktop or the MCP Inspector, you can:
 
 1. Get company profiles:
-   - "Tell me about Apple's financial profile using the FMP tools"
+   - "Tell me about Apple's financial profile using the company profile tool"
 
-2. Compare stocks:
+2. Get financial statements:
+   - "Show me AAPL's income statement for the last year"
+   - "What's the balance sheet for TSLA?"
+
+3. Get stock quotes and price information:
+   - "What's the current price of MSFT stock?"
+   - "Show me recent price changes for GOOGL"
+
+4. Get analyst ratings:
+   - "What do analysts think about AMZN stock?"
+   - "Get me the analyst ratings snapshot for NVDA"
+
+5. Use analysis prompts:
    - "Compare AAPL, MSFT, and GOOGL using the stock comparison prompt"
+   - "Analyze TSLA's financial statements with the financial statement analysis prompt"
 
-3. Analyze financial statements:
-   - "Analyze TSLA's income statement using the financial statement analysis prompt"
-
-4. Get market information:
+6. Get market information:
    - "What are the current market conditions?"
+   - "Show me the latest market indexes"
 
 ## Configuration
 
