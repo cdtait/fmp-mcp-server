@@ -44,16 +44,45 @@ You can get an API key by registering at [Financial Modeling Prep](https://site.
 
 This project follows a Test-Driven Development (TDD) approach. The test suite is organized in the `tests/` directory.
 
+### Testing Strategy
+
+The project implements a comprehensive testing strategy with three distinct test types:
+
+1. **Unit Tests** (`test_tools.py`, etc.)
+   - Focus on testing individual functions in isolation
+   - Mock all external dependencies
+   - Verify correct behavior for normal operation, edge cases, and error handling
+   - Fast execution and no external dependencies
+
+2. **Integration Tests** (`test_server.py`, `test_resources.py`)
+   - Test how components work together
+   - Verify proper server setup, tool registration, and resource handling
+   - Test end-to-end flows with mocked external APIs
+   - Ensure system components integrate correctly
+
+3. **Acceptance Tests** (`acceptance_tests.py`)
+   - Validate integration with the real FMP API
+   - Verify API connectivity and response formats
+   - Test error handling with invalid inputs
+   - Focus on data structure rather than specific values
+   - Only run when explicitly triggered or when an API key is provided
+
+This multi-level approach provides confidence in both individual components and the system as a whole.
+
 ### Running Tests
 
 ```bash
+# Run all unit and integration tests
 pytest
-```
 
-To see test coverage:
-
-```bash
+# Run with coverage report
 pytest --cov=src tests/
+
+# Run specific test file
+pytest tests/test_tools.py
+
+# Run tests with specific marker
+pytest -m acceptance
 ```
 
 #### Acceptance Tests
@@ -268,20 +297,48 @@ PORT=9000
 
 ## CI/CD Pipeline
 
-This project uses GitHub Actions for continuous integration and delivery:
+This project uses GitHub Actions for continuous integration and delivery, managed by two separate workflows:
 
-- Automated testing on multiple Python versions
-- Code coverage reporting
+### Standard CI Pipeline (ci.yml)
+
+The main CI pipeline runs automatically on push to main branch and pull requests:
+
+- Automated testing on multiple Python versions (3.11, 3.12)
+- Full code coverage reporting with CodeCov integration
 - Automatic Docker image building and publishing to GitHub Container Registry
+- Skips acceptance tests that require API keys
 
 The workflow configuration is located in `.github/workflows/ci.yml`.
 
+### API Acceptance Tests (acceptance-tests.yml)
+
+A separate workflow for testing integration with the real FMP API:
+
+- Runs on a weekly schedule (Mondays at 5 AM UTC) or can be triggered manually
+- Requires a valid FMP API key stored as a GitHub secret
+- Tests actual API connectivity, response formats, and data structure
+- Validates graceful error handling and formatting
+
+This helps ensure compatibility with the external API while keeping the main CI pipeline fast and reliable.
+
+To run the acceptance tests workflow manually:
+1. Go to the GitHub repository
+2. Click on the "Actions" tab
+3. Select "API Acceptance Tests" from the workflows list
+4. Click "Run workflow"
+
+The acceptance tests workflow configuration is located in `.github/workflows/acceptance-tests.yml`.
+
 ### Container Registry
 
-Docker images are automatically built and published to GitHub Container Registry when changes are pushed to the main branch. You can pull the latest image with:
+Docker images are automatically built and published to GitHub Container Registry when changes are pushed to the main branch. The images are tagged with both latest and the commit SHA:
 
 ```bash
+# Pull the latest image
 docker pull ghcr.io/cdtait/fmp-mcp-server:latest
+
+# Pull a specific version by commit SHA
+docker pull ghcr.io/cdtait/fmp-mcp-server:a7f33fe2ce0265e0036789c27ad15c67c63cc974
 ```
 
 See the [Using Docker](#using-docker) section for detailed instructions on running the container.
