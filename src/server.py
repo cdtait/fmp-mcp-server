@@ -19,7 +19,8 @@ from src.tools.statements import (
     get_income_statement, get_balance_sheet, get_cash_flow,
     get_financial_ratios, get_key_metrics
 )
-from src.tools.market import get_market_indexes, get_stock_news, search_stocks, get_historical_price
+from src.tools.market import get_market_indexes, get_stock_news, get_historical_price
+from src.tools.search import search_by_symbol, search_by_name
 from src.tools.quote import get_quote, get_quote_change
 from src.tools.charts import get_price_change
 from src.tools.analyst import get_ratings_snapshot
@@ -54,7 +55,8 @@ mcp.tool()(get_cash_flow)
 mcp.tool()(get_key_metrics)
 mcp.tool()(get_stock_news)
 mcp.tool()(get_market_indexes)
-mcp.tool()(search_stocks)
+mcp.tool()(search_by_symbol)
+mcp.tool()(search_by_name)
 mcp.tool()(get_historical_price)
 mcp.tool()(get_ratings_snapshot)
 
