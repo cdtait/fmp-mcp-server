@@ -14,7 +14,7 @@ load_dotenv(dotenv_path=env_path)
 from mcp.server.fastmcp import FastMCP, Context
 
 # Import tools
-from src.tools.company import get_company_profile
+from src.tools.company import get_company_profile, get_company_notes
 from src.tools.statements import (
     get_income_statement, get_balance_sheet, get_cash_flow,
     get_financial_ratios, get_key_metrics
@@ -46,6 +46,7 @@ mcp = FastMCP(
 
 # Register tools
 mcp.tool()(get_company_profile)
+mcp.tool()(get_company_notes)
 mcp.tool()(get_quote)
 mcp.tool()(get_quote_change)
 mcp.tool()(get_price_change)

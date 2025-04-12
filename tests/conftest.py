@@ -87,6 +87,43 @@ def mock_company_profile_response():
 
 
 @pytest.fixture
+def mock_company_notes_response():
+    """Mock response for company notes API endpoint"""
+    return [
+        {
+            "title": "Apple Inc. 3.85% Notes due 2043",
+            "cik": "0000320193",
+            "exchange": "NASDAQ",
+            "cusip": "037833AK6",
+            "isin": "US037833AK64",
+            "currency": "USD",
+            "type": "Bond",
+            "status": "Active",
+            "description": "3.85% unsecured senior notes due August 2043",
+            "maturityDate": "2043-08-05",
+            "interestRate": 3.85,
+            "faceValue": "$1,000",
+            "issueDate": "2013-08-06"
+        },
+        {
+            "title": "Apple Inc. 2.40% Notes due 2030",
+            "cik": "0000320193",
+            "exchange": "NASDAQ",
+            "cusip": "037833DV8",
+            "isin": "US037833DV82",
+            "currency": "USD",
+            "type": "Bond",
+            "status": "Active",
+            "description": "2.40% unsecured senior notes due May 2030",
+            "maturityDate": "2030-05-03",
+            "interestRate": 2.40,
+            "faceValue": "$1,000",
+            "issueDate": "2020-05-04"
+        }
+    ]
+
+
+@pytest.fixture
 def mock_stock_quote_response():
     """Mock response for stock quote API endpoint"""
     return [

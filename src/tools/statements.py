@@ -2,7 +2,9 @@
 Financial statement-related tools for the FMP MCP server
 
 This module contains tools related to the Financial Statements section of the Financial Modeling Prep API:
-https://site.financialmodelingprep.com/developer/docs/stable#statements
+https://site.financialmodelingprep.com/developer/docs/stable/income-statement
+https://site.financialmodelingprep.com/developer/docs/stable/balance-sheet-statement
+https://site.financialmodelingprep.com/developer/docs/stable/cashflow-statement
 """
 from typing import Dict, Any, Optional, List, Union
 
