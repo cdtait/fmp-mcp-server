@@ -11,20 +11,37 @@ A Model Context Protocol (MCP) server that provides tools, resources, and prompt
 - **Stock Quotes**: Get current stock quotes and simplified price information
 - **Stock Charts**: Access historical price data and calculate price changes
 - **Analyst Ratings**: Get analyst recommendations and rating details
+- **Market Indices**: Access market indices data and quotes
+- **Market Performers**: Get biggest gainers, losers, and most active stocks
+- **Market Hours**: Check market hours and holidays for major exchanges
+- **ETF Analysis**: Analyze ETF sector weightings, country exposure, and holdings
+- **Commodities**: Get commodities list and current prices
+- **Cryptocurrencies**: Access cryptocurrency listings and current quotes
+- **Forex**: Get forex pair listings and exchange rates
+- **Technical Indicators**: Calculate and interpret technical indicators and get technical analysis summaries
 - **Analysis Prompts**: Generate investment analyses using predefined prompt templates
 
 ## Code Organization
 
 The codebase is organized to align with the FMP API documentation structure found at [FMP API Documentation](https://site.financialmodelingprep.com/developer/docs/stable). Each module corresponds to a specific section of the API:
 
-- **company.py**: Company Profile API endpoints
-- **statements.py**: Financial Statements API endpoints (income statement, balance sheet, cash flow, ratios)
-- **quote.py**: Stock Quote API endpoints
-- **charts.py**: Stock Chart API endpoints
-- **market.py**: Market Data API endpoints
-- **analyst.py**: Analyst Recommendations API endpoints
+- **analyst.py**: Analyst recommendations and price targets
+- **charts.py**: Stock chart and historical price data
+- **commodities.py**: Commodities list and price data
+- **company.py**: Company profile and related information
+- **crypto.py**: Cryptocurrency listings and quotes
+- **etf.py**: ETF sector weightings, country exposure, and holdings
+- **forex.py**: Forex pair listings and exchange rates
+- **indices.py**: Market indices listings and quotes
+- **market.py**: Market data and news
+- **market_hours.py**: Market hours and holidays for major exchanges
+- **market_performers.py**: Biggest gainers, losers, and most active stocks
+- **quote.py**: Stock quote data and price changes
+- **search.py**: API for searching tickers and companies
+- **statements.py**: Financial statements (income, balance sheet, cash flow, ratios)
+- **technical_indicators.py**: Technical indicators and analysis
 
-Tests are similarly organized with one test file per module.
+Tests are similarly organized with one test file per module, following a consistent pattern to ensure comprehensive coverage.
 
 ## Installation
 
@@ -70,21 +87,25 @@ The project implements a comprehensive testing strategy with three distinct test
    - Mock all external dependencies
    - Verify correct behavior for normal operation, edge cases, and error handling
    - Fast execution and no external dependencies
+   - Follow consistent pattern with @patch decorator for mocking
+   - Import functions after patching to ensure proper mocking isolation
 
 2. **Integration Tests** (`test_server.py`, `test_resources.py`)
    - Test how components work together
    - Verify proper server setup, tool registration, and resource handling
    - Test end-to-end flows with mocked external APIs
    - Ensure system components integrate correctly
+   - Validate proper error handling between components
 
 3. **Acceptance Tests** (`acceptance_tests.py`)
    - Validate integration with the real FMP API
    - Verify API connectivity and response formats
    - Test error handling with invalid inputs
    - Focus on data structure rather than specific values
-   - Only run when explicitly triggered or when an API key is provided
+   - Can run in both real API mode or with mock data using TEST_MODE=true
+   - Only run with real API when explicitly triggered or when an API key is provided
 
-This multi-level approach provides confidence in both individual components and the system as a whole.
+This multi-level approach provides confidence in both individual components and the system as a whole, ensuring that the application works correctly in isolation and when integrated with the real API.
 
 ### Running Tests
 
@@ -104,15 +125,21 @@ pytest -m acceptance
 
 #### Acceptance Tests
 
-The project includes acceptance tests that validate integration with the real FMP API. These tests require a valid API key and are skipped by default.
+The project includes acceptance tests that validate integration with the real FMP API. These tests require a valid API key and can also run with mock data.
 
 To run acceptance tests:
 
 ```bash
+# Option 1: Run with the real API
 # Set your API key
 export FMP_API_KEY=your_api_key_here
 
-# Run the acceptance tests
+# Run the acceptance tests with real API
+pytest tests/acceptance_tests.py -v
+
+# Option 2: Run with mock data
+# This doesn't require an API key and uses mock responses
+export TEST_MODE=true
 pytest tests/acceptance_tests.py -v
 ```
 
@@ -124,40 +151,62 @@ These tests verify:
 
 The acceptance tests are designed to check format and structure without asserting specific values that may change over time (like stock prices). This makes them suitable for CI/CD pipelines with a valid API key secret.
 
+Using TEST_MODE=true enables running the acceptance tests in CI environments without requiring a real API key, using the mock responses defined in conftest.py.
+
 ### Project Structure
 
 ```
-mcp_server/
+fmp-mcp-server/
 ├── src/                      # Source code
-│   ├── api/                 # API client functionality 
-│   │   ├── client.py        # FMP API client
-│   ├── tools/               # MCP tools implementation
-│   │   ├── company.py       # Company profile tools
-│   │   ├── statements.py    # Financial statements tools
-│   │   ├── market.py        # Market data tools
-│   │   ├── quote.py         # Stock quote tools
-│   │   ├── charts.py        # Stock chart tools
-│   │   ├── analyst.py       # Analyst ratings tools
-│   │   └── analysis.py      # Compatibility module (deprecated)
-│   ├── resources/           # MCP resources implementation
+│   ├── api/                  # API client functionality 
+│   │   ├── client.py         # FMP API client
+│   ├── tools/                # MCP tools implementation
+│   │   ├── analyst.py        # Analyst ratings tools
+│   │   ├── charts.py         # Stock chart tools
+│   │   ├── commodities.py    # Commodities tools
+│   │   ├── company.py        # Company profile tools
+│   │   ├── crypto.py         # Cryptocurrency tools
+│   │   ├── etf.py            # ETF analysis tools
+│   │   ├── forex.py          # Forex tools
+│   │   ├── indices.py        # Market indices tools
+│   │   ├── market.py         # Market data tools
+│   │   ├── market_hours.py   # Market hours tools 
+│   │   ├── market_performers.py # Market performers tools
+│   │   ├── quote.py          # Stock quote tools
+│   │   ├── search.py         # Search tools
+│   │   ├── statements.py     # Financial statements tools
+│   │   └── technical_indicators.py # Technical analysis tools
+│   ├── resources/            # MCP resources implementation
 │   │   ├── company.py
 │   │   └── market.py
-│   └── prompts/             # MCP prompts implementation
+│   └── prompts/              # MCP prompts implementation
 │       └── templates.py
 ├── tests/                    # Test suite
-│   ├── conftest.py          # Pytest fixtures
-│   ├── test_api_client.py   # Tests for API functionality
-│   ├── test_company.py      # Tests for company profile tools
-│   ├── test_statements.py   # Tests for financial statements tools
-│   ├── test_quotes.py       # Tests for quote tools
-│   ├── test_charts.py       # Tests for chart tools
-│   ├── test_market.py       # Tests for market tools
-│   ├── test_analyst.py      # Tests for analyst tools
-│   ├── test_resources.py    # Tests for resources
-│   ├── test_prompts.py      # Tests for prompts
-│   ├── test_server.py       # Integration tests
-│   └── acceptance_tests.py  # API integration tests
-└── server.py                # Main server implementation
+│   ├── conftest.py           # Pytest fixtures
+│   ├── acceptance_tests.py   # API integration tests
+│   ├── test_analyst.py       # Tests for analyst tools
+│   ├── test_api_client.py    # Tests for API functionality
+│   ├── test_calendar.py      # Tests for calendar tools
+│   ├── test_charts.py        # Tests for chart tools
+│   ├── test_commodities.py   # Tests for commodities tools
+│   ├── test_company.py       # Tests for company profile tools
+│   ├── test_crypto.py        # Tests for cryptocurrency tools
+│   ├── test_etf.py           # Tests for ETF tools
+│   ├── test_forex.py         # Tests for forex tools
+│   ├── test_indices.py       # Tests for indices tools
+│   ├── test_market.py        # Tests for market tools
+│   ├── test_market_hours.py  # Tests for market hours tools
+│   ├── test_market_performers.py # Tests for market performers tools
+│   ├── test_prompts.py       # Tests for prompts
+│   ├── test_quotes.py        # Tests for quote tools
+│   ├── test_resources.py     # Tests for resources
+│   ├── test_search.py        # Tests for search tools
+│   ├── test_server.py        # Integration tests
+│   ├── test_statements.py    # Tests for financial statements tools
+│   └── test_technical_indicators.py # Tests for technical indicators tools
+├── Dockerfile                # Docker configuration
+├── docker-compose.yml        # Docker Compose configuration
+└── server.py                 # Main server implementation
 ```
 
 ## Usage
@@ -287,26 +336,51 @@ Once the server is running and connected to an MCP client like Claude Desktop or
 
 1. Get company profiles:
    - "Tell me about Apple's financial profile using the company profile tool"
+   - "What are TSLA's key financial metrics?"
 
 2. Get financial statements:
    - "Show me AAPL's income statement for the last year"
    - "What's the balance sheet for TSLA?"
+   - "Get MSFT's cash flow statement and analyze it"
 
 3. Get stock quotes and price information:
    - "What's the current price of MSFT stock?"
    - "Show me recent price changes for GOOGL"
+   - "Compare the current quotes for AAPL, AMZN, and META"
 
 4. Get analyst ratings:
    - "What do analysts think about AMZN stock?"
    - "Get me the analyst ratings snapshot for NVDA"
+   - "Show me the latest price targets for MSFT"
 
-5. Use analysis prompts:
-   - "Compare AAPL, MSFT, and GOOGL using the stock comparison prompt"
-   - "Analyze TSLA's financial statements with the financial statement analysis prompt"
+5. Get market indices and performers:
+   - "Show me the current major market indices"
+   - "What are today's biggest stock gainers?"
+   - "Which stocks are the most active in the market today?"
 
-6. Get market information:
-   - "What are the current market conditions?"
-   - "Show me the latest market indexes"
+6. Check market status:
+   - "Are the markets open right now?"
+   - "When is the next market holiday?"
+   - "What are the trading hours for the NYSE?"
+
+7. Analyze ETFs:
+   - "What are the top holdings in SPY?"
+   - "Show me the sector breakdown for QQQ"
+   - "Which countries does VEU have exposure to?"
+
+8. Get commodity, crypto, and forex information:
+   - "What's the current price of gold?"
+   - "Show me the current Bitcoin price"
+   - "What's the exchange rate for EURUSD?"
+
+9. Get technical analysis:
+   - "Calculate the RSI for AAPL"
+   - "Give me a technical analysis summary for TSLA"
+   - "What does the 20-day SMA tell us about AMZN?"
+
+10. Use analysis prompts:
+    - "Compare AAPL, MSFT, and GOOGL using the stock comparison prompt"
+    - "Analyze TSLA's financial statements with the financial statement analysis prompt"
 
 ## Configuration
 
@@ -317,6 +391,9 @@ The server uses the following environment variables:
   - Can be passed via command line, environment variable, or .env file
 - `PORT`: Host port to use when running with Docker Compose (defaults to 8000)
   - Only affects the host port mapping, the container always runs on port 8000 internally
+- `TEST_MODE`: Set to "true" to use mock data in acceptance tests
+  - Useful for CI/CD environments or testing without a valid API key
+  - Uses mock responses defined in tests/conftest.py
 
 You can set these variables in a .env file in the project root:
 
@@ -324,6 +401,7 @@ You can set these variables in a .env file in the project root:
 # Example .env file contents
 FMP_API_KEY=your_api_key_here
 PORT=9000
+TEST_MODE=true  # For testing with mock data
 ```
 
 ## Contributing

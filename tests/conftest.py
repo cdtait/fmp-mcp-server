@@ -29,6 +29,14 @@ def clean_modules():
         'src.tools.quote',
         'src.tools.charts',
         'src.tools.analyst',
+        'src.tools.indices',
+        'src.tools.market_performers',
+        'src.tools.market_hours',
+        'src.tools.etf',
+        'src.tools.commodities',
+        'src.tools.crypto',
+        'src.tools.forex',
+        'src.tools.technical_indicators',
         'src.resources.company', 
         'src.resources.market',
         'src.prompts.templates'
@@ -50,6 +58,79 @@ def clean_modules():
 
 # We're not using a global HTTP client mock anymore since each test needs 
 # its own specific mock behavior
+
+# Function to mock successful API responses for acceptance tests
+async def mock_successful_api_response(endpoint, params=None):
+    """
+    Mock function to simulate successful API responses for acceptance tests
+    when TEST_MODE=true environment variable is set.
+    
+    Args:
+        endpoint: The API endpoint
+        params: API parameters
+        
+    Returns:
+        Appropriate mock data for the endpoint
+    """
+    # Get symbol from params if available
+    symbol = params.get('symbol', 'AAPL') if params else 'AAPL'
+    
+    # Return appropriate mock data based on endpoint
+    if endpoint == "profile" or endpoint == "company/profile":
+        return [
+            {
+                "symbol": symbol,
+                "companyName": f"{symbol} Inc.",
+                "mktCap": 2500000000000.0,
+                "sector": "Technology",
+                "industry": "Consumer Electronics",
+                "description": f"Mock description for {symbol}",
+                "website": f"https://www.{symbol.lower()}.com"
+            }
+        ]
+    
+    elif endpoint == "quote":
+        return [
+            {
+                "symbol": symbol,
+                "name": f"{symbol} Inc.",
+                "price": 150.25,
+                "change": 2.5,
+                "changesPercentage": 1.75,
+                "marketCap": 2500000000000.0,
+                "volume": 75000000,
+                "previousClose": 147.75,
+                "open": 148.25,
+                "dayLow": 147.5,
+                "dayHigh": 151.0
+            }
+        ]
+    
+    elif "historical-price" in endpoint:
+        return {
+            "symbol": symbol,
+            "historical": [
+                {
+                    "date": "2023-12-15",
+                    "close": 150.25,
+                    "open": 148.75,
+                    "high": 151.0,
+                    "low": 147.5,
+                    "volume": 75000000
+                },
+                {
+                    "date": "2023-12-14",
+                    "close": 147.75,
+                    "open": 146.50,
+                    "high": 148.25,
+                    "low": 145.75,
+                    "volume": 72000000
+                }
+            ]
+        }
+    
+    # Default empty response for unknown endpoints
+    return []
 
 
 @pytest.fixture
@@ -779,5 +860,154 @@ def mock_dividends_calendar_response():
             "dividend_yield": 2.67,
             "paymentDate": "2023-09-07",
             "recordDate": "2023-08-22"
+        }
+    ]
+
+
+@pytest.fixture
+def mock_index_list_response():
+    """Mock response for index list API endpoint"""
+    return [
+        {
+            "symbol": "^GSPC",
+            "name": "S&P 500",
+            "exchange": "INDEX",
+            "currency": "USD"
+        },
+        {
+            "symbol": "^DJI",
+            "name": "Dow Jones Industrial Average",
+            "exchange": "INDEX",
+            "currency": "USD"
+        },
+        {
+            "symbol": "^IXIC",
+            "name": "NASDAQ Composite",
+            "exchange": "INDEX",
+            "currency": "USD"
+        },
+        {
+            "symbol": "^RUT",
+            "name": "Russell 2000",
+            "exchange": "INDEX",
+            "currency": "USD"
+        },
+        {
+            "symbol": "^VIX",
+            "name": "CBOE Volatility Index",
+            "exchange": "INDEX",
+            "currency": "USD"
+        }
+    ]
+
+
+@pytest.fixture
+def mock_index_quote_response():
+    """Mock response for index quote API endpoint"""
+    return [
+        {
+            "symbol": "^GSPC",
+            "name": "S&P 500",
+            "price": 4850.25,
+            "change": 15.75,
+            "changesPercentage": 0.32,
+            "previousClose": 4834.50,
+            "dayLow": 4830.25,
+            "dayHigh": 4855.75,
+            "yearLow": 4200.15,
+            "yearHigh": 5000.45
+        }
+    ]
+
+
+@pytest.fixture
+def mock_biggest_gainers_response():
+    """Mock response for biggest gainers API endpoint"""
+    return [
+        {
+            "symbol": "ABC",
+            "name": "AmerisourceBergen Corporation",
+            "price": 245.32,
+            "change": 12.45,
+            "changesPercentage": 5.34,
+            "volume": 3250000
+        },
+        {
+            "symbol": "XYZ",
+            "name": "XYZ Corporation",
+            "price": 78.92,
+            "change": 3.56,
+            "changesPercentage": 4.72,
+            "volume": 2150000
+        },
+        {
+            "symbol": "DEF",
+            "name": "Definity Financial Corporation",
+            "price": 112.75,
+            "change": 4.25,
+            "changesPercentage": 3.91,
+            "volume": 1850000
+        }
+    ]
+
+
+@pytest.fixture
+def mock_biggest_losers_response():
+    """Mock response for biggest losers API endpoint"""
+    return [
+        {
+            "symbol": "RST",
+            "name": "RST Pharmaceuticals Inc.",
+            "price": 32.45,
+            "change": -8.75,
+            "changesPercentage": -21.23,
+            "volume": 5125000
+        },
+        {
+            "symbol": "UVW",
+            "name": "UVW Electronics Inc.",
+            "price": 14.32,
+            "change": -2.98,
+            "changesPercentage": -17.23,
+            "volume": 3750000
+        },
+        {
+            "symbol": "MNO",
+            "name": "MNO Energy Corporation",
+            "price": 45.67,
+            "change": -6.33,
+            "changesPercentage": -12.17,
+            "volume": 2850000
+        }
+    ]
+
+
+@pytest.fixture
+def mock_most_active_response():
+    """Mock response for most active stocks API endpoint"""
+    return [
+        {
+            "symbol": "TSLA",
+            "name": "Tesla, Inc.",
+            "price": 172.63,
+            "change": 5.45,
+            "changesPercentage": 3.26,
+            "volume": 125000000
+        },
+        {
+            "symbol": "SPY",
+            "name": "SPDR S&P 500 ETF Trust",
+            "price": 475.89,
+            "change": 0.89,
+            "changesPercentage": 0.19,
+            "volume": 98500000
+        },
+        {
+            "symbol": "NVDA",
+            "name": "NVIDIA Corporation",
+            "price": 924.77,
+            "change": -12.33,
+            "changesPercentage": -1.32,
+            "volume": 87250000
         }
     ]
