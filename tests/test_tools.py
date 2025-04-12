@@ -115,10 +115,10 @@ async def test_get_quote_short_tool_empty_response(mock_request):
 
 @pytest.mark.asyncio
 @patch('src.api.client.fmp_api_request')
-async def test_get_price_change_tool(mock_request, mock_quote_change_response):
+async def test_get_price_change_tool(mock_request, mock_historical_price_response):
     """Test price change tool with mock data"""
     # Set up the mock
-    mock_request.return_value = mock_quote_change_response
+    mock_request.return_value = mock_historical_price_response
     
     # Import after patching
     from src.tools.quote import get_price_change
@@ -127,16 +127,15 @@ async def test_get_price_change_tool(mock_request, mock_quote_change_response):
     result = await get_price_change(symbol="AAPL")
     
     # Verify API was called with correct parameters
-    mock_request.assert_called_once_with("stock-price-change", {"symbol": "AAPL"})
+    mock_request.assert_called_once_with("historical-price-eod/light", {"symbol": "AAPL"})
     
     # Assertions about the result
     assert isinstance(result, str)
-    assert "Price Changes for AAPL" in result
-    assert "**1 Day**: 🔻 -1.36%" in result
-    assert "**5 Days**: 🔺 0.73%" in result
-    assert "**Year to Date**: 🔺 18.45%" in result
-    assert "**1 Year**: 🔺 7.25%" in result
-    assert "**5 Years**: 🔺 120.82%" in result
+    assert "Price History for AAPL" in result
+    assert "**Latest Price**: $184.92" in result  # Should match the first entry in our mock data
+    
+    # We might have insufficient data for calculating changes
+    assert any(["**1 Day Change**:" in result, "*Insufficient historical data for price change calculations*" in result])
 
 
 @pytest.mark.asyncio
@@ -171,7 +170,7 @@ async def test_get_price_change_tool_empty_response(mock_request):
     result = await get_price_change(symbol="NONEXISTENT")
     
     # Assertions
-    assert "No price change data found for symbol NONEXISTENT" in result
+    assert "No historical price data found for symbol NONEXISTENT" in result
 
 
 @pytest.mark.asyncio

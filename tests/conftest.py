@@ -151,24 +151,77 @@ def mock_quote_short_response():
 
 
 @pytest.fixture
-def mock_quote_change_response():
-    """Mock response for price change API endpoint"""
-    return [
-        {
-            "symbol": "AAPL",
-            "1D": -1.36,
-            "5D": 0.73,
-            "1M": -3.56,
-            "3M": 5.12,
-            "6M": 12.87,
-            "ytd": 18.45,
-            "1Y": 7.25,
-            "3Y": 45.36,
-            "5Y": 120.82,
-            "10Y": 780.45,
-            "max": 88570.21
-        }
-    ]
+def mock_historical_price_response():
+    """Mock response for historical price API endpoint"""
+    return {
+        "symbol": "AAPL",
+        "historical": [
+            {
+                "date": "2023-06-15",
+                "open": 185.20,
+                "high": 186.99,
+                "low": 183.74,
+                "close": 186.01,
+                "volume": 59286900
+            },
+            {
+                "date": "2023-06-14",
+                "open": 183.35,
+                "high": 184.95,
+                "low": 183.00,
+                "close": 183.95,
+                "volume": 52424000
+            },
+            {
+                "date": "2023-06-13",
+                "open": 181.50,
+                "high": 183.89,
+                "low": 181.42,
+                "close": 183.31,
+                "volume": 53403100
+            },
+            {
+                "date": "2023-06-12",
+                "open": 182.63,
+                "high": 183.35,
+                "low": 180.17,
+                "close": 181.99,
+                "volume": 65702600
+            },
+            {
+                "date": "2023-06-09",
+                "open": 180.05,
+                "high": 182.23,
+                "low": 179.97,
+                "close": 180.96,
+                "volume": 48929700
+            },
+            {
+                "date": "2023-06-08",
+                "open": 177.89,
+                "high": 180.84,
+                "low": 177.46,
+                "close": 180.57,
+                "volume": 51979400
+            },
+            {
+                "date": "2023-06-05",
+                "open": 180.97,
+                "high": 181.70,
+                "low": 177.43,
+                "close": 178.34,
+                "volume": 57451400
+            },
+            {
+                "date": "2023-05-15",
+                "open": 173.16,
+                "high": 173.38,
+                "low": 171.83,
+                "close": 172.07,
+                "volume": 42110800
+            }
+        ]
+    }
 
 
 @pytest.fixture
