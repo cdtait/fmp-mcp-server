@@ -23,7 +23,8 @@ from src.tools.market import get_market_indexes, get_stock_news, get_historical_
 from src.tools.search import search_by_symbol, search_by_name
 from src.tools.quote import get_quote, get_quote_change
 from src.tools.charts import get_price_change
-from src.tools.analyst import get_ratings_snapshot
+from src.tools.analyst import get_ratings_snapshot, get_financial_estimates, get_price_target_news
+from src.tools.calendar import get_company_dividends, get_dividends_calendar
 
 # Import resources
 from src.resources.company import get_stock_info_resource, get_financial_statement_resource, get_stock_peers_resource, get_price_targets_resource
@@ -59,6 +60,10 @@ mcp.tool()(search_by_symbol)
 mcp.tool()(search_by_name)
 mcp.tool()(get_historical_price)
 mcp.tool()(get_ratings_snapshot)
+mcp.tool()(get_financial_estimates)
+mcp.tool()(get_price_target_news)
+mcp.tool()(get_company_dividends)
+mcp.tool()(get_dividends_calendar)
 
 # Register resources
 mcp.resource("stock-info://{symbol}")(get_stock_info_resource)

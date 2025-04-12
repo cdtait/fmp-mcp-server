@@ -186,6 +186,198 @@ def mock_batch_quotes_response():
 
 
 @pytest.fixture
+def mock_market_gainers_response():
+    """Mock response for market gainers API endpoint"""
+    return [
+        {
+            "symbol": "ABC",
+            "name": "AmerisourceBergen Corporation",
+            "price": 245.32,
+            "change": 12.45,
+            "changesPercentage": 5.34,
+            "volume": 3250000
+        },
+        {
+            "symbol": "XYZ",
+            "name": "XYZ Corporation",
+            "price": 78.92,
+            "change": 3.56,
+            "changesPercentage": 4.72,
+            "volume": 2150000
+        },
+        {
+            "symbol": "DEF",
+            "name": "Definity Financial Corporation",
+            "price": 112.75,
+            "change": 4.25,
+            "changesPercentage": 3.91,
+            "volume": 1850000
+        }
+    ]
+
+
+@pytest.fixture
+def mock_market_losers_response():
+    """Mock response for market losers API endpoint"""
+    return [
+        {
+            "symbol": "RST",
+            "name": "RST Pharmaceuticals Inc.",
+            "price": 32.45,
+            "change": -8.75,
+            "changesPercentage": -21.23,
+            "volume": 5125000
+        },
+        {
+            "symbol": "UVW",
+            "name": "UVW Electronics Inc.",
+            "price": 14.32,
+            "change": -2.98,
+            "changesPercentage": -17.23,
+            "volume": 3750000
+        },
+        {
+            "symbol": "MNO",
+            "name": "MNO Energy Corporation",
+            "price": 45.67,
+            "change": -6.33,
+            "changesPercentage": -12.17,
+            "volume": 2850000
+        }
+    ]
+
+
+@pytest.fixture
+def mock_most_active_response():
+    """Mock response for most active stocks API endpoint"""
+    return [
+        {
+            "symbol": "TSLA",
+            "name": "Tesla, Inc.",
+            "price": 172.63,
+            "change": 5.45,
+            "changesPercentage": 3.26,
+            "volume": 125000000
+        },
+        {
+            "symbol": "SPY",
+            "name": "SPDR S&P 500 ETF Trust",
+            "price": 475.89,
+            "change": 0.89,
+            "changesPercentage": 0.19,
+            "volume": 98500000
+        },
+        {
+            "symbol": "NVDA",
+            "name": "NVIDIA Corporation",
+            "price": 924.77,
+            "change": -12.33,
+            "changesPercentage": -1.32,
+            "volume": 87250000
+        }
+    ]
+
+
+@pytest.fixture
+def mock_etf_quote_response():
+    """Mock response for ETF quote API endpoint"""
+    return [
+        {
+            "symbol": "SPY",
+            "name": "SPDR S&P 500 ETF Trust",
+            "price": 475.89,
+            "change": 0.89,
+            "changesPercentage": 0.19,
+            "previousClose": 475.00,
+            "dayLow": 473.56,
+            "dayHigh": 476.45,
+            "yearLow": 410.23,
+            "yearHigh": 480.12,
+            "volume": 98500000,
+            "avgVolume": 86750000
+        }
+    ]
+
+
+@pytest.fixture
+def mock_index_quote_response():
+    """Mock response for index quote API endpoint"""
+    return [
+        {
+            "symbol": "^GSPC",
+            "name": "S&P 500",
+            "price": 4850.25,
+            "change": 15.75,
+            "changesPercentage": 0.32,
+            "previousClose": 4834.50,
+            "dayLow": 4830.25,
+            "dayHigh": 4855.75,
+            "yearLow": 4200.15,
+            "yearHigh": 5000.45
+        }
+    ]
+
+
+@pytest.fixture
+def mock_commodity_quote_response():
+    """Mock response for commodity quote API endpoint"""
+    return [
+        {
+            "symbol": "GCUSD",
+            "name": "Gold",
+            "price": 2362.45,
+            "change": 24.75,
+            "changesPercentage": 1.06,
+            "previousClose": 2337.70,
+            "dayLow": 2335.25,
+            "dayHigh": 2365.80,
+            "yearLow": 1825.30,
+            "yearHigh": 2400.15
+        }
+    ]
+
+
+@pytest.fixture
+def mock_forex_quote_response():
+    """Mock response for forex quote API endpoint"""
+    return [
+        {
+            "symbol": "EURUSD",
+            "name": "EUR/USD",
+            "price": 1.0825,
+            "change": 0.0015,
+            "changesPercentage": 0.14,
+            "previousClose": 1.0810,
+            "dayLow": 1.0795,
+            "dayHigh": 1.0835,
+            "yearLow": 1.0500,
+            "yearHigh": 1.1100
+        }
+    ]
+
+
+@pytest.fixture
+def mock_crypto_quote_response():
+    """Mock response for cryptocurrency quote API endpoint"""
+    return [
+        {
+            "symbol": "BTCUSD",
+            "name": "Bitcoin",
+            "price": 63850.25,
+            "change": 1250.75,
+            "changesPercentage": 2.00,
+            "previousClose": 62599.50,
+            "dayLow": 62150.25,
+            "dayHigh": 64100.75,
+            "yearLow": 25000.00,
+            "yearHigh": 73750.50,
+            "volume": 35750000000,
+            "marketCap": 1250000000000
+        }
+    ]
+
+
+@pytest.fixture
 def mock_historical_price_response():
     """Mock response for historical price API endpoint"""
     return {
@@ -415,5 +607,140 @@ def mock_ratings_snapshot_response():
             "ratingDetailsHold": 8,
             "ratingDetailsSell": 2,
             "ratingDetailsStrongSell": 0
+        }
+    ]
+
+
+@pytest.fixture
+def mock_financial_estimates_response():
+    """Mock response for financial estimates API endpoint"""
+    return [
+        {
+            "date": "2023-12-31",
+            "symbol": "AAPL",
+            "estimatedRevenue": 120000000000,
+            "estimatedRevenueHigh": 125000000000,
+            "estimatedRevenueLow": 115000000000,
+            "estimatedEps": 1.95,
+            "estimatedEpsHigh": 2.10,
+            "estimatedEpsLow": 1.80,
+            "estimatedNetIncome": 30000000000,
+            "estimatedEbitda": 40000000000
+        },
+        {
+            "date": "2024-03-31",
+            "symbol": "AAPL",
+            "estimatedRevenue": 95000000000,
+            "estimatedRevenueHigh": 98000000000,
+            "estimatedRevenueLow": 92000000000,
+            "estimatedEps": 1.65,
+            "estimatedEpsHigh": 1.75,
+            "estimatedEpsLow": 1.55,
+            "estimatedNetIncome": 28000000000,
+            "estimatedEbitda": 36000000000
+        }
+    ]
+
+
+@pytest.fixture
+def mock_price_target_news_response():
+    """Mock response for price target news API endpoint"""
+    return [
+        {
+            "symbol": "AAPL",
+            "company": "Apple Inc.",
+            "publisher": "Morgan Stanley",
+            "analyst": "Jane Smith",
+            "targetPrice": 180.00,
+            "newTargetPrice": 195.00,
+            "stockPrice": 190.50,
+            "title": "Morgan Stanley raises Apple price target on strong services growth",
+            "newsURL": "https://example.com/news/morgan-stanley-apple",
+            "date": "2023-06-15"
+        },
+        {
+            "symbol": "MSFT",
+            "company": "Microsoft Corporation",
+            "publisher": "Goldman Sachs",
+            "analyst": "John Doe",
+            "targetPrice": 350.00,
+            "newTargetPrice": 390.00,
+            "stockPrice": 376.80,
+            "title": "Goldman Sachs upgrades Microsoft on cloud momentum",
+            "newsURL": "https://example.com/news/goldman-microsoft",
+            "date": "2023-06-14"
+        }
+    ]
+
+
+@pytest.fixture
+def mock_company_dividends_response():
+    """Mock response for company dividends API endpoint"""
+    return [
+        {
+            "date": "2023-02-10",
+            "dividend": 0.23,
+            "adjDividend": 0.23,
+            "recordDate": "2023-02-13",
+            "paymentDate": "2023-02-16",
+            "declarationDate": "2023-02-02"
+        },
+        {
+            "date": "2022-11-04",
+            "dividend": 0.23,
+            "adjDividend": 0.23,
+            "recordDate": "2022-11-07",
+            "paymentDate": "2022-11-10",
+            "declarationDate": "2022-10-27"
+        },
+        {
+            "date": "2022-08-05",
+            "dividend": 0.23,
+            "adjDividend": 0.23,
+            "recordDate": "2022-08-08",
+            "paymentDate": "2022-08-11",
+            "declarationDate": "2022-07-28"
+        },
+        {
+            "date": "2022-05-06",
+            "dividend": 0.23,
+            "adjDividend": 0.23,
+            "recordDate": "2022-05-09",
+            "paymentDate": "2022-05-12",
+            "declarationDate": "2022-04-28"
+        }
+    ]
+
+
+@pytest.fixture
+def mock_dividends_calendar_response():
+    """Mock response for dividends calendar API endpoint"""
+    return [
+        {
+            "date": "2023-08-11",
+            "symbol": "AAPL",
+            "name": "Apple Inc.",
+            "dividend": 0.24,
+            "dividend_yield": 0.51,
+            "paymentDate": "2023-08-17",
+            "recordDate": "2023-08-14"
+        },
+        {
+            "date": "2023-08-11",
+            "symbol": "MSFT",
+            "name": "Microsoft Corporation",
+            "dividend": 0.68,
+            "dividend_yield": 0.72,
+            "paymentDate": "2023-09-14",
+            "recordDate": "2023-08-17"
+        },
+        {
+            "date": "2023-08-15",
+            "symbol": "JNJ",
+            "name": "Johnson & Johnson",
+            "dividend": 1.19,
+            "dividend_yield": 2.67,
+            "paymentDate": "2023-09-07",
+            "recordDate": "2023-08-22"
         }
     ]

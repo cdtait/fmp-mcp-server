@@ -46,8 +46,14 @@ async def test_tool_registration():
         "get_key_metrics",
         "get_stock_news",
         "get_market_indexes",
-        "search_stocks",
-        "get_historical_price"
+        "search_by_symbol",
+        "search_by_name",
+        "get_historical_price",
+        "get_ratings_snapshot",
+        "get_financial_estimates",
+        "get_price_target_news",
+        "get_company_dividends",
+        "get_dividends_calendar"
     ]
 
     for tool_name in expected_tools:
