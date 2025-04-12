@@ -25,6 +25,10 @@ def clean_modules():
         'src.tools.company', 
         'src.tools.market', 
         'src.tools.analysis',
+        'src.tools.statements',
+        'src.tools.quote',
+        'src.tools.charts',
+        'src.tools.analyst',
         'src.resources.company', 
         'src.resources.market',
         'src.prompts.templates'
@@ -359,3 +363,26 @@ def mock_historical_price_response():
             }
         ]
     }
+
+
+@pytest.fixture
+def mock_ratings_snapshot_response():
+    """Mock response for ratings snapshot API endpoint"""
+    return [
+        {
+            "symbol": "AAPL",
+            "rating": 3.5,
+            "ratingRecommendation": "Buy",
+            "ratingDetailsDCFScore": 4,
+            "ratingDetailsROEScore": 5,
+            "ratingDetailsROAScore": 4,
+            "ratingDetailsDEScore": 3,
+            "ratingDetailsPEScore": 2,
+            "ratingDetailsPBScore": 3,
+            "ratingDetailsStrongBuy": 15,
+            "ratingDetailsBuy": 25,
+            "ratingDetailsHold": 8,
+            "ratingDetailsSell": 2,
+            "ratingDetailsStrongSell": 0
+        }
+    ]

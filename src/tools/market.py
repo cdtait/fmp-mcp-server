@@ -6,7 +6,7 @@ from typing import Dict, Any, Optional, List
 
 from mcp.server.fastmcp import Context
 from src.api.client import fmp_api_request
-from src.tools.company import format_number
+from src.tools.statements import format_number
 
 
 async def get_market_indexes(ctx: Context) -> str:

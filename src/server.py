@@ -14,10 +14,15 @@ load_dotenv(dotenv_path=env_path)
 from mcp.server.fastmcp import FastMCP, Context
 
 # Import tools
-from src.tools.company import get_company_profile, get_income_statement, get_balance_sheet, get_cash_flow
+from src.tools.company import get_company_profile
+from src.tools.statements import (
+    get_income_statement, get_balance_sheet, get_cash_flow,
+    get_financial_ratios, get_key_metrics
+)
 from src.tools.market import get_market_indexes, get_stock_news, search_stocks, get_historical_price
-from src.tools.quote import get_stock_quote, get_quote_short, get_price_change
-from src.tools.analysis import get_financial_ratios, get_key_metrics
+from src.tools.quote import get_stock_quote, get_quote_short
+from src.tools.charts import get_price_change
+from src.tools.analyst import get_ratings_snapshot
 
 # Import resources
 from src.resources.company import get_stock_info_resource, get_financial_statement_resource, get_stock_peers_resource, get_price_targets_resource
@@ -51,6 +56,7 @@ mcp.tool()(get_stock_news)
 mcp.tool()(get_market_indexes)
 mcp.tool()(search_stocks)
 mcp.tool()(get_historical_price)
+mcp.tool()(get_ratings_snapshot)
 
 # Register resources
 mcp.resource("stock-info://{symbol}")(get_stock_info_resource)
