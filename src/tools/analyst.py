@@ -36,27 +36,39 @@ async def get_ratings_snapshot(symbol: str) -> str:
     # Format the response
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
+    # Map numeric scores to letter ratings (if needed)
+    rating = ratings.get('rating', 'N/A')
+    
     result = [
         f"# Analyst Ratings for {symbol}",
         f"*Data as of {current_time}*",
         "",
         "## Rating Summary",
-        f"**Rating Score**: {ratings.get('rating', 'N/A')}",
-        f"**Recommendation**: {ratings.get('ratingRecommendation', 'N/A')}",
-        f"**DCF Score**: {ratings.get('ratingDetailsDCFScore', 'N/A')}",
-        f"**ROE Score**: {ratings.get('ratingDetailsROEScore', 'N/A')}",
-        f"**ROA Score**: {ratings.get('ratingDetailsROAScore', 'N/A')}",
-        f"**DE Score**: {ratings.get('ratingDetailsDEScore', 'N/A')}",
-        f"**P/E Score**: {ratings.get('ratingDetailsPEScore', 'N/A')}",
-        f"**PB Score**: {ratings.get('ratingDetailsPBScore', 'N/A')}",
+        f"**Rating**: {rating}",
+        f"**Overall Score**: {ratings.get('overallScore', 'N/A')}/5",
         "",
-        "## Consensus Ratings",
-        f"**Strong Buy**: {ratings.get('ratingDetailsStrongBuy', 'N/A')}",
-        f"**Buy**: {ratings.get('ratingDetailsBuy', 'N/A')}",
-        f"**Hold**: {ratings.get('ratingDetailsHold', 'N/A')}",
-        f"**Sell**: {ratings.get('ratingDetailsSell', 'N/A')}",
-        f"**Strong Sell**: {ratings.get('ratingDetailsStrongSell', 'N/A')}"
+        "## Component Scores",
+        f"**Discounted Cash Flow Score**: {ratings.get('discountedCashFlowScore', 'N/A')}/5",
+        f"**Return on Equity Score**: {ratings.get('returnOnEquityScore', 'N/A')}/5",
+        f"**Return on Assets Score**: {ratings.get('returnOnAssetsScore', 'N/A')}/5",
+        f"**Debt to Equity Score**: {ratings.get('debtToEquityScore', 'N/A')}/5",
+        f"**Price to Earnings Score**: {ratings.get('priceToEarningsScore', 'N/A')}/5",
+        f"**Price to Book Score**: {ratings.get('priceToBookScore', 'N/A')}/5"
     ]
+    
+    # Add explanation of the rating system
+    result.extend([
+        "",
+        "## Rating System Explanation",
+        "The rating is based on a scale of A+ to F, where:",
+        "- A+ to A-: Strong Buy/Buy (Score 5-4)",
+        "- B+ to B-: Outperform (Score 4-3)",
+        "- C+ to C-: Hold/Neutral (Score 3-2)",
+        "- D+ to D-: Underperform (Score 2-1)",
+        "- F: Sell (Score < 1)",
+        "",
+        "Each component score is rated from 1 (worst) to 5 (best)."
+    ])
     
     return "\n".join(result)
 

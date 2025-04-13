@@ -24,10 +24,15 @@ async def test_get_ratings_snapshot_tool(mock_request, mock_ratings_snapshot_res
     # Assertions about the result
     assert isinstance(result, str)
     assert "# Analyst Ratings for AAPL" in result
-    assert "**Rating Score**: 3.5" in result
-    assert "**Recommendation**: Buy" in result
-    assert "**Strong Buy**: 15" in result
-    assert "**Buy**: 25" in result
+    assert "**Rating**: A-" in result
+    assert "**Overall Score**: 4/5" in result
+    assert "**Discounted Cash Flow Score**: 3/5" in result
+    assert "**Return on Equity Score**: 5/5" in result
+    assert "**Return on Assets Score**: 5/5" in result
+    assert "**Debt to Equity Score**: 4/5" in result
+    assert "**Price to Earnings Score**: 2/5" in result
+    assert "**Price to Book Score**: 1/5" in result
+    assert "Rating System Explanation" in result
 
 
 @pytest.mark.asyncio

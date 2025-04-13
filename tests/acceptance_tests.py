@@ -257,6 +257,43 @@ async def test_search_by_symbol_format():
 
 
 @pytest.mark.asyncio
+async def test_ratings_snapshot_format():
+    """Test the get_ratings_snapshot tool with the API"""
+    from src.tools.analyst import get_ratings_snapshot
+    
+    # Call the ratings_snapshot tool with a common stock
+    result = await get_ratings_snapshot("AAPL")
+    
+    # Check the return format
+    assert isinstance(result, str)
+    assert "AAPL" in result
+    
+    # Check for presence of key sections
+    assert "# Analyst Ratings for AAPL" in result
+    
+    # Check for rating components
+    assert "**Rating**:" in result
+    assert "**Overall Score**:" in result
+    
+    # Check for component scores section
+    assert "## Component Scores" in result
+    assert "**Discounted Cash Flow Score**:" in result
+    assert "**Return on Equity Score**:" in result
+    assert "**Return on Assets Score**:" in result
+    assert "**Debt to Equity Score**:" in result
+    assert "**Price to Earnings Score**:" in result
+    assert "**Price to Book Score**:" in result
+    
+    # Check for rating system explanation
+    assert "## Rating System Explanation" in result
+    assert "scale of A+ to F" in result
+    
+    # Test with different symbol
+    result2 = await get_ratings_snapshot("MSFT")
+    assert "MSFT" in result2
+
+
+@pytest.mark.asyncio
 async def test_error_handling_with_invalid_symbol(setup_api_key):
     """Test API error handling with an invalid symbol"""
     # If we're in TEST_MODE, remove the patch temporarily so we can see real errors

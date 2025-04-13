@@ -197,6 +197,54 @@ async def mock_successful_api_response(endpoint, params=None):
                 }
             ]
     
+    elif endpoint == "ratings-snapshot":
+        # Mock ratings-snapshot response based on the symbol
+        symbol = params.get('symbol', '').upper() if params else ''
+        
+        if symbol == "AAPL":
+            return [
+                {
+                    "symbol": "AAPL",
+                    "rating": "A-",
+                    "overallScore": 4,
+                    "discountedCashFlowScore": 3,
+                    "returnOnEquityScore": 5,
+                    "returnOnAssetsScore": 5,
+                    "debtToEquityScore": 4,
+                    "priceToEarningsScore": 2,
+                    "priceToBookScore": 1
+                }
+            ]
+        elif symbol == "MSFT":
+            return [
+                {
+                    "symbol": "MSFT",
+                    "rating": "A",
+                    "overallScore": 5,
+                    "discountedCashFlowScore": 4,
+                    "returnOnEquityScore": 5,
+                    "returnOnAssetsScore": 5,
+                    "debtToEquityScore": 5,
+                    "priceToEarningsScore": 3,
+                    "priceToBookScore": 2
+                }
+            ]
+        else:
+            # Return a sample rating for other symbols
+            return [
+                {
+                    "symbol": symbol,
+                    "rating": "B+",
+                    "overallScore": 3,
+                    "discountedCashFlowScore": 3,
+                    "returnOnEquityScore": 3,
+                    "returnOnAssetsScore": 4,
+                    "debtToEquityScore": 3,
+                    "priceToEarningsScore": 2,
+                    "priceToBookScore": 2
+                }
+            ]
+    
     # Default empty response for unknown endpoints
     return []
 
@@ -780,19 +828,14 @@ def mock_ratings_snapshot_response():
     return [
         {
             "symbol": "AAPL",
-            "rating": 3.5,
-            "ratingRecommendation": "Buy",
-            "ratingDetailsDCFScore": 4,
-            "ratingDetailsROEScore": 5,
-            "ratingDetailsROAScore": 4,
-            "ratingDetailsDEScore": 3,
-            "ratingDetailsPEScore": 2,
-            "ratingDetailsPBScore": 3,
-            "ratingDetailsStrongBuy": 15,
-            "ratingDetailsBuy": 25,
-            "ratingDetailsHold": 8,
-            "ratingDetailsSell": 2,
-            "ratingDetailsStrongSell": 0
+            "rating": "A-",
+            "overallScore": 4,
+            "discountedCashFlowScore": 3,
+            "returnOnEquityScore": 5,
+            "returnOnAssetsScore": 5,
+            "debtToEquityScore": 4,
+            "priceToEarningsScore": 2,
+            "priceToBookScore": 1
         }
     ]
 
