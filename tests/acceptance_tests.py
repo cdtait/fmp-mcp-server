@@ -542,7 +542,7 @@ async def test_commodities_prices_format():
         # Already in the result, no need to test separately
         pass
     else:
-        result_oil = await get_commodities_prices("BZUSD")
+        result_oil = await get_commodities_prices("BZUSD")  # Brent Crude Oil
         assert "Crude Oil" in result_oil or "Oil" in result_oil
 
 

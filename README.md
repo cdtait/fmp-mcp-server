@@ -41,6 +41,33 @@ The codebase is organized to align with the FMP API documentation structure foun
 - **statements.py**: Financial statements (income, balance sheet, cash flow, ratios)
 - **technical_indicators.py**: Technical indicators and analysis
 
+### API Endpoint Standardization
+
+The codebase uses a standardized approach for retrieving quotes across different asset types:
+
+- The unified **quote** endpoint is used for retrieving quotes for all asset types, including:
+  - Stocks
+  - Forex pairs
+  - Cryptocurrencies
+  - Commodities
+  - Market indices
+  
+- Each module provides specialized formatting for its respective asset type:
+  - **get_quote**: Standard stock quotes
+  - **get_forex_quotes**: Currency exchange rates
+  - **get_crypto_quote**: Cryptocurrency prices
+  - **get_commodities_prices**: Commodity prices
+  - **get_index_quote**: Market index values
+
+This standardization improves code maintainability and provides a consistent approach to retrieving asset prices throughout the application.
+
+### Other Recent Changes
+
+- **get_quote_change**: Updated to use the "stock-price-change" endpoint instead of "quote-change" endpoint
+  - Now returns price changes for all time periods (1D, 5D, 1M, 3M, 6M, YTD, 1Y, 3Y, 5Y, 10Y, max) in a single request
+  - Improved table formatting for better readability
+  - Emoji indicators (🔺, 🔻, ➖) for clearer trend visualization
+
 Tests are similarly organized with one test file per module, following a consistent pattern to ensure comprehensive coverage.
 
 ## Installation
@@ -394,6 +421,12 @@ The server uses the following environment variables:
 - `TEST_MODE`: Set to "true" to use mock data in acceptance tests
   - Useful for CI/CD environments or testing without a valid API key
   - Uses mock responses defined in tests/conftest.py
+  - Includes comprehensive mock data for various asset types:
+    - Stocks (AAPL, MSFT, etc.)
+    - Forex pairs (EURUSD, GBPUSD, USDJPY)
+    - Cryptocurrencies (BTCUSD, ETHUSD)
+    - Commodities (GCUSD for Gold, CLUSD for Crude Oil, BZUSD for Brent Crude Oil)
+    - Market indices (^GSPC for S&P 500, ^DJI for Dow Jones)
 
 You can set these variables in a .env file in the project root:
 
