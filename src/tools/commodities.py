@@ -64,7 +64,7 @@ async def get_commodities_list() -> str:
     return "\n".join(result)
 
 
-async def get_commodities_prices(symbols: str = None) -> str:
+async def get_commodities_prices(symbol: str = None) -> str:
     """
     Get current prices for commodities
     
@@ -75,14 +75,14 @@ async def get_commodities_prices(symbols: str = None) -> str:
     Returns:
         Current prices for the specified commodities
     """
-    params = {"symbols": symbols} if symbols else {}
-    data = await fmp_api_request("commodities", params)
+    params = {"symbol": symbol} if symbol else {}
+    data = await fmp_api_request("quote", params)
     
     if isinstance(data, dict) and "error" in data:
         return f"Error fetching commodities prices: {data.get('message', 'Unknown error')}"
     
     if not data or not isinstance(data, list) or len(data) == 0:
-        return f"No price data found for commodities: {symbols if symbols else 'all'}"
+        return f"No price data found for commodities: {symbol if symbol else 'all'}"
     
     # Format the response
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")

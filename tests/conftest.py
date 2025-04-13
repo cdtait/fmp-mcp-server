@@ -210,7 +210,7 @@ async def mock_successful_api_response(endpoint, params=None):
                     }
                 ]
         # Commodity symbols
-        elif symbol in ["GCUSD", "SIUSD", "CUUSD", "CLUSD", "NGUSD"]:
+        elif symbol in ["GCUSD", "SIUSD", "CUUSD", "CLUSD", "NGUSD", "BZUSD"]:
             if symbol == "GCUSD":
                 return [
                     {
@@ -240,6 +240,22 @@ async def mock_successful_api_response(endpoint, params=None):
                         "dayHigh": 79.75,
                         "yearLow": 65.25,
                         "yearHigh": 95.50,
+                        "exchange": "COMMODITY"
+                    }
+                ]
+            elif symbol == "BZUSD":
+                return [
+                    {
+                        "symbol": "BZUSD",
+                        "name": "Brent Crude Oil",
+                        "price": 82.45,
+                        "change": 0.72,
+                        "changesPercentage": 0.88,
+                        "previousClose": 81.73,
+                        "dayLow": 81.55,
+                        "dayHigh": 82.75,
+                        "yearLow": 68.45,
+                        "yearHigh": 97.25,
                         "exchange": "COMMODITY"
                     }
                 ]

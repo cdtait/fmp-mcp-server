@@ -19,7 +19,8 @@ from src.tools.statements import (
     get_income_statement, get_balance_sheet, get_cash_flow,
     get_financial_ratios, get_key_metrics
 )
-from src.tools.market import get_market_indexes, get_stock_news, get_historical_price
+# TODO remove deprecated tools
+#from src.tools.market import get_market_indexes, get_stock_news, get_historical_price
 from src.tools.search import search_by_symbol, search_by_name
 from src.tools.quote import get_quote, get_quote_change
 from src.tools.charts import get_price_change
@@ -30,7 +31,7 @@ from src.tools.market_performers import get_biggest_gainers, get_biggest_losers,
 from src.tools.market_hours import get_market_hours, get_holidays
 from src.tools.etf import get_etf_sectors, get_etf_countries, get_etf_holdings
 from src.tools.commodities import get_commodities_list, get_commodities_prices
-from src.tools.crypto import get_crypto_list, get_crypto_quotes
+from src.tools.crypto import get_crypto_list, get_crypto_quote
 from src.tools.forex import get_forex_list, get_forex_quotes
 from src.tools.technical_indicators import get_technical_indicators, get_technical_summary, get_ema
 
@@ -62,15 +63,21 @@ mcp.tool()(get_financial_ratios)
 mcp.tool()(get_income_statement)
 mcp.tool()(get_balance_sheet)
 mcp.tool()(get_cash_flow)
-mcp.tool()(get_key_metrics)
-mcp.tool()(get_stock_news)
-mcp.tool()(get_market_indexes)
+# TODO remove deprecated tool
+#mcp.tool()(get_key_metrics)
+# TODO remove deprecated tool
+#mcp.tool()(get_stock_news)
+# TODO remove deprecated tool
+#mcp.tool()(get_market_indexes)
 mcp.tool()(search_by_symbol)
 mcp.tool()(search_by_name)
-mcp.tool()(get_historical_price)
+# TODO remove deprecated tool
+#mcp.tool()(get_historical_price)
 mcp.tool()(get_ratings_snapshot)
-mcp.tool()(get_financial_estimates)
-mcp.tool()(get_price_target_news)
+# TODO  fix tool
+#mcp.tool()(get_financial_estimates)
+# TODO  fix tool
+#mcp.tool()(get_price_target_news)
 mcp.tool()(get_company_dividends)
 mcp.tool()(get_dividends_calendar)
 mcp.tool()(get_index_list)
@@ -78,18 +85,25 @@ mcp.tool()(get_index_quote)
 mcp.tool()(get_biggest_gainers)
 mcp.tool()(get_biggest_losers)
 mcp.tool()(get_most_active)
-mcp.tool()(get_market_hours)
-mcp.tool()(get_holidays)
-mcp.tool()(get_etf_sectors)
-mcp.tool()(get_etf_countries)
-mcp.tool()(get_etf_holdings)
+# TODO  fix tool
+#mcp.tool()(get_market_hours)
+# TODO  fix tool
+#mcp.tool()(get_holidays)
+# TODO  fix tool
+#mcp.tool()(get_etf_sectors)
+# TODO  fix tool
+#mcp.tool()(get_etf_countries)
+# TODO  fix tool
+#mcp.tool()(get_etf_holdings)
 mcp.tool()(get_commodities_list)
 mcp.tool()(get_commodities_prices)
 mcp.tool()(get_crypto_list)
-mcp.tool()(get_crypto_quotes)
+mcp.tool()(get_crypto_quote)
 mcp.tool()(get_forex_list)
 mcp.tool()(get_forex_quotes)
+# TODO remove deprecated tool
 mcp.tool()(get_technical_indicators)
+# TODO remove deprecated tool
 mcp.tool()(get_technical_summary)
 mcp.tool()(get_ema)
 

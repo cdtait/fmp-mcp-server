@@ -48,12 +48,12 @@ async def get_crypto_list() -> str:
     
     # Add a note about usage
     result.append("")
-    result.append("*Note: Use these symbols with the get_crypto_quotes function to get current values.*")
+    result.append("*Note: Use these symbols with the get_crypto_quote function to get current values.*")
     
     return "\n".join(result)
 
 
-async def get_crypto_quotes(symbols: str = None) -> str:
+async def get_crypto_quote(symbol: str = None) -> str:
     """
     Get current quotes for cryptocurrencies
     
@@ -64,14 +64,14 @@ async def get_crypto_quotes(symbols: str = None) -> str:
     Returns:
         Current quotes for the specified cryptocurrencies
     """
-    params = {"symbols": symbols} if symbols else {}
-    data = await fmp_api_request("cryptocurrency-quotes", params)
+    params = {"symbol": symbol} if symbol else {}
+    data = await fmp_api_request("quote", params)
     
     if isinstance(data, dict) and "error" in data:
         return f"Error fetching cryptocurrency quotes: {data.get('message', 'Unknown error')}"
     
     if not data or not isinstance(data, list) or len(data) == 0:
-        return f"No quote data found for cryptocurrencies: {symbols if symbols else 'top cryptocurrencies'}"
+        return f"No quote data found for cryptocurrencies: {symbol if symbol else 'top cryptocurrencies'}"
     
     # Format the response
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
