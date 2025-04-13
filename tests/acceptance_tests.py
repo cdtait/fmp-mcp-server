@@ -364,6 +364,74 @@ async def test_dividends_calendar_format():
 
 
 @pytest.mark.asyncio
+async def test_forex_list_format():
+    """Test the get_forex_list tool with the API"""
+    from src.tools.forex import get_forex_list
+    
+    # Call the get_forex_list tool
+    result = await get_forex_list()
+    
+    # Check the return format
+    assert isinstance(result, str)
+    
+    # Check for presence of key sections
+    assert "# Available Forex Pairs" in result
+    assert "| Symbol | Base Currency | Quote Currency | Base Name | Quote Name |" in result
+    
+    # Check for common currency pairs that should be present
+    common_pairs = ["EURUSD", "GBPUSD", "USDJPY"]
+    found_pairs = 0
+    
+    for pair in common_pairs:
+        if pair in result:
+            found_pairs += 1
+    
+    # At least one of the common pairs should be present
+    assert found_pairs > 0, "No common forex pairs found in the result"
+    
+    # The result should contain both currency codes and currency names
+    common_currencies = ["USD", "EUR", "GBP", "JPY", "Dollar", "Euro", "Pound", "Yen"]
+    found_currencies = 0
+    
+    for currency in common_currencies:
+        if currency in result:
+            found_currencies += 1
+    
+    assert found_currencies >= 2, "Currency names not found in the result"
+
+
+@pytest.mark.asyncio
+async def test_forex_quotes_format():
+    """Test the get_forex_quotes tool with the API"""
+    from src.tools.forex import get_forex_quotes
+    
+    # Call the get_forex_quotes tool with a common forex pair
+    result = await get_forex_quotes("EURUSD")
+    
+    # Check the return format
+    assert isinstance(result, str)
+    
+    # Check for presence of key sections
+    assert "# Forex Quote: EUR/USD" in result
+    
+    # Check for specific data elements that should be present
+    assert "**Exchange Rate**:" in result
+    assert "**Change**:" in result
+    assert "## Trading Information" in result
+    assert "## Range Information" in result
+    assert "**Day Range**:" in result
+    assert "**52 Week Range**:" in result
+    assert "**50-Day Average**:" in result
+    assert "**200-Day Average**:" in result
+    
+    # Test with a different forex pair
+    result_gbp = await get_forex_quotes("GBPUSD")
+    
+    # Check for the different pair
+    assert "# Forex Quote: GBP/USD" in result_gbp
+
+
+@pytest.mark.asyncio
 async def test_error_handling_with_invalid_symbol(setup_api_key):
     """Test API error handling with an invalid symbol"""
     # If we're in TEST_MODE, remove the patch temporarily so we can see real errors

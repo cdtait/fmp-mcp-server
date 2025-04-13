@@ -90,21 +90,92 @@ async def mock_successful_api_response(endpoint, params=None):
         ]
     
     elif endpoint == "quote":
-        return [
-            {
-                "symbol": symbol,
-                "name": f"{symbol} Inc.",
-                "price": 150.25,
-                "change": 2.5,
-                "changesPercentage": 1.75,
-                "marketCap": 2500000000000.0,
-                "volume": 75000000,
-                "previousClose": 147.75,
-                "open": 148.25,
-                "dayLow": 147.5,
-                "dayHigh": 151.0
-            }
-        ]
+        # Regular stock quotes
+        # Special handling for forex symbols in acceptance tests
+        if symbol in ["EURUSD", "GBPUSD", "USDJPY"]:
+            if symbol == "EURUSD":
+                return [
+                    {
+                        "symbol": "EURUSD",
+                        "name": "EUR/USD",
+                        "price": 1.03717,
+                        "changePercentage": -0.05877932,
+                        "change": -0.00061,
+                        "volume": 5453,
+                        "dayLow": 1.03706,
+                        "dayHigh": 1.03835,
+                        "yearHigh": 1.12138,
+                        "yearLow": 1.01766,
+                        "marketCap": None,
+                        "priceAvg50": 1.03863,
+                        "priceAvg200": 1.07491,
+                        "exchange": "FOREX",
+                        "open": 1.03778,
+                        "previousClose": 1.03778,
+                        "timestamp": 1738713601
+                    }
+                ]
+            elif symbol == "GBPUSD":
+                return [
+                    {
+                        "symbol": "GBPUSD",
+                        "name": "GBP/USD",
+                        "price": 1.25444,
+                        "changePercentage": -0.07248776,
+                        "change": -0.00091,
+                        "volume": 3546,
+                        "dayLow": 1.25357,
+                        "dayHigh": 1.25638,
+                        "yearHigh": 1.31421,
+                        "yearLow": 1.20360,
+                        "marketCap": None,
+                        "priceAvg50": 1.26385,
+                        "priceAvg200": 1.26031,
+                        "exchange": "FOREX",
+                        "open": 1.25535,
+                        "previousClose": 1.25535,
+                        "timestamp": 1738713601
+                    }
+                ]
+            elif symbol == "USDJPY":
+                return [
+                    {
+                        "symbol": "USDJPY",
+                        "name": "USD/JPY",
+                        "price": 157.74463,
+                        "changePercentage": 0.17012959,
+                        "change": 0.26764,
+                        "volume": 4689,
+                        "dayLow": 157.28813,
+                        "dayHigh": 157.83157,
+                        "yearHigh": 160.32583,
+                        "yearLow": 127.21799,
+                        "marketCap": None,
+                        "priceAvg50": 151.87985,
+                        "priceAvg200": 149.10092,
+                        "exchange": "FOREX",
+                        "open": 157.47699,
+                        "previousClose": 157.47699,
+                        "timestamp": 1738713601
+                    }
+                ]
+        else:
+            # Regular stock quotes
+            return [
+                {
+                    "symbol": symbol,
+                    "name": f"{symbol} Inc.",
+                    "price": 150.25,
+                    "change": 2.5,
+                    "changesPercentage": 1.75,
+                    "marketCap": 2500000000000.0,
+                    "volume": 75000000,
+                    "previousClose": 147.75,
+                    "open": 148.25,
+                    "dayLow": 147.5,
+                    "dayHigh": 151.0
+                }
+            ]
     
     elif "historical-price" in endpoint:
         return {
@@ -366,6 +437,279 @@ async def mock_successful_api_response(endpoint, params=None):
                 "frequency": "Quarterly"
             }
         ]
+        
+    elif endpoint == "forex-list":
+        # Mock forex list data
+        return [
+            {
+                "symbol": "EURUSD",
+                "fromCurrency": "EUR",
+                "toCurrency": "USD",
+                "fromName": "Euro",
+                "toName": "US Dollar"
+            },
+            {
+                "symbol": "GBPUSD",
+                "fromCurrency": "GBP",
+                "toCurrency": "USD",
+                "fromName": "British Pound",
+                "toName": "US Dollar"
+            },
+            {
+                "symbol": "USDJPY",
+                "fromCurrency": "USD",
+                "toCurrency": "JPY",
+                "fromName": "US Dollar",
+                "toName": "Japanese Yen"
+            }
+        ]
+        
+    # Special case for handling forex quotes - they can use the standard quote endpoint
+    elif endpoint == "quote" and "symbol" in params and params["symbol"] in ["EURUSD", "GBPUSD", "USDJPY"]:
+        symbol = params.get('symbol', '').upper()
+        # Return forex data
+        if symbol == 'EURUSD':
+            return [
+                {
+                    "symbol": "EURUSD",
+                    "name": "EUR/USD",
+                    "price": 1.03717,
+                    "changePercentage": -0.05877932,
+                    "change": -0.00061,
+                    "volume": 5453,
+                    "dayLow": 1.03706,
+                    "dayHigh": 1.03835,
+                    "yearHigh": 1.12138,
+                    "yearLow": 1.01766,
+                    "marketCap": None,
+                    "priceAvg50": 1.03863,
+                    "priceAvg200": 1.07491,
+                    "exchange": "FOREX",
+                    "open": 1.03778,
+                    "previousClose": 1.03778,
+                    "timestamp": 1738713601
+                }
+            ]
+        elif symbol == 'GBPUSD':
+            return [
+                {
+                    "symbol": "GBPUSD",
+                    "name": "GBP/USD",
+                    "price": 1.25444,
+                    "changePercentage": -0.07248776,
+                    "change": -0.00091,
+                    "volume": 3546,
+                    "dayLow": 1.25357,
+                    "dayHigh": 1.25638,
+                    "yearHigh": 1.31421,
+                    "yearLow": 1.20360,
+                    "marketCap": None,
+                    "priceAvg50": 1.26385,
+                    "priceAvg200": 1.26031,
+                    "exchange": "FOREX",
+                    "open": 1.25535,
+                    "previousClose": 1.25535,
+                    "timestamp": 1738713601
+                }
+            ]
+        elif symbol == 'USDJPY':
+            return [
+                {
+                    "symbol": "USDJPY",
+                    "name": "USD/JPY",
+                    "price": 157.74463,
+                    "changePercentage": 0.17012959,
+                    "change": 0.26764,
+                    "volume": 4689,
+                    "dayLow": 157.28813,
+                    "dayHigh": 157.83157,
+                    "yearHigh": 160.32583,
+                    "yearLow": 127.21799,
+                    "marketCap": None,
+                    "priceAvg50": 151.87985,
+                    "priceAvg200": 149.10092,
+                    "exchange": "FOREX",
+                    "open": 157.47699,
+                    "previousClose": 157.47699,
+                    "timestamp": 1738713601
+                }
+            ]
+    
+    # Deprecated, kept for backward compatibility
+    elif endpoint == "forex-quote":
+        # Get the requested symbol
+        symbol = params.get('symbol', '').upper() if params else 'EURUSD'
+        
+        # Return appropriate mock data based on the symbol
+        if symbol == 'EURUSD':
+            return [
+                {
+                    "symbol": "EURUSD",
+                    "name": "EUR/USD",
+                    "price": 1.03717,
+                    "changePercentage": -0.05877932,
+                    "change": -0.00061,
+                    "volume": 5453,
+                    "dayLow": 1.03706,
+                    "dayHigh": 1.03835,
+                    "yearHigh": 1.12138,
+                    "yearLow": 1.01766,
+                    "marketCap": None,
+                    "priceAvg50": 1.03863,
+                    "priceAvg200": 1.07491,
+                    "exchange": "FOREX",
+                    "open": 1.03778,
+                    "previousClose": 1.03778,
+                    "timestamp": 1738713601
+                }
+            ]
+        elif symbol == 'GBPUSD':
+            return [
+                {
+                    "symbol": "GBPUSD",
+                    "name": "GBP/USD",
+                    "price": 1.25444,
+                    "changePercentage": -0.07248776,
+                    "change": -0.00091,
+                    "volume": 3546,
+                    "dayLow": 1.25357,
+                    "dayHigh": 1.25638,
+                    "yearHigh": 1.31421,
+                    "yearLow": 1.20360,
+                    "marketCap": None,
+                    "priceAvg50": 1.26385,
+                    "priceAvg200": 1.26031,
+                    "exchange": "FOREX",
+                    "open": 1.25535,
+                    "previousClose": 1.25535,
+                    "timestamp": 1738713601
+                }
+            ]
+        elif symbol == 'USDJPY':
+            return [
+                {
+                    "symbol": "USDJPY",
+                    "name": "USD/JPY",
+                    "price": 157.74463,
+                    "changePercentage": 0.17012959,
+                    "change": 0.26764,
+                    "volume": 4689,
+                    "dayLow": 157.28813,
+                    "dayHigh": 157.83157,
+                    "yearHigh": 160.32583,
+                    "yearLow": 127.21799,
+                    "marketCap": None,
+                    "priceAvg50": 151.87985,
+                    "priceAvg200": 149.10092,
+                    "exchange": "FOREX",
+                    "open": 157.47699,
+                    "previousClose": 157.47699,
+                    "timestamp": 1738713601
+                }
+            ]
+        else:
+            # For any other symbol, return a generic mock
+            return [
+                {
+                    "symbol": symbol,
+                    "name": f"{symbol[:3]}/{symbol[3:]}",
+                    "price": 1.00000,
+                    "changePercentage": 0.05,
+                    "change": 0.0005,
+                    "volume": 1000,
+                    "dayLow": 0.99500,
+                    "dayHigh": 1.00500,
+                    "yearHigh": 1.10000,
+                    "yearLow": 0.90000,
+                    "marketCap": None,
+                    "priceAvg50": 1.00100,
+                    "priceAvg200": 1.00200,
+                    "exchange": "FOREX",
+                    "open": 0.99900,
+                    "previousClose": 0.99900,
+                    "timestamp": 1738713601
+                }
+            ]
+    
+    # Handle commodities endpoint
+    elif endpoint == "commodities":
+        symbols_param = params.get('symbols', '').upper() if params else ''
+        symbol = symbols_param.split(',')[0] if symbols_param else 'GCUSD'  # Get first symbol if multiple
+        
+        # Return mock data for gold as default
+        if symbol == 'GCUSD':
+            return [
+                {
+                    "symbol": "GCUSD",
+                    "name": "Gold",
+                    "price": 2362.45,
+                    "change": 24.75,
+                    "changesPercentage": 1.06,
+                    "previousClose": 2337.70,
+                    "dayLow": 2335.25,
+                    "dayHigh": 2365.80,
+                    "yearLow": 1825.30,
+                    "yearHigh": 2400.15
+                }
+            ]
+        else:
+            # Generic commodity data
+            return [
+                {
+                    "symbol": symbol,
+                    "name": f"{symbol} Commodity",
+                    "price": 100.0,
+                    "change": 1.5,
+                    "changesPercentage": 1.5,
+                    "previousClose": 98.5,
+                    "dayLow": 98.0,
+                    "dayHigh": 101.0,
+                    "yearLow": 90.0,
+                    "yearHigh": 105.0
+                }
+            ]
+            
+    # Handle cryptocurrency quotes endpoint
+    elif endpoint == "cryptocurrency-quotes":
+        symbols_param = params.get('symbols', '').upper() if params else ''
+        symbol = symbols_param.split(',')[0] if symbols_param else 'BTCUSD'  # Get first symbol if multiple
+        
+        # Return mock data for Bitcoin as default
+        if symbol == 'BTCUSD':
+            return [
+                {
+                    "symbol": "BTCUSD",
+                    "name": "Bitcoin",
+                    "price": 63850.25,
+                    "change": 1250.75,
+                    "changesPercentage": 2.00,
+                    "previousClose": 62599.50,
+                    "dayLow": 62150.25,
+                    "dayHigh": 64100.75,
+                    "yearLow": 25000.00,
+                    "yearHigh": 73750.50,
+                    "volume": 35750000000,
+                    "marketCap": 1250000000000
+                }
+            ]
+        else:
+            # Generic crypto data
+            return [
+                {
+                    "symbol": symbol,
+                    "name": f"{symbol} Crypto",
+                    "price": 1000.0,
+                    "change": 50.0,
+                    "changesPercentage": 5.0,
+                    "previousClose": 950.0,
+                    "dayLow": 940.0,
+                    "dayHigh": 1050.0,
+                    "yearLow": 500.0,
+                    "yearHigh": 1200.0,
+                    "volume": 1000000000,
+                    "marketCap": 10000000000
+                }
+            ]
     
     # Default empty response for unknown endpoints
     return []
@@ -694,20 +1038,55 @@ def mock_commodity_quote_response():
 
 
 @pytest.fixture
+def mock_forex_list_response():
+    """Mock response for forex list API endpoint"""
+    return [
+        {
+            "symbol": "EURUSD",
+            "fromCurrency": "EUR",
+            "toCurrency": "USD",
+            "fromName": "Euro",
+            "toName": "US Dollar"
+        },
+        {
+            "symbol": "GBPUSD",
+            "fromCurrency": "GBP",
+            "toCurrency": "USD",
+            "fromName": "British Pound",
+            "toName": "US Dollar"
+        },
+        {
+            "symbol": "USDJPY",
+            "fromCurrency": "USD",
+            "toCurrency": "JPY",
+            "fromName": "US Dollar",
+            "toName": "Japanese Yen"
+        }
+    ]
+
+
+@pytest.fixture
 def mock_forex_quote_response():
     """Mock response for forex quote API endpoint"""
     return [
         {
             "symbol": "EURUSD",
             "name": "EUR/USD",
-            "price": 1.0825,
-            "change": 0.0015,
-            "changesPercentage": 0.14,
-            "previousClose": 1.0810,
-            "dayLow": 1.0795,
-            "dayHigh": 1.0835,
-            "yearLow": 1.0500,
-            "yearHigh": 1.1100
+            "price": 1.03717,
+            "changePercentage": -0.05877932,
+            "change": -0.00061,
+            "volume": 5453,
+            "dayLow": 1.03706,
+            "dayHigh": 1.03835,
+            "yearHigh": 1.12138,
+            "yearLow": 1.01766,
+            "marketCap": None,
+            "priceAvg50": 1.03863,
+            "priceAvg200": 1.07491,
+            "exchange": "FOREX",
+            "open": 1.03778,
+            "previousClose": 1.03778,
+            "timestamp": 1738713601
         }
     ]
 

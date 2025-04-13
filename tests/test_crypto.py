@@ -42,8 +42,8 @@ async def test_get_crypto_list(mock_request):
 
 @pytest.mark.asyncio
 @patch('src.api.client.fmp_api_request')
-async def test_get_crypto_quotes(mock_request):
-    """Test the get_crypto_quotes function"""
+async def test_get_crypto_quote(mock_request):
+    """Test the get_crypto_quote function"""
     # Sample response data
     mock_response = [
         {
@@ -66,13 +66,13 @@ async def test_get_crypto_quotes(mock_request):
     mock_request.return_value = mock_response
     
     # Import after patching
-    from src.tools.crypto import get_crypto_quotes
+    from src.tools.crypto import get_crypto_quote
     
     # Execute the tool
-    result = await get_crypto_quotes("BTCUSD")
+    result = await get_crypto_quote("BTCUSD")
     
     # Check API was called with correct parameters
-    mock_request.assert_called_once_with("cryptocurrency-quotes", {"symbols": "BTCUSD"})
+    mock_request.assert_called_once_with("quote", {"symbol": "BTCUSD"})
     
     # Check the result contains expected information
     assert "# Cryptocurrency Quotes" in result
@@ -100,16 +100,16 @@ async def test_get_crypto_list_error(mock_request):
 
 @pytest.mark.asyncio
 @patch('src.api.client.fmp_api_request')
-async def test_get_crypto_quotes_error(mock_request):
-    """Test the get_crypto_quotes function with error response"""
+async def test_get_crypto_quote_error(mock_request):
+    """Test the get_crypto_quote function with error response"""
     # Set up the mock
     mock_request.return_value = {"error": "API Error", "message": "Symbol not found"}
     
     # Import after patching
-    from src.tools.crypto import get_crypto_quotes
+    from src.tools.crypto import get_crypto_quote
     
     # Execute the tool
-    result = await get_crypto_quotes("INVALID")
+    result = await get_crypto_quote("INVALID")
     
     # Check error handling
     assert "Error fetching cryptocurrency quotes: Symbol not found" in result
@@ -134,16 +134,16 @@ async def test_get_crypto_list_empty(mock_request):
 
 @pytest.mark.asyncio
 @patch('src.api.client.fmp_api_request')
-async def test_get_crypto_quotes_empty(mock_request):
-    """Test the get_crypto_quotes function with empty response"""
+async def test_get_crypto_quote_empty(mock_request):
+    """Test the get_crypto_quote function with empty response"""
     # Set up the mock
     mock_request.return_value = []
     
     # Import after patching
-    from src.tools.crypto import get_crypto_quotes
+    from src.tools.crypto import get_crypto_quote
     
     # Execute the tool
-    result = await get_crypto_quotes("BTCUSD")
+    result = await get_crypto_quote("BTCUSD")
     
     # Check empty response handling
     assert "No quote data found for cryptocurrencies: BTCUSD" in result
@@ -151,8 +151,8 @@ async def test_get_crypto_quotes_empty(mock_request):
 
 @pytest.mark.asyncio
 @patch('src.api.client.fmp_api_request')
-async def test_get_crypto_quotes_no_symbols(mock_request):
-    """Test the get_crypto_quotes function with no symbols"""
+async def test_get_crypto_quote_no_symbols(mock_request):
+    """Test the get_crypto_quote function with no symbols"""
     # Sample response data
     mock_response = [
         {
@@ -175,13 +175,13 @@ async def test_get_crypto_quotes_no_symbols(mock_request):
     mock_request.return_value = mock_response
     
     # Import after patching
-    from src.tools.crypto import get_crypto_quotes
+    from src.tools.crypto import get_crypto_quote
     
     # Execute the tool
-    result = await get_crypto_quotes()
+    result = await get_crypto_quote()
     
     # Check API was called with correct parameters
-    mock_request.assert_called_once_with("cryptocurrency-quotes", {})
+    mock_request.assert_called_once_with("quote", {})
     
     # Check the result contains expected information
     assert "# Cryptocurrency Quotes" in result

@@ -3,7 +3,7 @@ Forex-related tools for the FMP MCP server
 
 This module contains tools related to the Forex section of the Financial Modeling Prep API:
 https://site.financialmodelingprep.com/developer/docs/stable/forex-list
-https://site.financialmodelingprep.com/developer/docs/stable/forex-quotes
+https://site.financialmodelingprep.com/developer/docs/stable/quote
 """
 from datetime import datetime
 from typing import Dict, Any, Optional, List, Union
@@ -17,7 +17,7 @@ async def get_forex_list() -> str:
     Get a list of available forex pairs
     
     Returns:
-        List of available forex pairs with their symbols
+        List of available forex pairs with their currency names
     """
     data = await fmp_api_request("forex-list", {})
     
@@ -34,136 +34,112 @@ async def get_forex_list() -> str:
         "# Available Forex Pairs",
         f"*Data as of {current_time}*",
         "",
-        "| Symbol | Name | Base Currency | Quote Currency |",
-        "|--------|------|---------------|----------------|"
+        "| Symbol | Base Currency | Quote Currency | Base Name | Quote Name |",
+        "|--------|---------------|----------------|-----------|------------|"
     ]
     
     # Process forex pairs
     for pair in data:
         symbol = pair.get('symbol', 'N/A')
-        name = pair.get('name', 'N/A')
+        from_currency = pair.get('fromCurrency', 'N/A')
+        to_currency = pair.get('toCurrency', 'N/A')
+        from_name = pair.get('fromName', 'N/A')
+        to_name = pair.get('toName', 'N/A')
         
-        # Extract base and quote currencies from the symbol (e.g., EURUSD)
-        base_currency = 'N/A'
-        quote_currency = 'N/A'
-        
-        if symbol and len(symbol) >= 6:
-            base_currency = symbol[:3]
-            quote_currency = symbol[3:6]
-        
-        result.append(f"| {symbol} | {name} | {base_currency} | {quote_currency} |")
+        result.append(f"| {symbol} | {from_currency} | {to_currency} | {from_name} | {to_name} |")
     
     # Add a note about usage
     result.append("")
-    result.append("*Note: Use these symbols with the get_forex_quotes function to get current values.*")
+    result.append("*Note: Use these symbols with the get_forex_quotes function to get current exchange rates and price information.*")
     
     return "\n".join(result)
 
 
-async def get_forex_quotes(symbols: str = None) -> str:
+async def get_forex_quotes(symbol: str) -> str:
     """
-    Get current quotes for forex pairs
+    Get current quote for a forex pair
     
     Args:
-        symbols: Comma-separated list of forex pair symbols (e.g., "EURUSD,GBPUSD")
-                If not provided, returns major forex pairs
+        symbol: Forex pair symbol (e.g., "EURUSD")
     
     Returns:
-        Current quotes for the specified forex pairs
+        Current quote data for the specified forex pair
     """
-    params = {"symbols": symbols} if symbols else {}
-    data = await fmp_api_request("forex-quotes", params)
+    if not symbol:
+        return "Error: symbol parameter is required"
+        
+    params = {"symbol": symbol}
+    data = await fmp_api_request("quote", params)
     
     if isinstance(data, dict) and "error" in data:
-        return f"Error fetching forex quotes: {data.get('message', 'Unknown error')}"
+        return f"Error fetching forex quote for {symbol}: {data.get('message', 'Unknown error')}"
     
     if not data or not isinstance(data, list) or len(data) == 0:
-        return f"No quote data found for forex pairs: {symbols if symbols else 'major pairs'}"
+        return f"No quote data found for forex pair: {symbol}"
     
     # Format the response
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
+    # Get the first (and only) quote item
+    quote = data[0]
+    
+    # Extract name and symbol
+    symbol_str = quote.get('symbol', 'N/A')
+    name = quote.get('name', 'N/A')
+    
+    # Format title
     result = [
-        "# Forex Quotes",
+        f"# Forex Quote: {name}",
         f"*Data as of {current_time}*",
-        "",
-        "| Symbol | Exchange Rate | Change | Change % | Bid | Ask | Day Range |",
-        "|--------|---------------|--------|----------|-----|-----|-----------|"
+        ""
     ]
     
-    # Group forex pairs by base currency
-    pairs_by_base = {}
+    # Current price and change
+    price = quote.get('price', 'N/A')
+    change = quote.get('change', 0)
+    change_percent = quote.get('changePercentage', 0)
     
-    for pair in data:
-        symbol = pair.get('symbol', 'N/A')
-        rate = format_number(pair.get('price', 'N/A'))
-        
-        # Get change values
-        change = pair.get('change', 0)
-        change_percent = pair.get('changesPercentage', 0)
-        
-        # Determine change emoji
-        change_emoji = "🔺" if change > 0 else "🔻" if change < 0 else "➖"
-        
-        # Format the values
-        change_str = f"{change_emoji} {format_number(abs(change))}"
-        change_percent_str = f"{change_percent}%"
-        
-        # Other values
-        bid = format_number(pair.get('bid', 'N/A'))
-        ask = format_number(pair.get('ask', 'N/A'))
-        
-        day_low = format_number(pair.get('dayLow', 'N/A'))
-        day_high = format_number(pair.get('dayHigh', 'N/A'))
-        day_range = f"{day_low} - {day_high}"
-        
-        # Determine base currency for grouping
-        base_currency = symbol[:3] if symbol and len(symbol) >= 6 else 'Other'
-        
-        if base_currency not in pairs_by_base:
-            pairs_by_base[base_currency] = []
-        
-        pairs_by_base[base_currency].append({
-            'symbol': symbol,
-            'rate': rate,
-            'change': change_str,
-            'change_percent': change_percent_str,
-            'bid': bid,
-            'ask': ask,
-            'day_range': day_range
-        })
+    # Format change with direction emoji
+    change_emoji = "🔺" if change > 0 else "🔻" if change < 0 else "➖"
+    change_formatted = f"{change_emoji} {format_number(abs(change))}"
     
-    # Add major currency pairs first if available
-    major_currencies = ['EUR', 'USD', 'GBP', 'JPY', 'AUD', 'CAD', 'CHF']
+    # Format the percentage to 2 decimal places
+    if isinstance(change_percent, (int, float)):
+        change_percent_str = f"{change_percent:.2f}%"
+    else:
+        change_percent_str = "N/A"
     
-    for base in major_currencies:
-        if base in pairs_by_base and pairs_by_base[base]:
-            result.append(f"### {base} Pairs")
-            
-            for pair in pairs_by_base[base]:
-                result.append(
-                    f"| {pair['symbol']} | {pair['rate']} | {pair['change']} | "
-                    f"{pair['change_percent']} | {pair['bid']} | {pair['ask']} | "
-                    f"{pair['day_range']} |"
-                )
-            
-            result.append("")
-            
-            # Remove from the dictionary to avoid duplication
-            del pairs_by_base[base]
+    result.append("## Current Price")
+    result.append(f"**Exchange Rate**: {format_number(price)}")
+    result.append(f"**Change**: {change_formatted} ({change_percent_str})")
+    result.append("")
     
-    # Add remaining pairs
-    for base, pairs in sorted(pairs_by_base.items()):
-        if pairs:
-            result.append(f"### {base} Pairs")
-            
-            for pair in pairs:
-                result.append(
-                    f"| {pair['symbol']} | {pair['rate']} | {pair['change']} | "
-                    f"{pair['change_percent']} | {pair['bid']} | {pair['ask']} | "
-                    f"{pair['day_range']} |"
-                )
-            
-            result.append("")
+    # Trading information
+    result.append("## Trading Information")
+    result.append(f"**Exchange**: {quote.get('exchange', 'FOREX')}")
+    result.append(f"**Open**: {format_number(quote.get('open', 'N/A'))}")
+    result.append(f"**Previous Close**: {format_number(quote.get('previousClose', 'N/A'))}")
+    result.append(f"**Volume**: {format_number(quote.get('volume', 'N/A'))}")
+    result.append("")
+    
+    # Range information
+    result.append("## Range Information")
+    result.append(f"**Day Range**: {format_number(quote.get('dayLow', 'N/A'))} - {format_number(quote.get('dayHigh', 'N/A'))}")
+    result.append(f"**52 Week Range**: {format_number(quote.get('yearLow', 'N/A'))} - {format_number(quote.get('yearHigh', 'N/A'))}")
+    result.append(f"**50-Day Average**: {format_number(quote.get('priceAvg50', 'N/A'))}")
+    result.append(f"**200-Day Average**: {format_number(quote.get('priceAvg200', 'N/A'))}")
+    
+    # Add a timestamp if available
+    timestamp = quote.get('timestamp')
+    if timestamp:
+        try:
+            # Convert timestamp to date string if it's a Unix timestamp
+            if isinstance(timestamp, (int, float)):
+                date_str = datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d %H:%M:%S")
+                result.append("")
+                result.append(f"*Quote timestamp: {date_str}*")
+        except Exception:
+            # If conversion fails, ignore the timestamp
+            pass
     
     return "\n".join(result)

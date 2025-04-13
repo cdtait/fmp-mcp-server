@@ -86,7 +86,7 @@ async def test_get_commodities_prices(mock_request):
     result = await get_commodities_prices("GCUSD")
     
     # Check API was called with correct parameters
-    mock_request.assert_called_once_with("commodities", {"symbols": "GCUSD"})
+    mock_request.assert_called_once_with("quote", {"symbol": "GCUSD"})
     
     # Check the result contains expected information
     assert "# Commodities Prices" in result
@@ -192,7 +192,7 @@ async def test_get_commodities_prices_no_symbols(mock_request):
     result = await get_commodities_prices()
     
     # Check API was called with correct parameters
-    mock_request.assert_called_once_with("commodities", {})
+    mock_request.assert_called_once_with("quote", {})
     
     # Check the result contains expected information
     assert "# Commodities Prices" in result
