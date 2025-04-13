@@ -90,8 +90,8 @@ async def mock_successful_api_response(endpoint, params=None):
         ]
     
     elif endpoint == "quote":
-        # Regular stock quotes
-        # Special handling for forex symbols in acceptance tests
+        # Special handling for different types of symbols in acceptance tests
+        # Forex symbols
         if symbol in ["EURUSD", "GBPUSD", "USDJPY"]:
             if symbol == "EURUSD":
                 return [
@@ -157,6 +157,162 @@ async def mock_successful_api_response(endpoint, params=None):
                         "open": 157.47699,
                         "previousClose": 157.47699,
                         "timestamp": 1738713601
+                    }
+                ]
+        # Index symbols
+        elif symbol in ["^GSPC", "^DJI", "^IXIC", "^RUT", "^VIX"]:
+            if symbol == "^GSPC":
+                return [
+                    {
+                        "symbol": "^GSPC",
+                        "name": "S&P 500",
+                        "price": 4850.25,
+                        "change": 15.75,
+                        "changesPercentage": 0.32,
+                        "previousClose": 4834.50,
+                        "dayLow": 4830.25,
+                        "dayHigh": 4855.75,
+                        "yearLow": 4200.15,
+                        "yearHigh": 5000.45,
+                        "exchange": "INDEX"
+                    }
+                ]
+            elif symbol == "^DJI":
+                return [
+                    {
+                        "symbol": "^DJI",
+                        "name": "Dow Jones Industrial Average",
+                        "price": 38750.12,
+                        "change": 125.5,
+                        "changesPercentage": 0.28,
+                        "previousClose": 38624.62,
+                        "dayLow": 38600.50,
+                        "dayHigh": 38800.20,
+                        "yearLow": 32000.00,
+                        "yearHigh": 39100.25,
+                        "exchange": "INDEX"
+                    }
+                ]
+            else:
+                return [
+                    {
+                        "symbol": symbol,
+                        "name": "Market Index",
+                        "price": 10000.00,
+                        "change": 100.00,
+                        "changesPercentage": 1.00,
+                        "previousClose": 9900.00,
+                        "dayLow": 9950.00,
+                        "dayHigh": 10050.00,
+                        "yearLow": 9000.00,
+                        "yearHigh": 11000.00,
+                        "exchange": "INDEX"
+                    }
+                ]
+        # Commodity symbols
+        elif symbol in ["GCUSD", "SIUSD", "CUUSD", "CLUSD", "NGUSD"]:
+            if symbol == "GCUSD":
+                return [
+                    {
+                        "symbol": "GCUSD",
+                        "name": "Gold",
+                        "price": 2362.45,
+                        "change": 24.75,
+                        "changesPercentage": 1.06,
+                        "previousClose": 2337.70,
+                        "dayLow": 2335.25,
+                        "dayHigh": 2365.80,
+                        "yearLow": 1825.30,
+                        "yearHigh": 2400.15,
+                        "exchange": "COMMODITY"
+                    }
+                ]
+            elif symbol == "CLUSD":
+                return [
+                    {
+                        "symbol": "CLUSD",
+                        "name": "Crude Oil",
+                        "price": 78.92,
+                        "change": -0.56,
+                        "changesPercentage": -0.71,
+                        "previousClose": 79.48,
+                        "dayLow": 78.50,
+                        "dayHigh": 79.75,
+                        "yearLow": 65.25,
+                        "yearHigh": 95.50,
+                        "exchange": "COMMODITY"
+                    }
+                ]
+            else:
+                return [
+                    {
+                        "symbol": symbol,
+                        "name": "Commodity",
+                        "price": 100.00,
+                        "change": 2.50,
+                        "changesPercentage": 2.50,
+                        "previousClose": 97.50,
+                        "dayLow": 97.00,
+                        "dayHigh": 101.00,
+                        "yearLow": 85.00,
+                        "yearHigh": 105.00,
+                        "exchange": "COMMODITY"
+                    }
+                ]
+        # Crypto symbols
+        elif symbol in ["BTCUSD", "ETHUSD", "XRPUSD", "LTCUSD", "DOTUSD"]:
+            if symbol == "BTCUSD":
+                return [
+                    {
+                        "symbol": "BTCUSD",
+                        "name": "Bitcoin",
+                        "price": 63850.25,
+                        "change": 1250.75,
+                        "changesPercentage": 2.00,
+                        "previousClose": 62599.50,
+                        "dayLow": 62150.25,
+                        "dayHigh": 64100.75,
+                        "yearLow": 25000.00,
+                        "yearHigh": 73750.50,
+                        "volume": 35750000000,
+                        "marketCap": 1250000000000,
+                        "exchange": "CRYPTO"
+                    }
+                ]
+            elif symbol == "ETHUSD":
+                return [
+                    {
+                        "symbol": "ETHUSD",
+                        "name": "Ethereum",
+                        "price": 3075.50,
+                        "change": 45.25,
+                        "changesPercentage": 1.48,
+                        "previousClose": 3030.25,
+                        "dayLow": 3025.75,
+                        "dayHigh": 3090.25,
+                        "yearLow": 1600.00,
+                        "yearHigh": 3900.00,
+                        "volume": 18500000000,
+                        "marketCap": 375000000000,
+                        "exchange": "CRYPTO"
+                    }
+                ]
+            else:
+                return [
+                    {
+                        "symbol": symbol,
+                        "name": "Cryptocurrency",
+                        "price": 1000.00,
+                        "change": 50.00,
+                        "changesPercentage": 5.00,
+                        "previousClose": 950.00,
+                        "dayLow": 940.00,
+                        "dayHigh": 1050.00,
+                        "yearLow": 500.00,
+                        "yearHigh": 1200.00,
+                        "volume": 1000000000,
+                        "marketCap": 10000000000,
+                        "exchange": "CRYPTO"
                     }
                 ]
         else:
@@ -631,85 +787,167 @@ async def mock_successful_api_response(endpoint, params=None):
                 }
             ]
     
-    # Handle commodities endpoint
-    elif endpoint == "commodities":
-        symbols_param = params.get('symbols', '').upper() if params else ''
-        symbol = symbols_param.split(',')[0] if symbols_param else 'GCUSD'  # Get first symbol if multiple
+    # Handle stock-price-change endpoint
+    elif endpoint == "stock-price-change":
+        symbol = params.get('symbol', '').upper() if params else ''
         
-        # Return mock data for gold as default
-        if symbol == 'GCUSD':
+        if symbol == "AAPL":
             return [
                 {
-                    "symbol": "GCUSD",
-                    "name": "Gold",
-                    "price": 2362.45,
-                    "change": 24.75,
-                    "changesPercentage": 1.06,
-                    "previousClose": 2337.70,
-                    "dayLow": 2335.25,
-                    "dayHigh": 2365.80,
-                    "yearLow": 1825.30,
-                    "yearHigh": 2400.15
+                    "symbol": "AAPL",
+                    "1D": 4.05945,
+                    "5D": 11.8228,
+                    "1M": -5.49886,
+                    "3M": -15.46502,
+                    "6M": -12.92024,
+                    "ytd": -18.74103,
+                    "1Y": 14.74318,
+                    "3Y": 16.28521,
+                    "5Y": 190.07466,
+                    "10Y": 524.88174,
+                    "max": 154282.54772
+                }
+            ]
+        elif symbol == "MSFT":
+            return [
+                {
+                    "symbol": "MSFT",
+                    "1D": 1.23456,
+                    "5D": 7.89012,
+                    "1M": -3.21098,
+                    "3M": -9.87654,
+                    "6M": 5.43210,
+                    "ytd": -12.34567,
+                    "1Y": 32.10987,
+                    "3Y": 90.12345,
+                    "5Y": 243.21098,
+                    "10Y": 876.54321,
+                    "max": 98765.43210
                 }
             ]
         else:
-            # Generic commodity data
+            # Generic stock price change
             return [
                 {
                     "symbol": symbol,
-                    "name": f"{symbol} Commodity",
-                    "price": 100.0,
-                    "change": 1.5,
-                    "changesPercentage": 1.5,
-                    "previousClose": 98.5,
-                    "dayLow": 98.0,
-                    "dayHigh": 101.0,
-                    "yearLow": 90.0,
-                    "yearHigh": 105.0
+                    "1D": 1.00,
+                    "5D": 5.00,
+                    "1M": -3.00,
+                    "3M": -10.00,
+                    "6M": 15.00,
+                    "ytd": -8.00,
+                    "1Y": 20.00,
+                    "3Y": 50.00,
+                    "5Y": 100.00,
+                    "10Y": 200.00,
+                    "max": 1000.00
                 }
             ]
             
-    # Handle cryptocurrency quotes endpoint
-    elif endpoint == "cryptocurrency-quotes":
-        symbols_param = params.get('symbols', '').upper() if params else ''
-        symbol = symbols_param.split(',')[0] if symbols_param else 'BTCUSD'  # Get first symbol if multiple
+    # Handle commodities-list endpoint
+    elif endpoint == "commodities-list":
+        return [
+            {
+                "symbol": "GCUSD",
+                "name": "Gold",
+                "currency": "USD",
+                "exchange": "COMMODITY"
+            },
+            {
+                "symbol": "SIUSD",
+                "name": "Silver",
+                "currency": "USD",
+                "exchange": "COMMODITY"
+            },
+            {
+                "symbol": "CUUSD",
+                "name": "Copper",
+                "currency": "USD",
+                "exchange": "COMMODITY"
+            },
+            {
+                "symbol": "CLUSD",
+                "name": "Crude Oil",
+                "currency": "USD",
+                "exchange": "COMMODITY"
+            },
+            {
+                "symbol": "NGUSD",
+                "name": "Natural Gas",
+                "currency": "USD",
+                "exchange": "COMMODITY"
+            }
+        ]
+    
+    # Handle cryptocurrency-list endpoint
+    elif endpoint == "cryptocurrency-list":
+        return [
+            {
+                "symbol": "BTCUSD",
+                "name": "Bitcoin",
+                "currency": "USD",
+                "exchange": "CRYPTO"
+            },
+            {
+                "symbol": "ETHUSD",
+                "name": "Ethereum",
+                "currency": "USD",
+                "exchange": "CRYPTO"
+            },
+            {
+                "symbol": "XRPUSD",
+                "name": "Ripple",
+                "currency": "USD",
+                "exchange": "CRYPTO"
+            },
+            {
+                "symbol": "LTCUSD",
+                "name": "Litecoin",
+                "currency": "USD",
+                "exchange": "CRYPTO"
+            },
+            {
+                "symbol": "DOTUSD",
+                "name": "Polkadot",
+                "currency": "USD",
+                "exchange": "CRYPTO"
+            }
+        ]
         
-        # Return mock data for Bitcoin as default
-        if symbol == 'BTCUSD':
-            return [
-                {
-                    "symbol": "BTCUSD",
-                    "name": "Bitcoin",
-                    "price": 63850.25,
-                    "change": 1250.75,
-                    "changesPercentage": 2.00,
-                    "previousClose": 62599.50,
-                    "dayLow": 62150.25,
-                    "dayHigh": 64100.75,
-                    "yearLow": 25000.00,
-                    "yearHigh": 73750.50,
-                    "volume": 35750000000,
-                    "marketCap": 1250000000000
-                }
-            ]
-        else:
-            # Generic crypto data
-            return [
-                {
-                    "symbol": symbol,
-                    "name": f"{symbol} Crypto",
-                    "price": 1000.0,
-                    "change": 50.0,
-                    "changesPercentage": 5.0,
-                    "previousClose": 950.0,
-                    "dayLow": 940.0,
-                    "dayHigh": 1050.0,
-                    "yearLow": 500.0,
-                    "yearHigh": 1200.0,
-                    "volume": 1000000000,
-                    "marketCap": 10000000000
-                }
-            ]
+    # Handle index-list endpoint
+    elif endpoint == "index-list":
+        return [
+            {
+                "symbol": "^GSPC",
+                "name": "S&P 500",
+                "exchange": "INDEX",
+                "currency": "USD"
+            },
+            {
+                "symbol": "^DJI",
+                "name": "Dow Jones Industrial Average",
+                "exchange": "INDEX",
+                "currency": "USD"
+            },
+            {
+                "symbol": "^IXIC",
+                "name": "NASDAQ Composite",
+                "exchange": "INDEX",
+                "currency": "USD"
+            },
+            {
+                "symbol": "^RUT",
+                "name": "Russell 2000",
+                "exchange": "INDEX",
+                "currency": "USD"
+            },
+            {
+                "symbol": "^VIX",
+                "name": "CBOE Volatility Index",
+                "exchange": "INDEX",
+                "currency": "USD"
+            }
+        ]
     
     # Default empty response for unknown endpoints
     return []

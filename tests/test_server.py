@@ -34,6 +34,8 @@ async def test_tool_registration():
     tool_names = [tool.name for tool in tools]
 
     # Check that the expected tools are registered
+    # These are the tools that should actually be registered in the server
+    # Look at the imports and registration in server.py
     expected_tools = [
         "get_company_profile",
         "get_company_notes",
@@ -45,11 +47,11 @@ async def test_tool_registration():
         "get_balance_sheet",
         "get_cash_flow",
         "get_key_metrics",
-        "get_stock_news",
-        "get_market_indexes",
+        # "get_stock_news",  # This is commented out in server.py
+        # "get_market_indexes",  # This is commented out in server.py
+        # "get_historical_price",  # This is commented out in server.py
         "search_by_symbol",
         "search_by_name",
-        "get_historical_price",
         "get_ratings_snapshot",
         "get_financial_estimates",
         "get_price_target_news",
@@ -68,11 +70,12 @@ async def test_tool_registration():
         "get_commodities_list",
         "get_commodities_prices",
         "get_crypto_list",
-        "get_crypto_quotes",
+        "get_crypto_quote",
         "get_forex_list",
         "get_forex_quotes",
         "get_technical_indicators",
-        "get_technical_summary"
+        "get_technical_summary",
+        "get_ema"  # This is imported but missing from the test
     ]
 
     for tool_name in expected_tools:

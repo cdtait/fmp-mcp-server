@@ -73,11 +73,17 @@ async def test_get_quote_change_tool(mock_request):
     mock_quote_change_response = [
         {
             "symbol": "AAPL",
-            "name": "Apple Inc.",
-            "price": 190.5,
-            "previousPrice": 165.25,
-            "change": 25.25,
-            "changePercent": 15.28
+            "1D": 4.05945,
+            "5D": 11.8228,
+            "1M": -5.49886,
+            "3M": -15.46502,
+            "6M": -12.92024,
+            "ytd": -18.74103,
+            "1Y": 14.74318,
+            "3Y": 16.28521,
+            "5Y": 190.07466,
+            "10Y": 524.88174,
+            "max": 154282.54772
         }
     ]
     mock_request.return_value = mock_quote_change_response
@@ -86,17 +92,18 @@ async def test_get_quote_change_tool(mock_request):
     from src.tools.quote import get_quote_change
     
     # Execute the tool
-    result = await get_quote_change(symbol="AAPL", period="1Y")
+    result = await get_quote_change(symbol="AAPL")
     
     # Verify API was called with correct parameters
-    mock_request.assert_called_once_with("quote-change/1Y", {"symbol": "AAPL"})
+    mock_request.assert_called_once_with("stock-price-change", {"symbol": "AAPL"})
     
     # Assertions about the result
     assert isinstance(result, str)
-    assert "Apple Inc. (AAPL) - 1 Year Change" in result
-    assert "**Current Price**: $190.5" in result
-    assert "**Previous Price (1 Year ago)**: $165.25" in result
-    assert "**Change**: 🔺 $25.25 (15.28%)" in result
+    assert "# Price Change for AAPL" in result
+    assert "| Time Period | Change (%) |" in result
+    assert "| 1 Day | 🔺 4.06% |" in result
+    assert "| 1 Year | 🔺 14.74% |" in result
+    assert "| 5 Years | 🔺 190.07% |" in result
 
 
 @pytest.mark.asyncio
@@ -110,7 +117,7 @@ async def test_get_quote_change_tool_error(mock_request):
     from src.tools.quote import get_quote_change
     
     # Execute the tool
-    result = await get_quote_change(symbol="AAPL", period="1Y")
+    result = await get_quote_change(symbol="AAPL")
     
     # Assertions
     assert "Error fetching price change for AAPL" in result
@@ -128,22 +135,20 @@ async def test_get_quote_change_tool_empty_response(mock_request):
     from src.tools.quote import get_quote_change
     
     # Execute the tool
-    result = await get_quote_change(symbol="NONEXISTENT", period="1Y")
+    result = await get_quote_change(symbol="NONEXISTENT")
     
     # Assertions
-    assert "No price change data found for symbol NONEXISTENT over period 1Y" in result
+    assert "No price change data found for symbol NONEXISTENT" in result
 
 
 @pytest.mark.asyncio
-async def test_get_quote_change_tool_invalid_period():
-    """Test quote change tool with invalid period"""
-    # Import directly (no need to patch for parameter validation)
+async def test_get_quote_change_tool_empty_symbol():
+    """Test quote change tool with empty symbol"""
+    # Import directly
     from src.tools.quote import get_quote_change
     
-    # Execute the tool with invalid period
-    result = await get_quote_change(symbol="AAPL", period="INVALID")
+    # Execute the tool with empty symbol
+    result = await get_quote_change(symbol="")
     
     # Assertions
-    assert "Error: Invalid period" in result
-    assert "1D" in result  # Should list valid periods
-    assert "1Y" in result  # Should list valid periods
+    assert "Error: Symbol parameter is required" in result

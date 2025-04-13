@@ -432,6 +432,206 @@ async def test_forex_quotes_format():
 
 
 @pytest.mark.asyncio
+async def test_index_list_format():
+    """Test the get_index_list tool with the API"""
+    from src.tools.indices import get_index_list
+    
+    # Call the get_index_list tool
+    result = await get_index_list()
+    
+    # Check the return format
+    assert isinstance(result, str)
+    
+    # Check for presence of key sections
+    assert "# Market Indices List" in result
+    assert "| Symbol | Name | Exchange | Currency |" in result
+    
+    # Check for common indices that should be present
+    common_indices = ["^GSPC", "^DJI", "^IXIC"]
+    found_indices = 0
+    
+    for index_symbol in common_indices:
+        if index_symbol in result:
+            found_indices += 1
+    
+    # At least one of the common indices should be present
+    assert found_indices > 0, "No common indices found in the result"
+    
+    # The result should contain exchange information
+    assert "INDEX" in result
+
+
+@pytest.mark.asyncio
+async def test_index_quote_format():
+    """Test the get_index_quote tool with the API"""
+    from src.tools.indices import get_index_quote
+    
+    # Call the get_index_quote tool with a common index
+    result = await get_index_quote("^GSPC")
+    
+    # Check the return format
+    assert isinstance(result, str)
+    
+    # Check for presence of key sections
+    assert "S&P 500" in result
+    assert "**Value**:" in result
+    assert "**Change**:" in result
+    assert "## Trading Information" in result
+    assert "**Previous Close**:" in result
+    assert "**Day Range**:" in result
+    assert "**Year Range**:" in result
+    
+    # Test with a different index
+    result_dji = await get_index_quote("^DJI")
+    
+    # Check for the different index
+    assert "Dow Jones" in result_dji
+
+
+@pytest.mark.asyncio
+async def test_commodities_list_format():
+    """Test the get_commodities_list tool with the API"""
+    from src.tools.commodities import get_commodities_list
+    
+    # Call the get_commodities_list tool
+    result = await get_commodities_list()
+    
+    # Check the return format
+    assert isinstance(result, str)
+    
+    # Check for presence of key sections
+    assert "# Available Commodities" in result
+    assert "| Symbol | Name | Currency | Group |" in result
+    
+    # Check for common commodities that should be present
+    common_commodities = ["Gold", "Oil", "Silver"]
+    found_commodities = 0
+    
+    for commodity in common_commodities:
+        if commodity in result:
+            found_commodities += 1
+    
+    # At least one of the common commodities should be present
+    assert found_commodities > 0, "No common commodities found in the result"
+
+
+@pytest.mark.asyncio
+async def test_commodities_prices_format():
+    """Test the get_commodities_prices tool with the API"""
+    from src.tools.commodities import get_commodities_prices
+    
+    # Call the get_commodities_prices tool with a common commodity
+    result = await get_commodities_prices("GCUSD")
+    
+    # Check the return format
+    assert isinstance(result, str)
+    
+    # Check for presence of key sections
+    assert "# Commodities Prices" in result
+    assert "| Symbol | Name | Price | Change | Change %" in result
+    
+    # Gold should be present in the result
+    assert "Gold" in result
+    
+    # Check for specific data elements that should be present
+    assert "|" in result  # Table format
+    assert "$" in result or "," in result  # Formatted numbers
+    
+    # Test with a different commodity
+    if "Crude Oil" in result:
+        # Already in the result, no need to test separately
+        pass
+    else:
+        result_oil = await get_commodities_prices("CLUSD")
+        assert "Crude Oil" in result_oil or "Oil" in result_oil
+
+
+@pytest.mark.asyncio
+async def test_crypto_list_format():
+    """Test the get_crypto_list tool with the API"""
+    from src.tools.crypto import get_crypto_list
+    
+    # Call the get_crypto_list tool
+    result = await get_crypto_list()
+    
+    # Check the return format
+    assert isinstance(result, str)
+    
+    # Check for presence of key sections
+    assert "# Available Cryptocurrencies" in result
+    assert "| Symbol | Name | Currency |" in result
+    
+    # Check for common cryptocurrencies that should be present
+    common_cryptos = ["Bitcoin", "Ethereum", "Ripple"]
+    found_cryptos = 0
+    
+    for crypto in common_cryptos:
+        if crypto in result:
+            found_cryptos += 1
+    
+    # At least one of the common cryptocurrencies should be present
+    assert found_cryptos > 0, "No common cryptocurrencies found in the result"
+
+
+@pytest.mark.asyncio
+async def test_crypto_quote_format():
+    """Test the get_crypto_quote tool with the API"""
+    from src.tools.crypto import get_crypto_quote
+    
+    # Call the get_crypto_quote tool with a common cryptocurrency
+    result = await get_crypto_quote("BTCUSD")
+    
+    # Check the return format
+    assert isinstance(result, str)
+    
+    # Check for presence of key sections
+    assert "# Cryptocurrency Quotes" in result
+    assert "| Symbol | Name | Price | Change | Change % | Market Cap | Volume" in result
+    
+    # Bitcoin should be present in the result
+    assert "Bitcoin" in result or "BTCUSD" in result
+    
+    # Check for specific data elements that should be present
+    assert "|" in result  # Table format
+    assert "$" in result or "," in result  # Formatted numbers
+    
+    # Test with a different cryptocurrency
+    result_eth = await get_crypto_quote("ETHUSD")
+    assert "Ethereum" in result_eth or "ETHUSD" in result_eth
+
+
+@pytest.mark.asyncio
+async def test_quote_change_format():
+    """Test the get_quote_change tool with the API"""
+    from src.tools.quote import get_quote_change
+    
+    # Call the get_quote_change tool with a common stock
+    result = await get_quote_change("AAPL")
+    
+    # Check the return format
+    assert isinstance(result, str)
+    
+    # Check for presence of key sections
+    assert "# Price Change for AAPL" in result
+    assert "| Time Period | Change (%) |" in result
+    
+    # Check for specific time periods that should be present
+    common_periods = ["1 Day", "1 Month", "1 Year"]
+    found_periods = 0
+    
+    for period in common_periods:
+        if period in result:
+            found_periods += 1
+    
+    # At least two of the common periods should be present
+    assert found_periods >= 2, "Not enough common time periods found in the result"
+    
+    # Test with a different stock
+    result_msft = await get_quote_change("MSFT")
+    assert "MSFT" in result_msft
+
+
+@pytest.mark.asyncio
 async def test_error_handling_with_invalid_symbol(setup_api_key):
     """Test API error handling with an invalid symbol"""
     # If we're in TEST_MODE, remove the patch temporarily so we can see real errors

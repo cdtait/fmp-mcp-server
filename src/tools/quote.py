@@ -3,7 +3,7 @@ Quote-related tools for the FMP MCP server
 
 This module contains tools related to the Quote section of the Financial Modeling Prep API:
 https://site.financialmodelingprep.com/developer/docs/stable/quote
-https://site.financialmodelingprep.com/developer/docs/stable/quote-change
+https://site.financialmodelingprep.com/developer/docs/stable/stock-price-change
 """
 from datetime import datetime
 from typing import Dict, Any, Optional, List, Union
@@ -64,59 +64,63 @@ async def get_quote(symbol: str) -> str:
     return "\n".join(result)
 
 
-async def get_quote_change(symbol: str, period: str = "1D") -> str:
+async def get_quote_change(symbol: str) -> str:
     """
     Get stock price change over different time periods
     
     Args:
         symbol: Ticker symbol (e.g., AAPL, MSFT, TSLA)
-        period: Time period for comparison - "1D" (default), "5D", "1M", "3M", "6M", "YTD", "1Y", "3Y", "5Y", "10Y", "MAX"
         
     Returns:
-        Price change information over the specified time period
+        Price change information over multiple time periods
     """
-    # Validate period input
-    valid_periods = ["1D", "5D", "1M", "3M", "6M", "YTD", "1Y", "3Y", "5Y", "10Y", "MAX"]
-    if period not in valid_periods:
-        return f"Error: Invalid period. Please use one of: {', '.join(valid_periods)}"
+    if not symbol:
+        return "Error: Symbol parameter is required"
     
-    # Use the quote-change endpoint
-    data = await fmp_api_request(f"quote-change/{period}", {"symbol": symbol})
+    # Use the stock-price-change endpoint
+    data = await fmp_api_request("stock-price-change", {"symbol": symbol})
     
     if isinstance(data, dict) and "error" in data:
         return f"Error fetching price change for {symbol}: {data.get('message', 'Unknown error')}"
     
     if not data or not isinstance(data, list) or len(data) == 0:
-        return f"No price change data found for symbol {symbol} over period {period}"
+        return f"No price change data found for symbol {symbol}"
     
     price_change = data[0]
     
     # Format the response
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    change = price_change.get('change', 0)
-    change_percent = price_change.get('changePercent', 0)
-    change_emoji = "🔺" if change > 0 else "🔻" if change < 0 else "➖"
     
-    # Extract relevant fields
-    price = price_change.get('price', 'N/A')
-    previous_price = price_change.get('previousPrice', 'N/A')
+    # Extract the symbol
+    symbol = price_change.get('symbol', 'Unknown')
     
-    # Determine the period_label for better readability
+    # Define the periods to display
+    periods = ["1D", "5D", "1M", "3M", "6M", "ytd", "1Y", "3Y", "5Y", "10Y", "max"]
+    
+    # Create a header for the response
+    result = [
+        f"# Price Change for {symbol}",
+        f"*Data as of {current_time}*",
+        "",
+        "| Time Period | Change (%) |",
+        "|-------------|------------|"
+    ]
+    
+    # Period labels for better readability
     period_labels = {
         "1D": "1 Day", "5D": "5 Days", "1M": "1 Month", 
-        "3M": "3 Months", "6M": "6 Months", "YTD": "Year to Date",
+        "3M": "3 Months", "6M": "6 Months", "ytd": "Year to Date",
         "1Y": "1 Year", "3Y": "3 Years", "5Y": "5 Years", 
-        "10Y": "10 Years", "MAX": "Maximum"
+        "10Y": "10 Years", "max": "Maximum"
     }
-    period_label = period_labels.get(period, period)
     
-    result = [
-        f"# {price_change.get('name', 'Unknown')} ({price_change.get('symbol', 'Unknown')}) - {period_label} Change",
-        f"**Current Price**: ${format_number(price)}",
-        f"**Previous Price ({period_label} ago)**: ${format_number(previous_price)}",
-        f"**Change**: {change_emoji} ${format_number(change)} ({change_percent}%)",
-        "",
-        f"*Data as of {current_time}*"
-    ]
+    # Add a row for each time period
+    for period in periods:
+        if period in price_change:
+            change_percent = price_change.get(period, 0)
+            change_emoji = "🔺" if change_percent > 0 else "🔻" if change_percent < 0 else "➖"
+            period_label = period_labels.get(period, period)
+            
+            result.append(f"| {period_label} | {change_emoji} {change_percent:.2f}% |")
     
     return "\n".join(result)
