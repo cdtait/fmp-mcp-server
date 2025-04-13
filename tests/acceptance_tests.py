@@ -187,6 +187,43 @@ async def test_historical_price_endpoint_format():
 
 
 @pytest.mark.asyncio
+async def test_ema_tool_format():
+    """Test the get_ema tool with the API"""
+    from src.tools.technical_indicators import get_ema
+    
+    # Call the EMA tool with a common stock and default parameters
+    result = await get_ema("AAPL", 10, "1day")
+    
+    # Check the return format (not the specific values which will change)
+    assert isinstance(result, str)
+    assert "AAPL" in result
+    
+    # Check for presence of key sections
+    assert "# Exponential Moving Average (EMA) for AAPL" in result
+    assert "Period: 10, Time Frame: 1day" in result
+    assert "| Date | Close | EMA |" in result
+    assert "## Indicator Interpretation" in result
+    
+    # Check that the table has at least some data rows
+    lines = result.split("\n")
+    data_rows = [line for line in lines if line.startswith("| 2") and "|" in line]
+    assert len(data_rows) > 0
+    
+    # Make sure numeric formatting is present (commas in numbers)
+    has_numeric = False
+    for line in data_rows:
+        if any(c.isdigit() for c in line):
+            has_numeric = True
+            break
+    assert has_numeric
+    
+    # Verify that the interpretation section has useful content
+    assert "* The Exponential Moving Average is a trend-following indicator" in result
+    assert "uptrend" in result.lower()
+    assert "downtrend" in result.lower()
+
+
+@pytest.mark.asyncio
 async def test_error_handling_with_invalid_symbol(setup_api_key):
     """Test API error handling with an invalid symbol"""
     # If we're in TEST_MODE, remove the patch temporarily so we can see real errors

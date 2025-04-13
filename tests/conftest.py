@@ -129,6 +129,38 @@ async def mock_successful_api_response(endpoint, params=None):
             ]
         }
     
+    elif endpoint == "technical-indicators/ema":
+        # Mock EMA data with appropriate fields
+        return [
+            {
+                "date": "2025-02-04 00:00:00",
+                "open": 227.2,
+                "high": 233.13,
+                "low": 226.65,
+                "close": 232.8,
+                "volume": 44489128,
+                "ema": 232.84
+            },
+            {
+                "date": "2025-02-03 00:00:00",
+                "open": 224.5,
+                "high": 228.43,
+                "low": 224.1,
+                "close": 227.5,
+                "volume": 36750421,
+                "ema": 230.62
+            },
+            {
+                "date": "2025-01-31 00:00:00",
+                "open": 218.9,
+                "high": 224.64,
+                "low": 218.4,
+                "close": 223.1,
+                "volume": 41250128,
+                "ema": 228.35
+            }
+        ]
+    
     # Default empty response for unknown endpoints
     return []
 
