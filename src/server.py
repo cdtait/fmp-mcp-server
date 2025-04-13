@@ -32,7 +32,7 @@ from src.tools.etf import get_etf_sectors, get_etf_countries, get_etf_holdings
 from src.tools.commodities import get_commodities_list, get_commodities_prices
 from src.tools.crypto import get_crypto_list, get_crypto_quotes
 from src.tools.forex import get_forex_list, get_forex_quotes
-from src.tools.technical_indicators import get_technical_indicators, get_technical_summary
+from src.tools.technical_indicators import get_technical_indicators, get_technical_summary, get_ema
 
 # Import resources
 from src.resources.company import get_stock_info_resource, get_financial_statement_resource, get_stock_peers_resource, get_price_targets_resource
@@ -91,6 +91,7 @@ mcp.tool()(get_forex_list)
 mcp.tool()(get_forex_quotes)
 mcp.tool()(get_technical_indicators)
 mcp.tool()(get_technical_summary)
+mcp.tool()(get_ema)
 
 # Register resources
 mcp.resource("stock-info://{symbol}")(get_stock_info_resource)
