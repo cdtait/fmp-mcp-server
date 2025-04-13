@@ -27,7 +27,8 @@ async def test_get_company_dividends_tool(mock_request, mock_company_dividends_r
     assert "## Dividend History" in result
     assert "| Date | Dividend | Adjusted Dividend | Record Date | Payment Date | Declaration Date |" in result
     assert "**Dividend Frequency**: Quarterly" in result
-    assert "**Estimated Annual Dividend**: $0.92" in result
+    assert "**Current Yield**: 0.43%" in result
+    assert "**Latest Dividend**: $0.2500" in result
 
 
 @pytest.mark.asyncio
@@ -91,20 +92,24 @@ async def test_get_dividends_calendar_tool(mock_request, mock_dividends_calendar
     from src.tools.calendar import get_dividends_calendar
     
     # Execute the tool with specific dates
-    result = await get_dividends_calendar(from_date="2023-08-01", to_date="2023-08-31", limit=50)
+    result = await get_dividends_calendar(from_date="2025-02-01", to_date="2025-02-28", limit=50)
     
     # Verify API was called with correct parameters
     mock_request.assert_called_once_with("dividends-calendar", 
-                                         {"from": "2023-08-01", "to": "2023-08-31", "limit": 50})
+                                         {"from": "2025-02-01", "to": "2025-02-28", "limit": 50})
     
     # Assertions about the result
     assert isinstance(result, str)
-    assert "# Dividend Calendar: 2023-08-01 to 2023-08-31" in result
-    assert "## 2023-08-11" in result
-    assert "Apple Inc." in result
-    assert "Microsoft Corporation" in result
-    assert "## 2023-08-15" in result
-    assert "Johnson & Johnson" in result
+    assert "# Dividend Calendar: 2025-02-01 to 2025-02-28" in result
+    assert "## 2025-02-04" in result  # First date entry
+    assert "1D0.SI" in result         # First symbol
+    assert "| Symbol | Dividend | Yield | Frequency | Record Date | Payment Date | Declaration Date |" in result
+    assert "6.25%" in result          # Yield value
+    assert "Semi-Annual" in result    # Frequency
+    assert "## 2025-02-07" in result  # Another date entry
+    assert "AAPL" in result           # Apple symbol
+    assert "## 2025-02-14" in result  # Another date entry 
+    assert "MSFT" in result           # Microsoft symbol
 
 
 @pytest.mark.asyncio
@@ -133,7 +138,7 @@ async def test_get_dividends_calendar_tool_default_dates(mock_request, mock_divi
     # Assertions about the result format
     assert isinstance(result, str)
     assert "# Dividend Calendar:" in result
-    assert "| Symbol | Company | Dividend | Yield | Ex-Dividend Date | Payment Date | Record Date |" in result
+    assert "| Symbol | Dividend | Yield | Frequency | Record Date | Payment Date | Declaration Date |" in result
 
 
 @pytest.mark.asyncio

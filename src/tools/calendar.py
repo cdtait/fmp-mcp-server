@@ -50,55 +50,27 @@ async def get_company_dividends(symbol: str, limit: int = 10) -> str:
         ""
     ]
     
-    # Calculate useful metrics
-    if len(data) > 0:
-        # Get the most recent dividend amount
-        latest_dividend = data[0].get('dividend', 0)
+    # Get the most recent dividend information
+    latest = data[0] if data else None
+    
+    # Add summary information if available
+    if latest:
+        # Get the frequency from the API if available
+        frequency = latest.get('frequency', 'N/A')
+        if frequency != 'N/A':
+            result.append(f"**Dividend Frequency**: {frequency}")
         
-        # Check if dividend info is available
-        if latest_dividend > 0:
-            # Extract latest price if available
-            latest_price = data[0].get('adjDividend', None)
-            
-            # Calculate annual yield if there are at least 4 records and they appear to be quarterly
-            if len(data) >= 4:
-                annual_dividend = sum(item.get('dividend', 0) for item in data[:4])
-                if latest_price and annual_dividend > 0:
-                    annual_yield = (annual_dividend / latest_price) * 100
-                    result.append(f"**Estimated Annual Yield**: {annual_yield:.2f}%")
-                result.append(f"**Estimated Annual Dividend**: ${format_number(annual_dividend)}")
-            
-            # Calculate average frequency
-            if len(data) >= 2:
-                # Extract dates and convert to datetime objects
-                dates = []
-                for item in data:
-                    date_str = item.get('date', None)
-                    if date_str:
-                        try:
-                            dates.append(datetime.strptime(date_str, "%Y-%m-%d"))
-                        except ValueError:
-                            pass
-                
-                # Calculate average days between dividends
-                if len(dates) >= 2:
-                    intervals = [(dates[i] - dates[i+1]).days for i in range(len(dates)-1)]
-                    avg_interval = sum(intervals) / len(intervals)
-                    
-                    if 80 <= avg_interval <= 100:
-                        frequency = "Quarterly"
-                    elif 170 <= avg_interval <= 190:
-                        frequency = "Semi-annually"
-                    elif 350 <= avg_interval <= 380:
-                        frequency = "Annually"
-                    elif 25 <= avg_interval <= 35:
-                        frequency = "Monthly"
-                    else:
-                        frequency = f"Approximately every {int(avg_interval)} days"
-                    
-                    result.append(f"**Dividend Frequency**: {frequency}")
-            
-            result.append("")
+        # Get the yield from the API if available
+        dividend_yield = latest.get('yield', None)
+        if dividend_yield is not None:
+            result.append(f"**Current Yield**: {dividend_yield:.2f}%")
+        
+        # Add latest dividend amount
+        latest_dividend = latest.get('dividend', None)
+        if latest_dividend is not None:
+            result.append(f"**Latest Dividend**: ${latest_dividend:.4f}")
+        
+        result.append("")
     
     # Create the dividend history table
     result.append("## Dividend History")
@@ -196,29 +168,29 @@ async def get_dividends_calendar(from_date: str = None, to_date: str = None, lim
     # Sort dates
     sorted_dates = sorted(events_by_date.keys())
     
-    # Events by type
+    # Events by date
     for date in sorted_dates:
         events = events_by_date[date]
         result.append(f"## {date}")
-        result.append("| Symbol | Company | Dividend | Yield | Ex-Dividend Date | Payment Date | Record Date |")
-        result.append("|--------|---------|----------|-------|------------------|--------------|-------------|")
+        result.append("| Symbol | Dividend | Yield | Frequency | Record Date | Payment Date | Declaration Date |")
+        result.append("|--------|----------|-------|-----------|-------------|--------------|------------------|")
         
         for event in events:
             symbol = event.get('symbol', 'N/A')
-            name = event.get('name', 'N/A')
             dividend = event.get('dividend', 'N/A')
-            yield_val = event.get('dividend_yield', 'N/A')
-            ex_date = event.get('date', 'N/A')
-            payment_date = event.get('paymentDate', 'N/A')
+            div_yield = event.get('yield', 'N/A')
+            frequency = event.get('frequency', 'N/A')
             record_date = event.get('recordDate', 'N/A')
+            payment_date = event.get('paymentDate', 'N/A')
+            declaration_date = event.get('declarationDate', 'N/A')
             
             # Format numbers
             if isinstance(dividend, (int, float)):
                 dividend = f"${dividend:.4f}"
-            if isinstance(yield_val, (int, float)):
-                yield_val = f"{yield_val:.2f}%"
+            if isinstance(div_yield, (int, float)):
+                div_yield = f"{div_yield:.2f}%"
             
-            result.append(f"| {symbol} | {name} | {dividend} | {yield_val} | {ex_date} | {payment_date} | {record_date} |")
+            result.append(f"| {symbol} | {dividend} | {div_yield} | {frequency} | {record_date} | {payment_date} | {declaration_date} |")
         
         result.append("")
     

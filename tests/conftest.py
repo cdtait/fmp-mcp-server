@@ -244,6 +244,128 @@ async def mock_successful_api_response(endpoint, params=None):
                     "priceToBookScore": 2
                 }
             ]
+            
+    elif endpoint == "dividends":
+        # Mock dividends response based on the symbol
+        symbol = params.get('symbol', '').upper() if params else ''
+        
+        if symbol == "AAPL":
+            return [
+                {
+                    "symbol": "AAPL",
+                    "date": "2025-02-10",
+                    "recordDate": "2025-02-10",
+                    "paymentDate": "2025-02-13",
+                    "declarationDate": "2025-01-30",
+                    "adjDividend": 0.25,
+                    "dividend": 0.25,
+                    "yield": 0.42955326460481097,
+                    "frequency": "Quarterly"
+                },
+                {
+                    "symbol": "AAPL",
+                    "date": "2024-11-08",
+                    "recordDate": "2024-11-08",
+                    "paymentDate": "2024-11-14",
+                    "declarationDate": "2024-10-31",
+                    "adjDividend": 0.25,
+                    "dividend": 0.25,
+                    "yield": 0.42955326460481097,
+                    "frequency": "Quarterly"
+                },
+                {
+                    "symbol": "AAPL",
+                    "date": "2024-08-09",
+                    "recordDate": "2024-08-09",
+                    "paymentDate": "2024-08-15",
+                    "declarationDate": "2024-07-31",
+                    "adjDividend": 0.25,
+                    "dividend": 0.25,
+                    "yield": 0.42955326460481097,
+                    "frequency": "Quarterly"
+                }
+            ]
+        elif symbol == "MSFT":
+            return [
+                {
+                    "symbol": "MSFT",
+                    "date": "2025-02-14",
+                    "recordDate": "2025-02-20",
+                    "paymentDate": "2025-03-05",
+                    "declarationDate": "2025-01-31",
+                    "adjDividend": 0.75,
+                    "dividend": 0.75,
+                    "yield": 0.68,
+                    "frequency": "Quarterly"
+                },
+                {
+                    "symbol": "MSFT",
+                    "date": "2024-11-15",
+                    "recordDate": "2024-11-20",
+                    "paymentDate": "2024-12-05",
+                    "declarationDate": "2024-10-31",
+                    "adjDividend": 0.75,
+                    "dividend": 0.75,
+                    "yield": 0.68,
+                    "frequency": "Quarterly"
+                }
+            ]
+        else:
+            # Return a sample dividend for other symbols
+            return [
+                {
+                    "symbol": symbol,
+                    "date": "2025-01-15",
+                    "recordDate": "2025-01-20",
+                    "paymentDate": "2025-01-30",
+                    "declarationDate": "2025-01-05",
+                    "adjDividend": 0.50,
+                    "dividend": 0.50,
+                    "yield": 1.25,
+                    "frequency": "Quarterly"
+                }
+            ]
+            
+    elif endpoint == "dividends-calendar":
+        # Get date range from params
+        from_date = params.get('from', '2025-01-01')
+        to_date = params.get('to', '2025-03-31')
+        
+        return [
+            {
+                "symbol": "1D0.SI",
+                "date": "2025-02-04",
+                "recordDate": "2025-02-10",
+                "paymentDate": "2025-02-20",
+                "declarationDate": "2025-01-25",
+                "adjDividend": 0.01,
+                "dividend": 0.01,
+                "yield": 6.25,
+                "frequency": "Semi-Annual"
+            },
+            {
+                "symbol": "AAPL",
+                "date": "2025-02-07",
+                "recordDate": "2025-02-12",
+                "paymentDate": "2025-02-20",
+                "declarationDate": "2025-01-30",
+                "adjDividend": 0.25,
+                "dividend": 0.25,
+                "yield": 0.43,
+                "frequency": "Quarterly"
+            },
+            {
+                "symbol": "MSFT",
+                "date": "2025-02-14",
+                "recordDate": "2025-02-20",
+                "paymentDate": "2025-03-05",
+                "declarationDate": "2025-01-31",
+                "adjDividend": 0.75,
+                "dividend": 0.75,
+                "yield": 0.68,
+                "frequency": "Quarterly"
+            }
+        ]
     
     # Default empty response for unknown endpoints
     return []
@@ -907,36 +1029,48 @@ def mock_company_dividends_response():
     """Mock response for company dividends API endpoint"""
     return [
         {
-            "date": "2023-02-10",
-            "dividend": 0.23,
-            "adjDividend": 0.23,
-            "recordDate": "2023-02-13",
-            "paymentDate": "2023-02-16",
-            "declarationDate": "2023-02-02"
+            "symbol": "AAPL",
+            "date": "2025-02-10",
+            "recordDate": "2025-02-10",
+            "paymentDate": "2025-02-13",
+            "declarationDate": "2025-01-30",
+            "adjDividend": 0.25,
+            "dividend": 0.25,
+            "yield": 0.42955326460481097,
+            "frequency": "Quarterly"
         },
         {
-            "date": "2022-11-04",
-            "dividend": 0.23,
-            "adjDividend": 0.23,
-            "recordDate": "2022-11-07",
-            "paymentDate": "2022-11-10",
-            "declarationDate": "2022-10-27"
+            "symbol": "AAPL",
+            "date": "2024-11-08",
+            "recordDate": "2024-11-08",
+            "paymentDate": "2024-11-14",
+            "declarationDate": "2024-10-31",
+            "adjDividend": 0.25,
+            "dividend": 0.25,
+            "yield": 0.42955326460481097,
+            "frequency": "Quarterly"
         },
         {
-            "date": "2022-08-05",
-            "dividend": 0.23,
-            "adjDividend": 0.23,
-            "recordDate": "2022-08-08",
-            "paymentDate": "2022-08-11",
-            "declarationDate": "2022-07-28"
+            "symbol": "AAPL",
+            "date": "2024-08-09",
+            "recordDate": "2024-08-09",
+            "paymentDate": "2024-08-15",
+            "declarationDate": "2024-07-31",
+            "adjDividend": 0.25,
+            "dividend": 0.25,
+            "yield": 0.42955326460481097,
+            "frequency": "Quarterly"
         },
         {
-            "date": "2022-05-06",
-            "dividend": 0.23,
-            "adjDividend": 0.23,
-            "recordDate": "2022-05-09",
-            "paymentDate": "2022-05-12",
-            "declarationDate": "2022-04-28"
+            "symbol": "AAPL",
+            "date": "2024-05-10",
+            "recordDate": "2024-05-10",
+            "paymentDate": "2024-05-16",
+            "declarationDate": "2024-04-30",
+            "adjDividend": 0.25,
+            "dividend": 0.25,
+            "yield": 0.42955326460481097,
+            "frequency": "Quarterly"
         }
     ]
 
@@ -946,31 +1080,37 @@ def mock_dividends_calendar_response():
     """Mock response for dividends calendar API endpoint"""
     return [
         {
-            "date": "2023-08-11",
+            "symbol": "1D0.SI",
+            "date": "2025-02-04",
+            "recordDate": "2025-02-10",
+            "paymentDate": "2025-02-20",
+            "declarationDate": "2025-01-25",
+            "adjDividend": 0.01,
+            "dividend": 0.01,
+            "yield": 6.25,
+            "frequency": "Semi-Annual"
+        },
+        {
             "symbol": "AAPL",
-            "name": "Apple Inc.",
-            "dividend": 0.24,
-            "dividend_yield": 0.51,
-            "paymentDate": "2023-08-17",
-            "recordDate": "2023-08-14"
+            "date": "2025-02-07",
+            "recordDate": "2025-02-12",
+            "paymentDate": "2025-02-20",
+            "declarationDate": "2025-01-30",
+            "adjDividend": 0.25,
+            "dividend": 0.25,
+            "yield": 0.43,
+            "frequency": "Quarterly"
         },
         {
-            "date": "2023-08-11",
             "symbol": "MSFT",
-            "name": "Microsoft Corporation",
-            "dividend": 0.68,
-            "dividend_yield": 0.72,
-            "paymentDate": "2023-09-14",
-            "recordDate": "2023-08-17"
-        },
-        {
-            "date": "2023-08-15",
-            "symbol": "JNJ",
-            "name": "Johnson & Johnson",
-            "dividend": 1.19,
-            "dividend_yield": 2.67,
-            "paymentDate": "2023-09-07",
-            "recordDate": "2023-08-22"
+            "date": "2025-02-14",
+            "recordDate": "2025-02-20",
+            "paymentDate": "2025-03-05",
+            "declarationDate": "2025-01-31",
+            "adjDividend": 0.75,
+            "dividend": 0.75,
+            "yield": 0.68,
+            "frequency": "Quarterly"
         }
     ]
 

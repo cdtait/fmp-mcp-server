@@ -294,6 +294,76 @@ async def test_ratings_snapshot_format():
 
 
 @pytest.mark.asyncio
+async def test_company_dividends_format():
+    """Test the get_company_dividends tool with the API"""
+    from src.tools.calendar import get_company_dividends
+    
+    # Call the get_company_dividends tool with a common dividend-paying stock
+    result = await get_company_dividends("AAPL")
+    
+    # Check the return format
+    assert isinstance(result, str)
+    assert "AAPL" in result
+    
+    # Check for presence of key sections
+    assert "# Dividend History for AAPL" in result
+    assert "## Dividend History" in result
+    
+    # Check for table headers
+    assert "| Date | Dividend | Adjusted Dividend | Record Date | Payment Date | Declaration Date |" in result
+    
+    # Check for dividend data (at least one row with data)
+    # We can't be too specific on exact values since they change over time
+    assert "$" in result  # Dollar sign for dividend amounts
+    
+    # Check for common dividend information that should be present
+    if "**Dividend Frequency**:" in result:
+        assert any(freq in result for freq in ["Quarterly", "Monthly", "Semi-annually", "Annually"])
+    
+    if "**Current Yield**:" in result:
+        assert "%" in result  # Percentage sign for yield
+        
+    # Test with another common dividend-paying stock
+    result2 = await get_company_dividends("MSFT")
+    assert "MSFT" in result2
+    assert "# Dividend History for MSFT" in result2
+
+
+@pytest.mark.asyncio
+async def test_dividends_calendar_format():
+    """Test the get_dividends_calendar tool with the API"""
+    from src.tools.calendar import get_dividends_calendar
+    import datetime
+    
+    # Calculate dates that are within 30 days to ensure we get some results
+    today = datetime.datetime.now()
+    next_month = today + datetime.timedelta(days=30)
+    
+    from_date = today.strftime("%Y-%m-%d")
+    to_date = next_month.strftime("%Y-%m-%d")
+    
+    # Call the get_dividends_calendar tool
+    result = await get_dividends_calendar(from_date=from_date, to_date=to_date)
+    
+    # Check the return format
+    assert isinstance(result, str)
+    
+    # Check for presence of key sections
+    assert f"# Dividend Calendar: {from_date} to {to_date}" in result
+    
+    # The rest depends on whether there are dividend events in the given period
+    if "No dividend events found" not in result:
+        # Check for table headers
+        assert "| Symbol | Dividend | Yield | Frequency | Record Date | Payment Date | Declaration Date |" in result
+        
+        # Check for currency and percentage formatting
+        assert "$" in result  # Dollar sign for dividend amounts
+        assert "%" in result  # Percentage sign for yield values
+        
+    # No specific assertion on companies as it depends on the date range
+
+
+@pytest.mark.asyncio
 async def test_error_handling_with_invalid_symbol(setup_api_key):
     """Test API error handling with an invalid symbol"""
     # If we're in TEST_MODE, remove the patch temporarily so we can see real errors
