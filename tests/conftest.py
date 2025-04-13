@@ -161,6 +161,42 @@ async def mock_successful_api_response(endpoint, params=None):
             }
         ]
     
+    elif endpoint == "search-symbol":
+        # Mock search-symbol response based on the query
+        query_upper = params.get('query', '').upper() if params else ''
+        
+        if query_upper == "AAPL":
+            return [
+                {
+                    "symbol": "AAPL",
+                    "name": "Apple Inc.",
+                    "currency": "USD",
+                    "exchangeFullName": "NASDAQ Global Select",
+                    "exchange": "NASDAQ"
+                }
+            ]
+        elif query_upper == "MSFT":
+            return [
+                {
+                    "symbol": "MSFT",
+                    "name": "Microsoft Corporation",
+                    "currency": "USD",
+                    "exchangeFullName": "NASDAQ Global Select",
+                    "exchange": "NASDAQ"
+                }
+            ]
+        else:
+            # Return a sample search result
+            return [
+                {
+                    "symbol": query_upper,
+                    "name": f"Sample Company {query_upper}",
+                    "currency": "USD",
+                    "exchangeFullName": "Sample Exchange",
+                    "exchange": "SMPL"
+                }
+            ]
+    
     # Default empty response for unknown endpoints
     return []
 

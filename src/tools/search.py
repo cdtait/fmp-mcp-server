@@ -60,14 +60,13 @@ async def search_by_symbol(query: str, limit: int = 10, exchange: str = None) ->
     for item in data:
         symbol = item.get('symbol', 'Unknown')
         name = item.get('name', 'Unknown')
-        exchange_name = item.get('exchangeShortName', item.get('exchange', 'Unknown'))
+        exchange = item.get('exchange', 'Unknown')
+        exchange_full_name = item.get('exchangeFullName', exchange)
         currency = item.get('currency', 'Unknown')
-        stock_type = item.get('stockType', item.get('type', 'Unknown'))
         
         result.append(f"## {symbol} - {name}")
-        result.append(f"**Exchange**: {exchange_name}")
+        result.append(f"**Exchange**: {exchange_full_name} ({exchange})")
         result.append(f"**Currency**: {currency}")
-        result.append(f"**Type**: {stock_type}")
         result.append("")
     
     return "\n".join(result)

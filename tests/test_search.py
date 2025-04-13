@@ -13,22 +13,22 @@ def mock_search_symbol_response():
             "symbol": "AAPL",
             "name": "Apple Inc.",
             "currency": "USD",
-            "stockType": "Common Stock",
-            "exchangeShortName": "NASDAQ"
+            "exchangeFullName": "NASDAQ Global Select",
+            "exchange": "NASDAQ"
         },
         {
             "symbol": "AAPL.SW",
             "name": "Apple Inc.",
             "currency": "CHF",
-            "stockType": "Common Stock",
-            "exchangeShortName": "SIX Swiss"
+            "exchangeFullName": "Swiss Exchange",
+            "exchange": "SIX"
         },
         {
             "symbol": "AAPL.NE",
             "name": "Apple Inc.",
             "currency": "EUR",
-            "stockType": "Common Stock",
-            "exchangeShortName": "Euronext"
+            "exchangeFullName": "Euronext Amsterdam",
+            "exchange": "EURONEXT"
         }
     ]
 
@@ -81,10 +81,10 @@ async def test_search_by_symbol(mock_request, mock_search_symbol_response):
     assert isinstance(result, str)
     assert "# Symbol Search Results for 'AAPL'" in result
     assert "## AAPL - Apple Inc." in result
-    assert "**Exchange**: NASDAQ" in result
+    assert "**Exchange**: NASDAQ Global Select (NASDAQ)" in result
     assert "**Currency**: USD" in result
     assert "AAPL.SW" in result  # Check that other results are included
-    assert "SIX Swiss" in result
+    assert "Swiss Exchange" in result
 
 
 @pytest.mark.asyncio
@@ -108,7 +108,7 @@ async def test_search_by_symbol_with_exchange(mock_request, mock_search_symbol_r
     assert isinstance(result, str)
     assert "# Symbol Search Results for 'AAPL' on NASDAQ" in result
     assert "## AAPL - Apple Inc." in result
-    assert "**Exchange**: NASDAQ" in result
+    assert "**Exchange**: NASDAQ Global Select (NASDAQ)" in result
     assert "AAPL.SW" not in result  # Other exchange results should not be included
 
 

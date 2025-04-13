@@ -224,6 +224,39 @@ async def test_ema_tool_format():
 
 
 @pytest.mark.asyncio
+async def test_search_by_symbol_format():
+    """Test the search_by_symbol tool with the API"""
+    from src.tools.search import search_by_symbol
+    
+    # Call the search_by_symbol tool with a common stock
+    result = await search_by_symbol("AAPL")
+    
+    # Check the return format
+    assert isinstance(result, str)
+    assert "AAPL" in result
+    
+    # Check for presence of key sections
+    assert "# Symbol Search Results for 'AAPL'" in result
+    
+    # The API should return at least one result for AAPL
+    assert "Apple Inc" in result.replace(".", "")  # Handle possible variations in name
+    
+    # Check that the response includes expected fields
+    assert "**Exchange**:" in result
+    assert "**Currency**:" in result
+    
+    # Make sure we have the right data structure formatting
+    assert "##" in result  # Section headers for each result
+    
+    # Verify real data contains NASDAQ in some form
+    assert "NASDAQ" in result.upper()
+    
+    # Test with different symbol
+    result2 = await search_by_symbol("MSFT")
+    assert "Microsoft" in result2
+
+
+@pytest.mark.asyncio
 async def test_error_handling_with_invalid_symbol(setup_api_key):
     """Test API error handling with an invalid symbol"""
     # If we're in TEST_MODE, remove the patch temporarily so we can see real errors
