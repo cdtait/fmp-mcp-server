@@ -1,0 +1,157 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g., 1.2.3)'
+        required: true
+      deployment_sha:
+        description: 'Commit SHA that passed acceptance tests'
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: write  # For creating tags and releases
+      packages: write  # For pushing to container registry
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.inputs.deployment_sha }}
+    
+    # Verify this commit has passed acceptance tests
+    - name: Verify acceptance test status
+      uses: actions/github-script@v7
+      with:
+        script: |
+          try {
+            const deployments = await github.rest.repos.listDeployments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: "${{ github.event.inputs.deployment_sha }}",
+              environment: "staging"
+            });
+            
+            if (deployments.data.length === 0) {
+              core.setFailed("No deployments found for this commit");
+              return;
+            }
+            
+            const deploymentId = deployments.data[0].id;
+            const statuses = await github.rest.repos.listDeploymentStatuses({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: deploymentId
+            });
+            
+            const successStatus = statuses.data.find(s => s.state === "success");
+            if (!successStatus) {
+              core.setFailed("This commit has not passed acceptance tests or no successful status found");
+              return;
+            }
+            
+            console.log("Verified: Commit has passed acceptance tests");
+          } catch (error) {
+            core.setFailed(`Error verifying acceptance test status: ${error.message}`);
+          }
+    
+    # Create a release tag
+    - name: Create Release Tag
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git tag -a v${{ github.event.inputs.version }} -m "Release v${{ github.event.inputs.version }}"
+        git push origin v${{ github.event.inputs.version }}
+    
+    # Build and push the production image
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Build and push
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: true
+        tags: |
+          ghcr.io/${{ github.repository }}:v${{ github.event.inputs.version }}
+          ghcr.io/${{ github.repository }}:stable
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+    
+    # Create a GitHub Release
+    - name: Create GitHub Release
+      uses: actions/github-script@v7
+      with:
+        script: |
+          try {
+            await github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: `v${{ github.event.inputs.version }}`,
+              name: `Release v${{ github.event.inputs.version }}`,
+              body: `Release v${{ github.event.inputs.version }} has been deployed.
+              
+              Docker image is available at:
+              - ghcr.io/${{ github.repository }}:v${{ github.event.inputs.version }}
+              - ghcr.io/${{ github.repository }}:stable
+              
+              This release has passed all unit tests, integration tests, and acceptance tests.`,
+              draft: false,
+              prerelease: false
+            });
+            
+            console.log("GitHub release created successfully");
+          } catch (error) {
+            core.setFailed(`Error creating GitHub release: ${error.message}`);
+          }
+          
+    # Create deployment for production
+    - name: Create production deployment
+      uses: actions/github-script@v7
+      with:
+        script: |
+          try {
+            const deploymentInfo = {
+              sha: "${{ github.event.inputs.deployment_sha }}",
+              version: "${{ github.event.inputs.version }}",
+              timestamp: new Date().toISOString(),
+              workflow_id: context.runId,
+              image: `ghcr.io/${context.repo.owner}/${context.repo.repo}:v${{ github.event.inputs.version }}`
+            };
+            
+            // Create a deployment in the repo's environment
+            const deployment = await github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: "${{ github.event.inputs.deployment_sha }}",
+              environment: "production",
+              auto_merge: false,
+              required_contexts: [],
+              payload: JSON.stringify(deploymentInfo)
+            });
+            
+            // Mark it as successful immediately
+            await github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: deployment.data.id,
+              state: "success",
+              description: "Production release deployed",
+              environment_url: `https://github.com/${context.repo.owner}/${context.repo.repo}/releases/tag/v${{ github.event.inputs.version }}`
+            });
+            
+            console.log("Production deployment created and marked as successful");
+          } catch (error) {
+            core.setFailed(`Error creating production deployment: ${error.message}`);
+          }

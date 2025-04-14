@@ -1,0 +1,41 @@
+# codecov.yml
+coverage:
+  precision: 2
+  round: down
+  range: "70...100"
+  status:
+    project:
+      default:
+        target: 80%
+        threshold: 2%
+      unit:
+        target: 85%
+        flags:
+          - unit-tests
+      integration:
+        target: 75%
+        flags:
+          - integration-tests
+      acceptance:
+        target: 90%
+        flags:
+          - acceptance-tests
+
+flags:
+  unit-tests:
+    paths:
+      - src/
+    carryforward: true
+  integration-tests:
+    paths:
+      - src/
+    carryforward: true
+  acceptance-tests:
+    paths:
+      - src/
+    carryforward: true
+
+comment:
+  layout: "reach, diff, flags, files"
+  behavior: default
+  require_changes: false
