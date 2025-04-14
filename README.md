@@ -20,6 +20,7 @@ A Model Context Protocol (MCP) server that provides tools, resources, and prompt
 - **Forex**: Get forex pair listings and exchange rates
 - **Technical Indicators**: Calculate and interpret technical indicators and get technical analysis summaries
 - **Analysis Prompts**: Generate investment analyses using predefined prompt templates
+- **Chat Agent**: Interactive CLI chat interface to FMP MCP Server
 
 ## Code Organization
 
@@ -99,6 +100,13 @@ cp .env.template .env
 ```
 
 You can get an API key by registering at [Financial Modeling Prep](https://site.financialmodelingprep.com/developer/docs/).
+
+4. Set up your OpenAI API key (if using the chat agent):
+
+```bash
+# Add your OpenAI API key to the .env file
+echo "OPENAI_API_KEY=your_openai_api_key_here" >> .env
+```
 
 ## Development
 
@@ -206,8 +214,9 @@ fmp-mcp-server/
 │   ├── resources/            # MCP resources implementation
 │   │   ├── company.py
 │   │   └── market.py
-│   └── prompts/              # MCP prompts implementation
-│       └── templates.py
+│   ├── prompts/              # MCP prompts implementation
+│   │   └── templates.py
+│   └── agent_chat_client.py  # OpenAI Agent-based chat client
 ├── tests/                    # Test suite
 │   ├── conftest.py           # Pytest fixtures
 │   ├── acceptance_tests.py   # API integration tests
@@ -263,6 +272,57 @@ python -m src.server --sse --port 8000
 ```
 
 This starts the server in SSE (Server-Sent Events) mode, which allows connecting the MCP Inspector or other MCP clients over HTTP.
+
+### Using the Chat Agent
+
+The project includes a chat agent that connects to the FMP MCP server via SSE and provides an interactive CLI interface for financial data queries.
+
+#### Prerequisites
+
+- OpenAI API key (set in your environment or .env file)
+- Running FMP MCP server in SSE mode
+
+#### Running the Chat Agent
+
+1. Start the FMP MCP server in SSE mode:
+
+```bash
+# In one terminal window
+python -m src.server --sse
+```
+
+2. In another terminal window, run the chat agent:
+
+```bash
+# Ensure you have the OpenAI API key set
+export OPENAI_API_KEY=your_openai_api_key_here
+
+# Run the chat agent
+python src/agent_chat_client.py
+```
+
+3. Start chatting with the financial advisor agent:
+
+```
+View trace: https://platform.openai.com/traces/trace?trace_id=trace_abc123...
+
+You: What is the current price of Apple?
+Running: What is the current price of Apple?
+The current price of Apple Inc. (AAPL) is $202.52.
+
+You: Compare AAPL and MSFT's financial performance
+Running: Compare AAPL and MSFT's financial performance
+...
+```
+
+#### Chat Agent Features
+
+- Interactive chat interface to FMP financial data
+- Access to all FMP data tools via natural language
+- OpenAI Agent-based implementation for sophisticated queries
+- Trace view for debugging and understanding agent actions
+
+Type `exit` or `quit` to end the chat session.
 
 #### Using Docker
 
@@ -416,6 +476,8 @@ The server uses the following environment variables:
 - `FMP_API_KEY`: Your Financial Modeling Prep API key (required)
   - You can get an API key by registering at [Financial Modeling Prep](https://site.financialmodelingprep.com/developer/docs/)
   - Can be passed via command line, environment variable, or .env file
+- `OPENAI_API_KEY`: Your OpenAI API key (required for using the chat agent)
+  - Get an API key from [OpenAI](https://platform.openai.com/api-keys)
 - `PORT`: Host port to use when running with Docker Compose (defaults to 8000)
   - Only affects the host port mapping, the container always runs on port 8000 internally
 - `TEST_MODE`: Set to "true" to use mock data in acceptance tests
@@ -433,6 +495,7 @@ You can set these variables in a .env file in the project root:
 ```bash
 # Example .env file contents
 FMP_API_KEY=your_api_key_here
+OPENAI_API_KEY=your_openai_api_key_here
 PORT=9000
 TEST_MODE=true  # For testing with mock data
 ```
