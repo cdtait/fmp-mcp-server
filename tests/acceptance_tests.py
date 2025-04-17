@@ -688,6 +688,58 @@ async def test_company_notes_format():
 
 
 @pytest.mark.asyncio
+@pytest.mark.acceptance
+async def test_most_active_format():
+    """Test the get_most_active tool with the real API"""
+    from src.tools.market_performers import get_most_active
+    
+    # Call the get_most_active tool
+    result = await get_most_active(5)  # Limit to 5 for faster tests
+    
+    # Check return format
+    assert isinstance(result, str)
+    
+    # Check for presence of key sections
+    assert "# Top 5 Most Active Stocks" in result
+    assert "| Rank | Symbol | Company | Price | Change | Change % | Volume |" in result
+    
+    # Check that at least some data is returned (should be at least 1 row in any case)
+    assert "| 1 |" in result
+    
+    # Test with a different limit
+    result_more = await get_most_active(10)
+    assert isinstance(result_more, str)
+    assert "# Top 10 Most Active Stocks" in result_more
+
+
+@pytest.mark.asyncio
+@pytest.mark.acceptance
+async def test_market_hours_format():
+    """Test the get_market_hours tool with the real API"""
+    from src.tools.market_hours import get_market_hours
+    
+    # Call the tool with a specific exchange
+    result = await get_market_hours("NASDAQ")
+    
+    # Check return format
+    assert isinstance(result, str)
+    
+    # Check for proper formatting if data is returned
+    if "No market hours data found for exchange" not in result:
+        assert "# Market Hours for NASDAQ" in result
+        assert "| Exchange | Status | Opening Hour | Closing Hour | Timezone |" in result
+        
+        # Check for the presence of either Open or Closed status
+        status_included = any(status in result for status in ["🟢 Open", "🔴 Closed"])
+        assert status_included, "Market status (open/closed) is missing"
+    
+    # Try with a different exchange
+    result_nyse = await get_market_hours("NYSE")
+    assert isinstance(result_nyse, str)
+    assert "Market Hours for NYSE" in result_nyse
+
+
+@pytest.mark.asyncio
 async def test_error_handling_with_invalid_symbol(setup_api_key):
     """Test API error handling with an invalid symbol"""
     # If we're in TEST_MODE, remove the patch temporarily so we can see real errors

@@ -980,6 +980,141 @@ async def mock_successful_api_response(endpoint, params=None):
         # For test purposes, we'll return empty results for all companies
         # In a real API, this would return company debt instruments
         return []
+    
+    # Handle most-actives endpoint
+    elif endpoint == "most-actives":
+        return [
+            {
+                "symbol": "AAPL",
+                "name": "Apple Inc.",
+                "price": 190.50,
+                "change": 2.75,
+                "changesPercentage": 1.46,
+                "volume": 85000000
+            },
+            {
+                "symbol": "AMD",
+                "name": "Advanced Micro Devices, Inc.",
+                "price": 162.25,
+                "change": 3.50,
+                "changesPercentage": 2.20,
+                "volume": 76000000
+            },
+            {
+                "symbol": "MSFT",
+                "name": "Microsoft Corporation",
+                "price": 410.75,
+                "change": -5.25,
+                "changesPercentage": -1.26,
+                "volume": 62000000
+            },
+            {
+                "symbol": "NVDA",
+                "name": "NVIDIA Corporation",
+                "price": 875.30,
+                "change": 15.80,
+                "changesPercentage": 1.84,
+                "volume": 55000000
+            },
+            {
+                "symbol": "TSLA",
+                "name": "Tesla, Inc.",
+                "price": 175.50,
+                "change": -8.25,
+                "changesPercentage": -4.49,
+                "volume": 48000000
+            },
+            {
+                "symbol": "META",
+                "name": "Meta Platforms, Inc.",
+                "price": 520.25,
+                "change": 7.50,
+                "changesPercentage": 1.46,
+                "volume": 32000000
+            },
+            {
+                "symbol": "AMZN",
+                "name": "Amazon.com, Inc.",
+                "price": 180.75,
+                "change": 2.25,
+                "changesPercentage": 1.26,
+                "volume": 28000000
+            },
+            {
+                "symbol": "INTC",
+                "name": "Intel Corporation",
+                "price": 33.75,
+                "change": -0.50,
+                "changesPercentage": -1.46,
+                "volume": 25000000
+            },
+            {
+                "symbol": "GOOG",
+                "name": "Alphabet Inc.",
+                "price": 168.25,
+                "change": 1.75,
+                "changesPercentage": 1.05,
+                "volume": 22000000
+            },
+            {
+                "symbol": "SPY",
+                "name": "SPDR S&P 500 ETF Trust",
+                "price": 510.50,
+                "change": 3.25,
+                "changesPercentage": 0.64,
+                "volume": 20000000
+            }
+        ]
+        
+    # Handle exchange-market-hours endpoint
+    elif endpoint == "exchange-market-hours":
+        exchange = params.get('exchange', '').upper() if params else ''
+        
+        if exchange == "NASDAQ":
+            return [
+                {
+                    "exchange": "NASDAQ",
+                    "name": "NASDAQ Global Market",
+                    "openingHour": "09:30 AM -04:00",
+                    "closingHour": "04:00 PM -04:00",
+                    "timezone": "America/New_York",
+                    "isMarketOpen": False
+                }
+            ]
+        elif exchange == "NYSE":
+            return [
+                {
+                    "exchange": "NYSE",
+                    "name": "New York Stock Exchange",
+                    "openingHour": "09:30 AM -04:00",
+                    "closingHour": "04:00 PM -04:00",
+                    "timezone": "America/New_York",
+                    "isMarketOpen": False
+                }
+            ]
+        elif exchange == "LSE":
+            return [
+                {
+                    "exchange": "LSE",
+                    "name": "London Stock Exchange",
+                    "openingHour": "08:00 AM +00:00",
+                    "closingHour": "04:30 PM +00:00",
+                    "timezone": "Europe/London",
+                    "isMarketOpen": False
+                }
+            ]
+        else:
+            # Generic exchange info for any other exchange
+            return [
+                {
+                    "exchange": exchange,
+                    "name": f"{exchange} Exchange",
+                    "openingHour": "09:00 AM",
+                    "closingHour": "05:00 PM",
+                    "timezone": "UTC",
+                    "isMarketOpen": False
+                }
+            ]
             
     # Handle cryptocurrency-list endpoint
     elif endpoint == "cryptocurrency-list":
