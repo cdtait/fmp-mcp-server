@@ -18,7 +18,7 @@ A Model Context Protocol (MCP) server that provides tools, resources, and prompt
 - **Commodities**: Get commodities list and current prices
 - **Cryptocurrencies**: Access cryptocurrency listings and current quotes
 - **Forex**: Get forex pair listings and exchange rates
-- **Technical Indicators**: Calculate and interpret technical indicators and get technical analysis summaries
+- **Technical Indicators**: Calculate and interpret Exponential Moving Average (EMA)
 - **Analysis Prompts**: Generate investment analyses using predefined prompt templates
 - **Chat Agent**: Interactive CLI chat interface to FMP MCP Server
 
