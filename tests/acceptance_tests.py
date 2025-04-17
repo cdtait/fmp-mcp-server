@@ -740,6 +740,70 @@ async def test_market_hours_format():
 
 
 @pytest.mark.asyncio
+@pytest.mark.acceptance
+async def test_biggest_gainers_format():
+    """Test the get_biggest_gainers tool with the real API"""
+    from src.tools.market_performers import get_biggest_gainers
+    
+    # Call the get_biggest_gainers tool with a limited number of results
+    result = await get_biggest_gainers(5)
+    
+    # Check return format
+    assert isinstance(result, str)
+    
+    # Check for presence of key sections
+    assert "# Top 5 Biggest Gainers" in result
+    assert "| Rank | Symbol | Company | Price | Change | Change % | Volume |" in result
+    
+    # Check that at least some data is returned
+    if "No data found for biggest gainers" not in result:
+        assert "| 1 |" in result
+        
+        # Verify the presence of percentage signs in Change % column
+        assert "%" in result
+        
+        # Verify the presence of dollar signs in Price column
+        assert "$" in result
+    
+    # Test with a different limit
+    result_more = await get_biggest_gainers(10)
+    assert isinstance(result_more, str)
+    assert "# Top 10 Biggest Gainers" in result_more
+
+
+@pytest.mark.asyncio
+@pytest.mark.acceptance
+async def test_biggest_losers_format():
+    """Test the get_biggest_losers tool with the real API"""
+    from src.tools.market_performers import get_biggest_losers
+    
+    # Call the get_biggest_losers tool with a limited number of results
+    result = await get_biggest_losers(5)
+    
+    # Check return format
+    assert isinstance(result, str)
+    
+    # Check for presence of key sections
+    assert "# Top 5 Biggest Losers" in result
+    assert "| Rank | Symbol | Company | Price | Change | Change % | Volume |" in result
+    
+    # Check that at least some data is returned
+    if "No data found for biggest losers" not in result:
+        assert "| 1 |" in result
+        
+        # Verify the presence of percentage signs in Change % column
+        assert "%" in result
+        
+        # Verify the presence of dollar signs in Price column
+        assert "$" in result
+    
+    # Test with a different limit
+    result_more = await get_biggest_losers(10)
+    assert isinstance(result_more, str)
+    assert "# Top 10 Biggest Losers" in result_more
+
+
+@pytest.mark.asyncio
 async def test_error_handling_with_invalid_symbol(setup_api_key):
     """Test API error handling with an invalid symbol"""
     # If we're in TEST_MODE, remove the patch temporarily so we can see real errors

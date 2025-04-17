@@ -981,6 +981,176 @@ async def mock_successful_api_response(endpoint, params=None):
         # In a real API, this would return company debt instruments
         return []
     
+    # Handle biggest-gainers endpoint
+    elif endpoint == "biggest-gainers":
+        return [
+            {
+                "symbol": "NVDA",
+                "name": "NVIDIA Corporation",
+                "price": 875.30,
+                "change": 35.25,
+                "changesPercentage": 4.20,
+                "volume": 58000000
+            },
+            {
+                "symbol": "AMD",
+                "name": "Advanced Micro Devices, Inc.",
+                "price": 162.25,
+                "change": 5.75,
+                "changesPercentage": 3.67,
+                "volume": 45000000
+            },
+            {
+                "symbol": "AAPL",
+                "name": "Apple Inc.",
+                "price": 190.50,
+                "change": 5.25,
+                "changesPercentage": 2.83,
+                "volume": 72000000
+            },
+            {
+                "symbol": "MSFT",
+                "name": "Microsoft Corporation",
+                "price": 410.75,
+                "change": 8.50,
+                "changesPercentage": 2.11,
+                "volume": 35000000
+            },
+            {
+                "symbol": "META",
+                "name": "Meta Platforms, Inc.",
+                "price": 520.25,
+                "change": 10.25,
+                "changesPercentage": 2.01,
+                "volume": 28000000
+            },
+            {
+                "symbol": "GOOG",
+                "name": "Alphabet Inc.",
+                "price": 168.25,
+                "change": 3.25,
+                "changesPercentage": 1.97,
+                "volume": 22000000
+            },
+            {
+                "symbol": "TSLA",
+                "name": "Tesla, Inc.",
+                "price": 175.50,
+                "change": 3.25,
+                "changesPercentage": 1.89,
+                "volume": 65000000
+            },
+            {
+                "symbol": "AMZN",
+                "name": "Amazon.com, Inc.",
+                "price": 180.75,
+                "change": 3.25,
+                "changesPercentage": 1.83,
+                "volume": 42000000
+            },
+            {
+                "symbol": "ADBE",
+                "name": "Adobe Inc.",
+                "price": 525.75,
+                "change": 8.25,
+                "changesPercentage": 1.59,
+                "volume": 8500000
+            },
+            {
+                "symbol": "CRM",
+                "name": "Salesforce, Inc.",
+                "price": 275.50,
+                "change": 4.25,
+                "changesPercentage": 1.57,
+                "volume": 7500000
+            }
+        ]
+            
+    # Handle biggest-losers endpoint
+    elif endpoint == "biggest-losers":
+        return [
+            {
+                "symbol": "INTC",
+                "name": "Intel Corporation",
+                "price": 33.75,
+                "change": -2.25,
+                "changesPercentage": -6.25,
+                "volume": 48000000
+            },
+            {
+                "symbol": "PYPL",
+                "name": "PayPal Holdings, Inc.",
+                "price": 62.50,
+                "change": -3.75,
+                "changesPercentage": -5.66,
+                "volume": 22000000
+            },
+            {
+                "symbol": "IBM",
+                "name": "International Business Machines Corporation",
+                "price": 168.25,
+                "change": -7.50,
+                "changesPercentage": -4.27,
+                "volume": 8500000
+            },
+            {
+                "symbol": "NFLX",
+                "name": "Netflix, Inc.",
+                "price": 610.50,
+                "change": -25.25,
+                "changesPercentage": -3.97,
+                "volume": 12000000
+            },
+            {
+                "symbol": "CSCO",
+                "name": "Cisco Systems, Inc.",
+                "price": 45.75,
+                "change": -1.75,
+                "changesPercentage": -3.68,
+                "volume": 18000000
+            },
+            {
+                "symbol": "MU",
+                "name": "Micron Technology, Inc.",
+                "price": 95.50,
+                "change": -3.25,
+                "changesPercentage": -3.29,
+                "volume": 16000000
+            },
+            {
+                "symbol": "WMT",
+                "name": "Walmart Inc.",
+                "price": 58.75,
+                "change": -1.75,
+                "changesPercentage": -2.89,
+                "volume": 9500000
+            },
+            {
+                "symbol": "PFE",
+                "name": "Pfizer Inc.",
+                "price": 27.25,
+                "change": -0.75,
+                "changesPercentage": -2.68,
+                "volume": 35000000
+            },
+            {
+                "symbol": "KO",
+                "name": "The Coca-Cola Company",
+                "price": 62.25,
+                "change": -1.50,
+                "changesPercentage": -2.35,
+                "volume": 12500000
+            },
+            {
+                "symbol": "DIS",
+                "name": "The Walt Disney Company",
+                "price": 108.50,
+                "change": -2.25,
+                "changesPercentage": -2.03,
+                "volume": 10500000
+            }
+        ]
+    
     # Handle most-actives endpoint
     elif endpoint == "most-actives":
         return [
