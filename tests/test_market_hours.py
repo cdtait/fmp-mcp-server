@@ -7,63 +7,17 @@ from unittest.mock import patch, AsyncMock
 @patch('src.api.client.fmp_api_request')
 async def test_get_market_hours(mock_request):
     """Test the get_market_hours function"""
-    # Sample response data based on API documentation
-    mock_response = {
-        "exchangeName": "NASDAQ",
-        "isOpen": True,
-        "timezone": "America/New_York",
-        "localTime": "2023-05-03 15:30:45",
-        "marketHours": [
-            {
-                "day": "Monday",
-                "open": "09:30",
-                "close": "16:00",
-                "isClosed": False
-            },
-            {
-                "day": "Tuesday",
-                "open": "09:30",
-                "close": "16:00",
-                "isClosed": False
-            },
-            {
-                "day": "Wednesday",
-                "open": "09:30",
-                "close": "16:00",
-                "isClosed": False
-            },
-            {
-                "day": "Thursday",
-                "open": "09:30",
-                "close": "16:00",
-                "isClosed": False
-            },
-            {
-                "day": "Friday",
-                "open": "09:30",
-                "close": "16:00",
-                "isClosed": False
-            },
-            {
-                "day": "Saturday",
-                "isClosed": True
-            },
-            {
-                "day": "Sunday",
-                "isClosed": True
-            }
-        ],
-        "closingDays": [
-            {
-                "date": "2023-05-29",
-                "name": "Memorial Day"
-            },
-            {
-                "date": "2023-07-04",
-                "name": "Independence Day"
-            }
-        ]
-    }
+    # Sample response data based on actual API response
+    mock_response = [
+        {
+            "exchange": "NASDAQ",
+            "name": "NASDAQ Global Market",
+            "openingHour": "09:30 AM -04:00",
+            "closingHour": "04:00 PM -04:00",
+            "timezone": "America/New_York",
+            "isMarketOpen": False
+        }
+    ]
     
     # Set up the mock
     mock_request.return_value = mock_response
@@ -79,14 +33,8 @@ async def test_get_market_hours(mock_request):
     
     # Check the result contains expected information
     assert "# Market Hours for NASDAQ" in result
-    assert "## 🟢 Current Status: Open" in result
-    assert "- **Timezone**: America/New_York" in result
-    assert "- **Local Time**: 2023-05-03 15:30:45" in result
-    assert "## Trading Hours" in result
-    assert "| Monday | 09:30 | 16:00 |" in result
-    assert "| Saturday | Closed | Closed |" in result
-    assert "## Upcoming Holidays" in result
-    assert "| 2023-05-29 | Memorial Day |" in result
+    assert "| Exchange | Status | Opening Hour | Closing Hour | Timezone |" in result
+    assert "| NASDAQ Global Market | 🔴 Closed | 09:30 AM -04:00 | 04:00 PM -04:00 | America/New_York |" in result
 
 
 @pytest.mark.asyncio

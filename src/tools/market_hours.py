@@ -26,13 +26,8 @@ async def get_market_hours(exchange: str = "NASDAQ") -> str:
     if isinstance(data, dict) and "error" in data:
         return f"Error fetching market hours information: {data.get('message', 'Unknown error')}"
     
-    # The API returns a single object, not a list
-    if not data or isinstance(data, list) and len(data) == 0:
+    if not data or not isinstance(data, list) or len(data) == 0:
         return f"No market hours data found for exchange: {exchange}"
-    
-    # If it's a list with one item, take the first item
-    if isinstance(data, list) and len(data) > 0:
-        data = data[0]
     
     # Format the response
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -43,54 +38,21 @@ async def get_market_hours(exchange: str = "NASDAQ") -> str:
         ""
     ]
     
-    # Get market status
-    is_open = data.get('isOpen', False)
-    status_emoji = "🟢" if is_open else "🔴"
-    status_text = "Open" if is_open else "Closed"
+    # Create a table for exchange hours
+    result.append("| Exchange | Status | Opening Hour | Closing Hour | Timezone |")
+    result.append("|----------|--------|--------------|--------------|----------|")
     
-    result.append(f"## {status_emoji} Current Status: {status_text}")
-    result.append("")
-    
-    # Add timezone and current time
-    timezone = data.get('timezone', 'Unknown')
-    current_time_local = data.get('localTime', 'Unknown')
-    
-    result.append(f"- **Timezone**: {timezone}")
-    result.append(f"- **Local Time**: {current_time_local}")
-    result.append("")
-    
-    # Add trading hours
-    result.append("## Trading Hours")
-    result.append("")
-    result.append("| Day | Open | Close |")
-    result.append("|-----|------|-------|")
-    
-    # Add the trading hours for each day
-    for day_data in data.get('marketHours', []):
-        day = day_data.get('day', 'Unknown')
-        open_time = day_data.get('open', 'Closed')
-        close_time = day_data.get('close', 'Closed')
+    # Process each exchange in the response
+    for exchange_data in data:
+        exchange_name = exchange_data.get('name', exchange_data.get('exchange', 'Unknown'))
+        is_open = exchange_data.get('isMarketOpen', False)
+        status_emoji = "🟢 Open" if is_open else "🔴 Closed"
+        opening_hour = exchange_data.get('openingHour', 'N/A')
+        closing_hour = exchange_data.get('closingHour', 'N/A')
+        timezone = exchange_data.get('timezone', 'Unknown')
         
-        # Handle special cases
-        if day_data.get('isClosed', False):
-            open_close = "Closed"
-            result.append(f"| {day} | {open_close} | {open_close} |")
-        else:
-            result.append(f"| {day} | {open_time} | {close_time} |")
-    
-    # Add holiday information if available
-    holidays = data.get('closingDays', [])
-    if holidays:
-        result.append("")
-        result.append("## Upcoming Holidays")
-        result.append("")
-        result.append("| Date | Holiday |")
-        result.append("|------|---------|")
-        
-        for holiday in holidays:
-            date = holiday.get('date', 'Unknown')
-            name = holiday.get('name', 'Unknown')
-            result.append(f"| {date} | {name} |")
+        # Add row to the table
+        result.append(f"| {exchange_name} | {status_emoji} | {opening_hour} | {closing_hour} | {timezone} |")
     
     return "\n".join(result)
 
