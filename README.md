@@ -80,6 +80,12 @@ This standardization improves code maintainability and provides a consistent app
   - Includes adjusted price target information
   - Better date formatting for improved readability
   - Support for all fields in the API response
+  
+- **get_key_metrics**: Enhanced comprehensive financial metrics tool
+  - Improved support for all metrics from the key-metrics endpoint
+  - Added detailed categorization of metrics (valuation, profitability, liquidity, etc.)
+  - Better formatting and organization of financial data
+  - Support for fiscal year and currency information
 
 Tests are similarly organized with one test file per module, following a consistent pattern to ensure comprehensive coverage.
 

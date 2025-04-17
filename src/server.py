@@ -63,8 +63,7 @@ mcp.tool()(get_financial_ratios)
 mcp.tool()(get_income_statement)
 mcp.tool()(get_balance_sheet)
 mcp.tool()(get_cash_flow)
-# TODO remove deprecated tool
-#mcp.tool()(get_key_metrics)
+mcp.tool()(get_key_metrics)
 # TODO remove deprecated tool
 #mcp.tool()(get_stock_news)
 # TODO remove deprecated tool

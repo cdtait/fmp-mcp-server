@@ -381,30 +381,50 @@ async def test_get_key_metrics_tool(mock_request):
     # Create mock response data
     mock_key_metrics_response = [
         {
-            "date": "2023-06-30",
-            "period": "annual",
-            "peRatio": 31.25,
-            "pegRatio": 2.1,
-            "pbRatio": 45.56,
-            "priceToSalesRatio": 7.35,
-            "enterpriseValueOverEBITDA": 22.42,
-            "evToSales": 6.8,
-            "roe": 0.456,
-            "returnOnTangibleAssets": 0.375,
-            "roic": 0.35,
-            "grossProfitMargin": 0.436,
-            "operatingProfitMargin": 0.297,
-            "netProfitMargin": 0.252,
-            "revenueGrowth": 0.076,
-            "epsgrowth": 0.093,
-            "debtToEquity": 1.52,
-            "debtToAssets": 0.348,
-            "currentRatio": 1.28,
-            "interestCoverage": 42.5,
-            "revenuePerShare": 24.87,
-            "netIncomePerShare": 6.01,
-            "bookValuePerShare": 4.18,
-            "freeCashFlowPerShare": 6.56
+            "symbol": "AAPL",
+            "date": "2023-09-30",
+            "fiscalYear": "2023",
+            "period": "FY",
+            "reportedCurrency": "USD",
+            "marketCap": 2695569789510,
+            "enterpriseValue": 2776692789510,
+            "evToSales": 7.244459839310174,
+            "evToOperatingCashFlow": 25.118666849189907,
+            "evToFreeCashFlow": 27.882920845818607,
+            "evToEBITDA": 22.068771177157846,
+            "netDebtToEBITDA": 0.6447544110634239,
+            "currentRatio": 0.9880116717592975,
+            "incomeQuality": 1.1396773029537606,
+            "grahamNumber": 23.391122856319186,
+            "grahamNetNet": -11.431345868845547,
+            "taxBurden": 0.8528082577196314,
+            "interestBurden": 0.9950569111381353,
+            "workingCapital": -1742000000,
+            "investedCapital": 52634000000,
+            "returnOnAssets": 0.27509834563776475,
+            "operatingReturnOnAssets": 0.32410277058658404,
+            "returnOnTangibleAssets": 0.27509834563776475,
+            "returnOnEquity": 1.5607601454639075,
+            "returnOnInvestedCapital": 0.4338918291689624,
+            "returnOnCapitalEmployed": 0.551446146423833,
+            "earningsYield": 0.03598311584343425,
+            "freeCashFlowYield": 0.03694358068098929,
+            "capexToOperatingCashFlow": 0.0991378920420108,
+            "capexToDepreciation": 0.9513846688080563,
+            "capexToRevenue": 0.02859230076835775,
+            "salesGeneralAndAdministrativeToRevenue": 0,
+            "researchAndDevelopementToRevenue": 0.07804897139204509,
+            "stockBasedCompensationToRevenue": 0.028263563666723196,
+            "intangiblesToTotalAssets": 0,
+            "daysOfSalesOutstanding": 58.07564866874519,
+            "daysOfPayablesOutstanding": 106.72146803214763,
+            "daysOfInventoryOutstanding": 10.791292490321615,
+            "operatingCycle": 68.8669411590668,
+            "cashConversionCycle": -37.85452687308083,
+            "freeCashFlowToEquity": 18461000000,
+            "freeCashFlowToFirm": 81201836665.61159,
+            "tangibleAssetValue": 62146000000,
+            "netCurrentAssetValue": -146871000000
         }
     ]
     
@@ -423,11 +443,42 @@ async def test_get_key_metrics_tool(mock_request):
     # Assertions about the result
     assert isinstance(result, str)
     assert "# Key Financial Metrics for AAPL" in result
-    assert "## Period: 2023-06-30" in result
-    assert "**P/E Ratio**: 31.25" in result
-    assert "**ROE**: 0.456" in result
-    assert "**Revenue Growth**: 0.076" in result
-    assert "**EPS**: $6.01" in result
+    assert "2023-09-30 (FY 2023)" in result
+    assert "*Reported Currency: USD*" in result
+    
+    # Check market valuation metrics
+    assert "### Market Valuation" in result
+    assert "**Market Cap**: $2,695,569,789,510" in result
+    assert "**Enterprise Value**: $2,776,692,789,510" in result
+    
+    # Check valuation ratios
+    assert "### Valuation Ratios" in result
+    assert "**EV/Sales**:" in result
+    assert "**EV/EBITDA**:" in result
+    assert "**EV/Operating Cash Flow**:" in result
+    
+    # Check profitability metrics
+    assert "### Profitability & Returns" in result
+    assert "**Return on Equity (ROE)**:" in result
+    assert "**Return on Assets (ROA)**:" in result
+    
+    # Check liquidity metrics
+    assert "### Liquidity & Financial Health" in result
+    assert "**Current Ratio**:" in result
+    assert "**Working Capital**: $-1,742,000,000" in result
+    
+    # Check operational metrics
+    assert "### Operational Metrics" in result
+    assert "**Days of Sales Outstanding**:" in result
+    assert "**Cash Conversion Cycle**:" in result
+    
+    # Check expense metrics
+    assert "### Expense Metrics" in result
+    assert "**R&D to Revenue**:" in result
+    
+    # Check valuation analysis metrics
+    assert "### Valuation Analysis" in result
+    assert "**Graham Number**:" in result
 
 
 @pytest.mark.asyncio

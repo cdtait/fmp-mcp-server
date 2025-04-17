@@ -289,39 +289,85 @@ async def get_key_metrics(symbol: str, period: str = "annual", limit: int = 1) -
     result = [f"# Key Financial Metrics for {symbol}"]
     
     for metrics in data:
-        result.append(f"\n## Period: {metrics.get('date', 'Unknown')}")
-        result.append(f"**Report Type**: {metrics.get('period', 'Unknown').capitalize()}")
+        date = metrics.get('date', 'Unknown')
+        fiscal_year = metrics.get('fiscalYear', '')
+        period_type = metrics.get('period', 'Unknown')
+        currency = metrics.get('reportedCurrency', 'USD')
+        
+        # Format the period header
+        period_display = f"{period_type}" if period_type == "Unknown" else f"{period_type} {fiscal_year}"
+        result.append(f"\n## {date} ({period_display})")
+        result.append(f"*Reported Currency: {currency}*")
         result.append("")
-        result.append("### Valuation Metrics")
-        result.append(f"**P/E Ratio**: {metrics.get('peRatio', 'N/A')}")
-        result.append(f"**PEG Ratio**: {metrics.get('pegRatio', 'N/A')}")
-        result.append(f"**Price to Book**: {metrics.get('pbRatio', 'N/A')}")
-        result.append(f"**Price to Sales**: {metrics.get('priceToSalesRatio', 'N/A')}")
-        result.append(f"**EV/EBITDA**: {metrics.get('enterpriseValueOverEBITDA', 'N/A')}")
-        result.append(f"**EV/Revenue**: {metrics.get('evToSales', 'N/A')}")
+        
+        # Market valuation metrics
+        result.append("### Market Valuation")
+        result.append(f"**Market Cap**: ${format_number(metrics.get('marketCap', 'N/A'))}")
+        result.append(f"**Enterprise Value**: ${format_number(metrics.get('enterpriseValue', 'N/A'))}")
+        
+        # Valuation ratios
         result.append("")
-        result.append("### Profitability Metrics")
-        result.append(f"**ROE**: {metrics.get('roe', 'N/A')}")
-        result.append(f"**ROA**: {metrics.get('returnOnTangibleAssets', 'N/A')}")
-        result.append(f"**ROIC**: {metrics.get('roic', 'N/A')}")
-        result.append(f"**Gross Margin**: {metrics.get('grossProfitMargin', 'N/A')}")
-        result.append(f"**Operating Margin**: {metrics.get('operatingProfitMargin', 'N/A')}")
-        result.append(f"**Net Profit Margin**: {metrics.get('netProfitMargin', 'N/A')}")
+        result.append("### Valuation Ratios")
+        result.append(f"**EV/Sales**: {format_number(metrics.get('evToSales', 'N/A'))}")
+        result.append(f"**EV/EBITDA**: {format_number(metrics.get('evToEBITDA', 'N/A'))}")
+        result.append(f"**EV/Operating Cash Flow**: {format_number(metrics.get('evToOperatingCashFlow', 'N/A'))}")
+        result.append(f"**EV/Free Cash Flow**: {format_number(metrics.get('evToFreeCashFlow', 'N/A'))}")
+        result.append(f"**Earnings Yield**: {format_number(metrics.get('earningsYield', 'N/A'))}")
+        result.append(f"**Free Cash Flow Yield**: {format_number(metrics.get('freeCashFlowYield', 'N/A'))}")
+        result.append(f"**Net Debt to EBITDA**: {format_number(metrics.get('netDebtToEBITDA', 'N/A'))}")
+        
+        # Profitability & efficiency metrics
         result.append("")
-        result.append("### Growth Metrics")
-        result.append(f"**Revenue Growth**: {metrics.get('revenueGrowth', 'N/A')}")
-        result.append(f"**EPS Growth**: {metrics.get('epsgrowth', 'N/A')}")
+        result.append("### Profitability & Returns")
+        result.append(f"**Return on Equity (ROE)**: {format_number(metrics.get('returnOnEquity', 'N/A'))}")
+        result.append(f"**Return on Assets (ROA)**: {format_number(metrics.get('returnOnAssets', 'N/A'))}")
+        result.append(f"**Return on Invested Capital (ROIC)**: {format_number(metrics.get('returnOnInvestedCapital', 'N/A'))}")
+        result.append(f"**Return on Capital Employed (ROCE)**: {format_number(metrics.get('returnOnCapitalEmployed', 'N/A'))}")
+        result.append(f"**Operating Return on Assets**: {format_number(metrics.get('operatingReturnOnAssets', 'N/A'))}")
+        
+        # Liquidity & solvency metrics
         result.append("")
-        result.append("### Financial Health")
-        result.append(f"**Debt to Equity**: {metrics.get('debtToEquity', 'N/A')}")
-        result.append(f"**Debt to Assets**: {metrics.get('debtToAssets', 'N/A')}")
-        result.append(f"**Current Ratio**: {metrics.get('currentRatio', 'N/A')}")
-        result.append(f"**Interest Coverage**: {metrics.get('interestCoverage', 'N/A')}")
+        result.append("### Liquidity & Financial Health")
+        result.append(f"**Current Ratio**: {format_number(metrics.get('currentRatio', 'N/A'))}")
+        result.append(f"**Working Capital**: ${format_number(metrics.get('workingCapital', 'N/A'))}")
+        result.append(f"**Invested Capital**: ${format_number(metrics.get('investedCapital', 'N/A'))}")
+        result.append(f"**Tangible Asset Value**: ${format_number(metrics.get('tangibleAssetValue', 'N/A'))}")
+        result.append(f"**Net Current Asset Value**: ${format_number(metrics.get('netCurrentAssetValue', 'N/A'))}")
+        
+        # Cash conversion & efficiency metrics
         result.append("")
-        result.append("### Key Per Share Metrics")
-        result.append(f"**Revenue per Share**: ${metrics.get('revenuePerShare', 'N/A')}")
-        result.append(f"**EPS**: ${metrics.get('netIncomePerShare', 'N/A')}")
-        result.append(f"**Book Value per Share**: ${metrics.get('bookValuePerShare', 'N/A')}")
-        result.append(f"**Free Cash Flow per Share**: ${metrics.get('freeCashFlowPerShare', 'N/A')}")
+        result.append("### Cash Conversion & Efficiency")
+        result.append(f"**Income Quality**: {format_number(metrics.get('incomeQuality', 'N/A'))}")
+        result.append(f"**Free Cash Flow to Equity**: ${format_number(metrics.get('freeCashFlowToEquity', 'N/A'))}")
+        result.append(f"**Free Cash Flow to Firm**: ${format_number(metrics.get('freeCashFlowToFirm', 'N/A'))}")
+        result.append(f"**CapEx to Operating Cash Flow**: {format_number(metrics.get('capexToOperatingCashFlow', 'N/A'))}")
+        result.append(f"**CapEx to Revenue**: {format_number(metrics.get('capexToRevenue', 'N/A'))}")
+        result.append(f"**CapEx to Depreciation**: {format_number(metrics.get('capexToDepreciation', 'N/A'))}")
+        
+        # Operational metrics
+        result.append("")
+        result.append("### Operational Metrics")
+        result.append(f"**Days of Sales Outstanding**: {format_number(metrics.get('daysOfSalesOutstanding', 'N/A'))}")
+        result.append(f"**Days of Inventory Outstanding**: {format_number(metrics.get('daysOfInventoryOutstanding', 'N/A'))}")
+        result.append(f"**Days of Payables Outstanding**: {format_number(metrics.get('daysOfPayablesOutstanding', 'N/A'))}")
+        result.append(f"**Operating Cycle**: {format_number(metrics.get('operatingCycle', 'N/A'))}")
+        result.append(f"**Cash Conversion Cycle**: {format_number(metrics.get('cashConversionCycle', 'N/A'))}")
+        
+        # Expense metrics
+        result.append("")
+        result.append("### Expense Metrics")
+        result.append(f"**R&D to Revenue**: {format_number(metrics.get('researchAndDevelopementToRevenue', 'N/A'))}")
+        result.append(f"**SG&A to Revenue**: {format_number(metrics.get('salesGeneralAndAdministrativeToRevenue', 'N/A'))}")
+        result.append(f"**Stock-Based Compensation to Revenue**: {format_number(metrics.get('stockBasedCompensationToRevenue', 'N/A'))}")
+        
+        # Valuation metrics
+        result.append("")
+        result.append("### Valuation Analysis")
+        graham_number = metrics.get('grahamNumber', 'N/A')
+        if graham_number != 'N/A':
+            result.append(f"**Graham Number**: ${format_number(graham_number)}")
+        result.append(f"**Graham Net-Net**: ${format_number(metrics.get('grahamNetNet', 'N/A'))}")
+        result.append(f"**Tax Burden**: {format_number(metrics.get('taxBurden', 'N/A'))}")
+        result.append(f"**Interest Burden**: {format_number(metrics.get('interestBurden', 'N/A'))}")
     
     return "\n".join(result)
