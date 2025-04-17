@@ -895,6 +895,92 @@ async def mock_successful_api_response(endpoint, params=None):
             }
         ]
     
+    # Handle company profile endpoint
+    elif endpoint == "profile":
+        symbol = params.get('symbol', '').upper() if params else ''
+        
+        if symbol == "AAPL":
+            return [
+                {
+                    "symbol": "AAPL",
+                    "companyName": "Apple Inc.",
+                    "sector": "Technology",
+                    "industry": "Consumer Electronics",
+                    "ceo": "Tim Cook",
+                    "description": "Apple Inc. designs, manufactures, and markets smartphones, personal computers, tablets, wearables, and accessories worldwide. The company offers iPhone, Mac, iPad, and wearables, home, and accessories.",
+                    "mktCap": 2790000000000,
+                    "price": 190.50,
+                    "beta": 1.28,
+                    "volAvg": 65000000,
+                    "dcf": 195.75,
+                    "pe": 32.5,
+                    "eps": 5.86,
+                    "roe": 0.32,
+                    "roa": 0.25,
+                    "revenuePerShare": 25.6,
+                    "website": "https://www.apple.com",
+                    "exchange": "NASDAQ",
+                    "ipoDate": "1980-12-12"
+                }
+            ]
+        elif symbol == "MSFT":
+            return [
+                {
+                    "symbol": "MSFT",
+                    "companyName": "Microsoft Corporation",
+                    "sector": "Technology",
+                    "industry": "Software—Infrastructure",
+                    "ceo": "Satya Nadella",
+                    "description": "Microsoft Corporation develops, licenses, and supports software, services, devices, and solutions worldwide. The company operates in three segments: Productivity and Business Processes, Intelligent Cloud, and More Personal Computing.",
+                    "mktCap": 2950000000000,
+                    "price": 410.75,
+                    "beta": 0.95,
+                    "volAvg": 25000000,
+                    "dcf": 415.20,
+                    "pe": 37.2,
+                    "eps": 11.04,
+                    "roe": 0.42,
+                    "roa": 0.19,
+                    "revenuePerShare": 31.8,
+                    "website": "https://www.microsoft.com",
+                    "exchange": "NASDAQ",
+                    "ipoDate": "1986-03-13"
+                }
+            ]
+        else:
+            # Generic company profile
+            return [
+                {
+                    "symbol": symbol,
+                    "companyName": f"{symbol} Corporation",
+                    "sector": "Technology",
+                    "industry": "Software",
+                    "ceo": "John Doe",
+                    "description": "This is a sample description for a company.",
+                    "mktCap": 500000000000,
+                    "price": 150.00,
+                    "beta": 1.00,
+                    "volAvg": 10000000,
+                    "dcf": 155.00,
+                    "pe": 25.0,
+                    "eps": 6.00,
+                    "roe": 0.20,
+                    "roa": 0.15,
+                    "revenuePerShare": 20.0,
+                    "website": "https://www.example.com",
+                    "exchange": "NASDAQ",
+                    "ipoDate": "2000-01-01"
+                }
+            ]
+    
+    # Handle company-notes endpoint
+    elif endpoint == "company-notes":
+        symbol = params.get('symbol', '').upper() if params else ''
+        
+        # For test purposes, we'll return empty results for all companies
+        # In a real API, this would return company debt instruments
+        return []
+            
     # Handle cryptocurrency-list endpoint
     elif endpoint == "cryptocurrency-list":
         return [

@@ -632,6 +632,62 @@ async def test_quote_change_format():
 
 
 @pytest.mark.asyncio
+@pytest.mark.acceptance
+async def test_company_profile_format():
+    """Test the get_company_profile tool with the real API"""
+    from src.tools.company import get_company_profile
+    
+    # Use a well-known company for testing
+    result = await get_company_profile("AAPL")
+    
+    # Check return format
+    assert isinstance(result, str)
+    assert "Apple" in result or "AAPL" in result  # Company name or ticker should be in the result
+    
+    # Check for presence of key sections without asserting specific values
+    assert "**Sector**:" in result
+    assert "**Industry**:" in result
+    assert "## Financial Overview" in result
+    assert "**Market Cap**:" in result
+    assert "**Price**:" in result
+    assert "## Key Metrics" in result
+    assert "**P/E Ratio**:" in result
+    assert "**EPS**:" in result
+    
+    # Test with a different stock for robustness
+    result_msft = await get_company_profile("MSFT")
+    assert "Microsoft" in result_msft or "MSFT" in result_msft
+
+
+@pytest.mark.asyncio
+@pytest.mark.acceptance
+async def test_company_notes_format():
+    """Test the get_company_notes tool with the real API"""
+    from src.tools.company import get_company_notes
+    
+    # Use a company known to have notes (Apple typically has notes/debt)
+    result = await get_company_notes("AAPL")
+    
+    # Check return format
+    assert isinstance(result, str)
+    
+    # In test mode, we might not have mock data for company notes
+    if "No company notes data found" in result:
+        # If no notes found, just check that the correct error message is returned
+        assert f"No company notes data found for symbol AAPL" in result
+    else:
+        # Otherwise, check for proper formatting
+        assert "# Company Notes for AAPL" in result
+        assert "| Title | CIK |" in result  # At least these two columns should exist
+        assert "## Detailed Note Information" in result
+        
+    # Try with another company
+    result_msft = await get_company_notes("MSFT")
+    assert isinstance(result_msft, str)
+    # We don't check specific content since it may not have notes in test mode
+
+
+@pytest.mark.asyncio
 async def test_error_handling_with_invalid_symbol(setup_api_key):
     """Test API error handling with an invalid symbol"""
     # If we're in TEST_MODE, remove the patch temporarily so we can see real errors
