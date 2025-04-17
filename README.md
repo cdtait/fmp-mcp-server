@@ -69,6 +69,18 @@ This standardization improves code maintainability and provides a consistent app
   - Improved table formatting for better readability
   - Emoji indicators (🔺, 🔻, ➖) for clearer trend visualization
 
+- **get_financial_estimates**: Updated to match the actual "analyst-estimates" endpoint structure
+  - Added support for all fields in API response (revenueAvg, revenueHigh, revenueLow, etc.)
+  - Added pagination support with new page parameter
+  - Improved presentation with analyst count information
+  - Enhanced display of high/low/average values for all metrics
+
+- **get_price_target_news**: Improved to use the "price-target-news" endpoint
+  - Added support for filtering by symbol
+  - Includes adjusted price target information
+  - Better date formatting for improved readability
+  - Support for all fields in the API response
+
 Tests are similarly organized with one test file per module, following a consistent pattern to ensure comprehensive coverage.
 
 ## Installation

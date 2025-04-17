@@ -74,10 +74,8 @@ mcp.tool()(search_by_name)
 # TODO remove deprecated tool
 #mcp.tool()(get_historical_price)
 mcp.tool()(get_ratings_snapshot)
-# TODO  fix tool
-#mcp.tool()(get_financial_estimates)
-# TODO  fix tool
-#mcp.tool()(get_price_target_news)
+mcp.tool()(get_financial_estimates)
+mcp.tool()(get_price_target_news)
 mcp.tool()(get_company_dividends)
 mcp.tool()(get_dividends_calendar)
 mcp.tool()(get_index_list)

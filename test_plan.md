@@ -35,7 +35,22 @@ mcp_server/
 │   ├── __init__.py
 │   ├── conftest.py          # Pytest fixtures
 │   ├── test_api_client.py   # Tests for API functionality
-│   ├── test_tools.py        # Tests for tools
+│   ├── test_company.py      # Tests for company tools
+│   ├── test_quotes.py       # Tests for quote tools
+│   ├── test_charts.py       # Tests for chart tools
+│   ├── test_statements.py   # Tests for financial statement tools
+│   ├── test_market.py       # Tests for market tools
+│   ├── test_analyst.py      # Tests for analyst tools
+│   ├── test_calendar.py     # Tests for calendar tools
+│   ├── test_commodities.py  # Tests for commodities tools
+│   ├── test_crypto.py       # Tests for crypto tools
+│   ├── test_etf.py          # Tests for ETF tools
+│   ├── test_forex.py        # Tests for forex tools
+│   ├── test_indices.py      # Tests for indices tools
+│   ├── test_market_hours.py # Tests for market hours tools
+│   ├── test_market_performers.py # Tests for market performers tools
+│   ├── test_search.py       # Tests for search tools
+│   ├── test_technical_indicators.py # Tests for technical indicators tools
 │   ├── test_resources.py    # Tests for resources
 │   ├── test_prompts.py      # Tests for prompts
 │   └── test_server.py       # Integration tests
