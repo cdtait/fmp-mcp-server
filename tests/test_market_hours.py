@@ -7,30 +7,63 @@ from unittest.mock import patch, AsyncMock
 @patch('src.api.client.fmp_api_request')
 async def test_get_market_hours(mock_request):
     """Test the get_market_hours function"""
-    # Sample response data
-    mock_response = [
-        {
-            "stockExchangeName": "New York Stock Exchange",
-            "isTheStockMarketOpen": True,
-            "timezone": "America/New_York",
-            "openingHour": "09:30:00",
-            "closingHour": "16:00:00"
-        },
-        {
-            "stockExchangeName": "NASDAQ",
-            "isTheStockMarketOpen": True,
-            "timezone": "America/New_York",
-            "openingHour": "09:30:00",
-            "closingHour": "16:00:00"
-        },
-        {
-            "stockExchangeName": "London Stock Exchange",
-            "isTheStockMarketOpen": False,
-            "timezone": "Europe/London",
-            "openingHour": "08:00:00",
-            "closingHour": "16:30:00"
-        }
-    ]
+    # Sample response data based on API documentation
+    mock_response = {
+        "exchangeName": "NASDAQ",
+        "isOpen": True,
+        "timezone": "America/New_York",
+        "localTime": "2023-05-03 15:30:45",
+        "marketHours": [
+            {
+                "day": "Monday",
+                "open": "09:30",
+                "close": "16:00",
+                "isClosed": False
+            },
+            {
+                "day": "Tuesday",
+                "open": "09:30",
+                "close": "16:00",
+                "isClosed": False
+            },
+            {
+                "day": "Wednesday",
+                "open": "09:30",
+                "close": "16:00",
+                "isClosed": False
+            },
+            {
+                "day": "Thursday",
+                "open": "09:30",
+                "close": "16:00",
+                "isClosed": False
+            },
+            {
+                "day": "Friday",
+                "open": "09:30",
+                "close": "16:00",
+                "isClosed": False
+            },
+            {
+                "day": "Saturday",
+                "isClosed": True
+            },
+            {
+                "day": "Sunday",
+                "isClosed": True
+            }
+        ],
+        "closingDays": [
+            {
+                "date": "2023-05-29",
+                "name": "Memorial Day"
+            },
+            {
+                "date": "2023-07-04",
+                "name": "Independence Day"
+            }
+        ]
+    }
     
     # Set up the mock
     mock_request.return_value = mock_response
@@ -39,19 +72,21 @@ async def test_get_market_hours(mock_request):
     from src.tools.market_hours import get_market_hours
     
     # Execute the tool
-    result = await get_market_hours()
+    result = await get_market_hours("NASDAQ")
     
     # Check API was called with correct parameters
-    mock_request.assert_called_once_with("market-hours", {})
+    mock_request.assert_called_once_with("exchange-market-hours", {"exchange": "NASDAQ"})
     
     # Check the result contains expected information
-    assert "# Market Hours Status" in result
-    assert "🟢 Open Markets" in result
-    assert "New York Stock Exchange" in result
-    assert "NASDAQ" in result
-    assert "🔴 Closed Markets" in result
-    assert "London Stock Exchange" in result
-    assert "## Market Trading Hours" in result
+    assert "# Market Hours for NASDAQ" in result
+    assert "## 🟢 Current Status: Open" in result
+    assert "- **Timezone**: America/New_York" in result
+    assert "- **Local Time**: 2023-05-03 15:30:45" in result
+    assert "## Trading Hours" in result
+    assert "| Monday | 09:30 | 16:00 |" in result
+    assert "| Saturday | Closed | Closed |" in result
+    assert "## Upcoming Holidays" in result
+    assert "| 2023-05-29 | Memorial Day |" in result
 
 
 @pytest.mark.asyncio
@@ -111,16 +146,16 @@ async def test_get_holidays(mock_request):
 async def test_get_market_hours_error(mock_request):
     """Test the get_market_hours function with error response"""
     # Set up the mock
-    mock_request.return_value = {"error": "API Error", "message": "Internal server error"}
+    mock_request.return_value = {"error": "API Error", "message": "Exchange not found"}
     
     # Import after patching
     from src.tools.market_hours import get_market_hours
     
     # Execute the tool
-    result = await get_market_hours()
+    result = await get_market_hours("INVALID")
     
     # Check error handling
-    assert "Error fetching market hours information: Internal server error" in result
+    assert "Error fetching market hours information: Exchange not found" in result
 
 
 @pytest.mark.asyncio
@@ -151,10 +186,10 @@ async def test_get_market_hours_empty(mock_request):
     from src.tools.market_hours import get_market_hours
     
     # Execute the tool
-    result = await get_market_hours()
+    result = await get_market_hours("NYSE")
     
     # Check empty response handling
-    assert "No market hours data found" in result
+    assert "No market hours data found for exchange: NYSE" in result
 
 
 @pytest.mark.asyncio

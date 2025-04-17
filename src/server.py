@@ -74,8 +74,7 @@ mcp.tool()(get_index_quote)
 mcp.tool()(get_biggest_gainers)
 mcp.tool()(get_biggest_losers)
 mcp.tool()(get_most_active)
-# TODO  fix tool
-#mcp.tool()(get_market_hours)
+mcp.tool()(get_market_hours)
 # TODO  fix tool
 #mcp.tool()(get_holidays)
 # TODO  fix tool
