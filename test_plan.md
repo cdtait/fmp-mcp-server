@@ -103,9 +103,9 @@ mcp_server/
        """Test stock quote tool"""
        # Test retrieving current stock quote
    
-   def test_get_market_indexes():
-       """Test market indexes tool"""
-       # Test retrieving market index data
+   def test_get_quote_change():
+       """Test quote change tool"""
+       # Test retrieving stock price changes
    ```
 
 3. **Analysis Tools**

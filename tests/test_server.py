@@ -46,10 +46,7 @@ async def test_tool_registration():
         "get_income_statement",
         "get_balance_sheet",
         "get_cash_flow",
-        #"get_key_metrics",
-        # "get_stock_news",  # This is commented out in server.py
-        # "get_market_indexes",  # This is commented out in server.py
-        # "get_historical_price",  # This is commented out in server.py
+        "get_key_metrics",
         "search_by_symbol",
         "search_by_name",
         "get_ratings_snapshot",
