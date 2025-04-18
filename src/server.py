@@ -15,7 +15,7 @@ from mcp.server.fastmcp import FastMCP, Context
 
 # Import tools
 from src.tools.company import get_company_profile, get_company_notes
-# Statements tools temporarily removed
+from src.tools.statements import get_income_statement
 from src.tools.search import search_by_symbol, search_by_name
 from src.tools.quote import get_quote, get_quote_change
 from src.tools.charts import get_price_change
@@ -54,6 +54,7 @@ mcp.tool()(get_company_notes)
 mcp.tool()(get_quote)
 mcp.tool()(get_quote_change)
 mcp.tool()(get_price_change)
+mcp.tool()(get_income_statement)
 mcp.tool()(search_by_symbol)
 mcp.tool()(search_by_name)
 mcp.tool()(get_ratings_snapshot)

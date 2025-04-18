@@ -76,7 +76,59 @@ async def mock_successful_api_response(endpoint, params=None):
     symbol = params.get('symbol', 'AAPL') if params else 'AAPL'
     
     # Return appropriate mock data based on endpoint
-    if endpoint == "profile" or endpoint == "company/profile":
+    if endpoint == "income-statement":
+        period = params.get('period', 'annual')
+        limit = params.get('limit', 1)
+        
+        # Create a mock income statement
+        result = []
+        for i in range(limit):
+            year = 2024 - i
+            quarter = "" if period == "annual" else f"Q{(4-i) % 4 + 1} "
+            result.append({
+                "date": f"{year}-09-28",
+                "symbol": symbol,
+                "reportedCurrency": "USD",
+                "cik": "0000320193",
+                "filingDate": f"{year}-11-01",
+                "acceptedDate": f"{year}-11-01 06:01:36",
+                "fiscalYear": f"{year}",
+                "period": "FY" if period == "annual" else f"Q{(4-i) % 4 + 1}",
+                "revenue": 391035000000 - (i * 10000000000),
+                "costOfRevenue": 210352000000 - (i * 5000000000),
+                "grossProfit": 180683000000 - (i * 5000000000),
+                "researchAndDevelopmentExpenses": 31370000000 - (i * 1000000000),
+                "generalAndAdministrativeExpenses": 0,
+                "sellingAndMarketingExpenses": 0,
+                "sellingGeneralAndAdministrativeExpenses": 26097000000 - (i * 1000000000),
+                "otherExpenses": 0,
+                "operatingExpenses": 57467000000 - (i * 2000000000),
+                "costAndExpenses": 267819000000 - (i * 7000000000),
+                "netInterestIncome": 0,
+                "interestIncome": 0,
+                "interestExpense": 0,
+                "depreciationAndAmortization": 11445000000 - (i * 500000000),
+                "ebitda": 134661000000 - (i * 5000000000),
+                "ebit": 123216000000 - (i * 4500000000),
+                "nonOperatingIncomeExcludingInterest": 0,
+                "operatingIncome": 123216000000 - (i * 4500000000),
+                "totalOtherIncomeExpensesNet": 269000000 - (i * 10000000),
+                "incomeBeforeTax": 123485000000 - (i * 4600000000),
+                "incomeTaxExpense": 29749000000 - (i * 1100000000),
+                "netIncomeFromContinuingOperations": 93736000000 - (i * 3500000000),
+                "netIncomeFromDiscontinuedOperations": 0,
+                "otherAdjustmentsToNetIncome": 0,
+                "netIncome": 93736000000 - (i * 3500000000),
+                "netIncomeDeductions": 0,
+                "bottomLineNetIncome": 93736000000 - (i * 3500000000),
+                "eps": 6.11 - (i * 0.2),
+                "epsDiluted": 6.08 - (i * 0.2),
+                "weightedAverageShsOut": 15343783000 - (i * 100000000),
+                "weightedAverageShsOutDil": 15408095000 - (i * 100000000)
+            })
+        return result
+    
+    elif endpoint == "profile" or endpoint == "company/profile":
         return [
             {
                 "symbol": symbol,

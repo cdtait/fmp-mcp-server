@@ -805,6 +805,47 @@ async def test_biggest_losers_format():
 
 @pytest.mark.asyncio
 @pytest.mark.acceptance
+async def test_income_statement_format():
+    """Test the get_income_statement tool with the real API"""
+    from src.tools.statements import get_income_statement
+    
+    # Call the get_income_statement tool with a common stock
+    result = await get_income_statement("AAPL", period="annual", limit=1)
+    
+    # Check return format
+    assert isinstance(result, str)
+    
+    # Check for presence of key sections
+    assert "# Income Statement for AAPL" in result
+    
+    # Check for important income statement items
+    if "No income statement data found for symbol AAPL" not in result:
+        # Check for key sections
+        assert "### Revenue Metrics" in result
+        assert "### Expense Breakdown" in result
+        assert "### Income and Profitability" in result
+        assert "### Operating Metrics" in result
+        assert "### Tax and Net Income" in result
+        assert "### Per Share Data" in result
+        
+        # Check for specific line items
+        assert "**Revenue**:" in result
+        assert "**Cost of Revenue**:" in result
+        assert "**Gross Profit**:" in result
+        assert "**Net Income**:" in result
+        assert "**EPS**:" in result
+        
+        # Verify the presence of dollar signs for monetary values
+        assert "$" in result
+    
+    # Test with quarterly period
+    result_quarterly = await get_income_statement("AAPL", period="quarter", limit=1)
+    assert isinstance(result_quarterly, str)
+    assert "Income Statement" in result_quarterly
+
+
+@pytest.mark.asyncio
+@pytest.mark.acceptance
 async def test_price_target_latest_news_format():
     """Test the get_price_target_latest_news tool with the real API"""
     from src.tools.analyst import get_price_target_latest_news
