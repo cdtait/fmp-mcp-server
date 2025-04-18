@@ -22,24 +22,70 @@ async def test_get_income_statement_tool(mock_request, mock_income_statement_res
     
     # Get values from the mock data for assertion
     mock_data = mock_income_statement_response[0]
-    mock_date = mock_data["date"]
-    mock_revenue = mock_data["revenue"]
-    mock_net_income = mock_data["netIncome"]
     
-    # Assertions about the result
+    # Assertions about the result structure
     assert isinstance(result, str)
     assert "# Income Statement for AAPL" in result
-    assert f"## Period: {mock_date}" in result
-    assert f"**Revenue**: ${format_number(mock_revenue)}" in result
-    assert f"**Net Income**: ${format_number(mock_net_income)}" in result
     
-    # Additional checks for specific sections
+    # Check sections
     assert "### Revenue Metrics" in result
     assert "### Expense Breakdown" in result
     assert "### Income and Profitability" in result
     assert "### Operating Metrics" in result
     assert "### Tax and Net Income" in result
     assert "### Per Share Data" in result
+    
+    # Check header information
+    assert f"## Period: {mock_data['date']}" in result
+    assert f"**Report Type**: {mock_data['period'].capitalize()}" in result
+    assert f"**Currency**: {mock_data['reportedCurrency']}" in result
+    assert f"**Fiscal Year**: {mock_data['fiscalYear']}" in result
+    assert f"**Filing Date**: {mock_data['filingDate']}" in result
+    assert f"**Accepted Date**: {mock_data['acceptedDate']}" in result
+    assert f"**CIK**: {mock_data['cik']}" in result
+    
+    # Check Revenue Metrics
+    assert f"**Revenue**: ${format_number(mock_data['revenue'])}" in result
+    assert f"**Cost of Revenue**: ${format_number(mock_data['costOfRevenue'])}" in result
+    assert f"**Gross Profit**: ${format_number(mock_data['grossProfit'])}" in result
+    
+    # Check Expense Breakdown
+    assert f"**Research and Development**: ${format_number(mock_data['researchAndDevelopmentExpenses'])}" in result
+    assert f"**Selling, General, and Administrative**: ${format_number(mock_data['sellingGeneralAndAdministrativeExpenses'])}" in result
+    assert f"**General and Administrative**: ${format_number(mock_data['generalAndAdministrativeExpenses'])}" in result
+    assert f"**Selling and Marketing**: ${format_number(mock_data['sellingAndMarketingExpenses'])}" in result
+    assert f"**Other Expenses**: ${format_number(mock_data['otherExpenses'])}" in result
+    assert f"**Operating Expenses**: ${format_number(mock_data['operatingExpenses'])}" in result
+    assert f"**Cost and Expenses**: ${format_number(mock_data['costAndExpenses'])}" in result
+    assert f"**Depreciation and Amortization**: ${format_number(mock_data['depreciationAndAmortization'])}" in result
+    
+    # Check Income and Profitability
+    assert f"**Net Interest Income**: ${format_number(mock_data['netInterestIncome'])}" in result
+    assert f"**Interest Income**: ${format_number(mock_data['interestIncome'])}" in result
+    assert f"**Interest Expense**: ${format_number(mock_data['interestExpense'])}" in result
+    assert f"**Non-Operating Income**: ${format_number(mock_data['nonOperatingIncomeExcludingInterest'])}" in result
+    assert f"**Other Income/Expenses Net**: ${format_number(mock_data['totalOtherIncomeExpensesNet'])}" in result
+    
+    # Check Operating Metrics
+    assert f"**Operating Income**: ${format_number(mock_data['operatingIncome'])}" in result
+    assert f"**EBITDA**: ${format_number(mock_data['ebitda'])}" in result
+    assert f"**EBIT**: ${format_number(mock_data['ebit'])}" in result
+    
+    # Check Tax and Net Income
+    assert f"**Income Before Tax**: ${format_number(mock_data['incomeBeforeTax'])}" in result
+    assert f"**Income Tax Expense**: ${format_number(mock_data['incomeTaxExpense'])}" in result
+    assert f"**Net Income from Continuing Operations**: ${format_number(mock_data['netIncomeFromContinuingOperations'])}" in result
+    assert f"**Net Income from Discontinued Operations**: ${format_number(mock_data['netIncomeFromDiscontinuedOperations'])}" in result
+    assert f"**Other Adjustments to Net Income**: ${format_number(mock_data['otherAdjustmentsToNetIncome'])}" in result
+    assert f"**Net Income Deductions**: ${format_number(mock_data['netIncomeDeductions'])}" in result
+    assert f"**Net Income**: ${format_number(mock_data['netIncome'])}" in result
+    assert f"**Bottom Line Net Income**: ${format_number(mock_data['bottomLineNetIncome'])}" in result
+    
+    # Check Per Share Data
+    assert f"**EPS**: ${format_number(mock_data['eps'])}" in result
+    assert f"**EPS Diluted**: ${format_number(mock_data['epsDiluted'])}" in result
+    assert f"**Weighted Average Shares Outstanding**: {format_number(mock_data['weightedAverageShsOut'])}" in result
+    assert f"**Weighted Average Shares Outstanding (Diluted)**: {format_number(mock_data['weightedAverageShsOutDil'])}" in result
 
 
 @pytest.mark.asyncio
