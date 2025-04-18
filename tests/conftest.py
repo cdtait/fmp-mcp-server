@@ -1356,6 +1356,50 @@ async def mock_successful_api_response(endpoint, params=None):
             }
         ]
     
+    # Handle price-target-latest-news endpoint
+    elif endpoint == "price-target-latest-news":
+        return [
+            {
+                "symbol": "GPN",
+                "publishedDate": "2025-04-18T00:01:44.000Z",
+                "newsURL": "https://thefly.com/permalinks/entry.php/id4109204/5377286394/GPN-Jefferies-gets-more-bearish-on-Global-Payments-downgrades-shares",
+                "newsTitle": "Global Payments downgraded to Hold from Buy at Jefferies",
+                "analystName": "Trevor Williams",
+                "priceTarget": 75,
+                "adjPriceTarget": 75,
+                "priceWhenPosted": 69.46,
+                "newsPublisher": "TheFly",
+                "newsBaseURL": "thefly.com",
+                "analystCompany": "Williams Trading"
+            },
+            {
+                "symbol": "STT",
+                "publishedDate": "2025-04-17T21:20:47.000Z",
+                "newsURL": "https://thefly.com/permalinks/entry.php/id4109174/4961286394/STT-Goldman-Sachs-cuts-State-Street-to-Neutral-on-lower-NII-expectations",
+                "newsTitle": "State Street downgraded to Neutral from Buy at Goldman Sachs",
+                "analystName": "Ryan Kenny",
+                "priceTarget": 98,
+                "adjPriceTarget": 98,
+                "priceWhenPosted": 83.62,
+                "newsPublisher": "TheFly",
+                "newsBaseURL": "thefly.com",
+                "analystCompany": "Goldman Sachs"
+            },
+            {
+                "symbol": "AMD",
+                "publishedDate": "2025-04-16T22:25:06.000Z",
+                "newsURL": "https://thefly.com/permalinks/entry.php/id4109118/3060286394/AMD-Loop-Capital-raises-Advanced-Micro-target-to--after-AI-deep-dive",
+                "newsTitle": "Advanced Micro price target raised to $160 from $145 at Loop Capital",
+                "analystName": "Cody Acree",
+                "priceTarget": 160,
+                "adjPriceTarget": 160,
+                "priceWhenPosted": 152.36,
+                "newsPublisher": "TheFly",
+                "newsBaseURL": "thefly.com",
+                "analystCompany": "Loop Capital Markets"
+            }
+        ]
+    
     # Default empty response for unknown endpoints
     return []
 
@@ -2070,6 +2114,52 @@ def mock_price_target_news_response():
             "newsPublisher": "TheFly",
             "newsBaseURL": "thefly.com",
             "analystCompany": "Morgan Stanley"
+        }
+    ]
+
+
+@pytest.fixture
+def mock_price_target_latest_news_response():
+    """Mock response for price-target-latest-news API endpoint"""
+    return [
+        {
+            "symbol": "GPN",
+            "publishedDate": "2025-04-18T00:01:44.000Z",
+            "newsURL": "https://thefly.com/permalinks/entry.php/id4109204/5377286394/GPN-Jefferies-gets-more-bearish-on-Global-Payments-downgrades-shares",
+            "newsTitle": "Global Payments downgraded to Hold from Buy at Jefferies",
+            "analystName": "Trevor Williams",
+            "priceTarget": 75,
+            "adjPriceTarget": 75,
+            "priceWhenPosted": 69.46,
+            "newsPublisher": "TheFly",
+            "newsBaseURL": "thefly.com",
+            "analystCompany": "Williams Trading"
+        },
+        {
+            "symbol": "STT",
+            "publishedDate": "2025-04-17T21:20:47.000Z",
+            "newsURL": "https://thefly.com/permalinks/entry.php/id4109174/4961286394/STT-Goldman-Sachs-cuts-State-Street-to-Neutral-on-lower-NII-expectations",
+            "newsTitle": "State Street downgraded to Neutral from Buy at Goldman Sachs",
+            "analystName": "Ryan Kenny",
+            "priceTarget": 98,
+            "adjPriceTarget": 98,
+            "priceWhenPosted": 83.62,
+            "newsPublisher": "TheFly",
+            "newsBaseURL": "thefly.com",
+            "analystCompany": "Goldman Sachs"
+        },
+        {
+            "symbol": "AMD",
+            "publishedDate": "2025-04-16T22:25:06.000Z",
+            "newsURL": "https://thefly.com/permalinks/entry.php/id4109118/3060286394/AMD-Loop-Capital-raises-Advanced-Micro-target-to--after-AI-deep-dive",
+            "newsTitle": "Advanced Micro price target raised to $160 from $145 at Loop Capital",
+            "analystName": "Cody Acree",
+            "priceTarget": 160,
+            "adjPriceTarget": 160,
+            "priceWhenPosted": 152.36,
+            "newsPublisher": "TheFly",
+            "newsBaseURL": "thefly.com",
+            "analystCompany": "Loop Capital Markets"
         }
     ]
 

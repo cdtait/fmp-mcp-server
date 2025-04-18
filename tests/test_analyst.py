@@ -297,3 +297,109 @@ async def test_get_price_target_news_tool_empty_response(mock_request):
     
     # Assertions
     assert "No price target updates found" in result
+
+
+@pytest.mark.asyncio
+@patch('src.api.client.fmp_api_request')
+async def test_get_price_target_latest_news_tool(mock_request, mock_price_target_latest_news_response):
+    """Test price target latest news tool with mock data"""
+    # Set up the mock
+    mock_request.return_value = mock_price_target_latest_news_response
+    
+    # Import after patching
+    from src.tools.analyst import get_price_target_latest_news
+    
+    # Execute the tool
+    result = await get_price_target_latest_news(page=0, limit=10)
+    
+    # Verify API was called with correct parameters
+    mock_request.assert_called_once_with("price-target-latest-news", {"page": 0, "limit": 10})
+    
+    # Assertions about the result
+    assert isinstance(result, str)
+    assert "# Latest Price Target Announcements" in result
+    assert "| Symbol | Company | Action | Price Target | Stock Price | Change (%) | Analyst | Date |" in result
+    
+    # Check for specific content from our mock data
+    assert "GPN" in result
+    assert "Williams Trading" in result
+    assert "STT" in result
+    assert "Goldman Sachs" in result
+    assert "AMD" in result
+    assert "Loop Capital Markets" in result
+    
+    # Check if action emojis are present
+    assert any(emoji in result for emoji in ["⬆️", "⬇️", "🆕", "➡️", "📊"])
+    
+    # Check if price formatting is correct
+    assert "$75" in result
+    assert "$98" in result
+    assert "$160" in result
+    
+    # Check if the detailed announcements section is present
+    assert "## Detailed Announcements" in result
+
+
+@pytest.mark.asyncio
+@patch('src.api.client.fmp_api_request')
+async def test_get_price_target_latest_news_tool_invalid_page(mock_request):
+    """Test price target latest news tool with invalid page"""
+    # Import after patching (no need to mock response for parameter validation)
+    from src.tools.analyst import get_price_target_latest_news
+    
+    # Execute the tool with invalid page
+    result = await get_price_target_latest_news(page=-1)
+    
+    # Assertions
+    assert "Error: page must be a positive integer" in result
+    assert not mock_request.called  # API should not be called
+
+
+@pytest.mark.asyncio
+@patch('src.api.client.fmp_api_request')
+async def test_get_price_target_latest_news_tool_invalid_limit(mock_request):
+    """Test price target latest news tool with invalid limit"""
+    # Import after patching (no need to mock response for parameter validation)
+    from src.tools.analyst import get_price_target_latest_news
+    
+    # Execute the tool with invalid limit
+    result = await get_price_target_latest_news(limit=0)
+    
+    # Assertions
+    assert "Error: limit must be between 1 and 1000" in result
+    assert not mock_request.called  # API should not be called
+
+
+@pytest.mark.asyncio
+@patch('src.api.client.fmp_api_request')
+async def test_get_price_target_latest_news_tool_error(mock_request):
+    """Test price target latest news tool error handling"""
+    # Set up the mock with an error
+    mock_request.return_value = {"error": "API error", "message": "Failed to fetch data"}
+    
+    # Import after patching
+    from src.tools.analyst import get_price_target_latest_news
+    
+    # Execute the tool
+    result = await get_price_target_latest_news()
+    
+    # Assertions
+    assert "Error fetching price target data" in result
+    assert "Failed to fetch data" in result
+
+
+@pytest.mark.asyncio
+@patch('src.api.client.fmp_api_request')
+async def test_get_price_target_latest_news_tool_empty_response(mock_request):
+    """Test price target latest news tool with empty response"""
+    # Set up the mock with empty array
+    mock_request.return_value = []
+    
+    # Import after patching
+    from src.tools.analyst import get_price_target_latest_news
+    
+    # Execute the tool
+    result = await get_price_target_latest_news()
+    
+    # Assertions
+    assert "No price target announcements found" in result

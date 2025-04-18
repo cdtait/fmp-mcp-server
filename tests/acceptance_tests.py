@@ -804,6 +804,46 @@ async def test_biggest_losers_format():
 
 
 @pytest.mark.asyncio
+@pytest.mark.acceptance
+async def test_price_target_latest_news_format():
+    """Test the get_price_target_latest_news tool with the real API"""
+    from src.tools.analyst import get_price_target_latest_news
+    
+    # Call the get_price_target_latest_news tool with a limited number of results
+    result = await get_price_target_latest_news(limit=5)
+    
+    # Check return format
+    assert isinstance(result, str)
+    
+    # Check for presence of key sections
+    assert "# Latest Price Target Announcements" in result
+    assert "| Symbol | Company | Action | Price Target | Stock Price | Change (%) | Analyst | Date |" in result
+    
+    # Check for action icons and formatting
+    if "No price target announcements found" not in result:
+        # At least one of these action types should be present
+        actions_present = any(action in result for action in ["⬆️ Increase", "⬇️ Decrease", "🆕 New", "➡️ Maintain", "📊 Update"])
+        assert actions_present, "No properly formatted actions found"
+        
+        # Verify the presence of dollar signs in Price Target column
+        assert "$" in result
+        
+        # Verify the presence of percentage signs in Change % column
+        assert "%" in result
+        
+        # Check for detailed announcements section
+        assert "## Detailed Announcements" in result
+        
+        # Test that the source information contains the newsBaseURL
+        assert "(" in result and ")" in result, "Source URL format missing"
+    
+    # Test with pagination - try page 0, only page zero with Free or starter
+    result_page = await get_price_target_latest_news(page=0, limit=5)
+    assert isinstance(result_page, str)
+    assert "# Latest Price Target Announcements" in result_page
+
+
+@pytest.mark.asyncio
 async def test_error_handling_with_invalid_symbol(setup_api_key):
     """Test API error handling with an invalid symbol"""
     # If we're in TEST_MODE, remove the patch temporarily so we can see real errors

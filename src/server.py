@@ -22,7 +22,7 @@ from src.tools.statements import (
 from src.tools.search import search_by_symbol, search_by_name
 from src.tools.quote import get_quote, get_quote_change
 from src.tools.charts import get_price_change
-from src.tools.analyst import get_ratings_snapshot, get_financial_estimates, get_price_target_news
+from src.tools.analyst import get_ratings_snapshot, get_financial_estimates, get_price_target_news, get_price_target_latest_news
 from src.tools.calendar import get_company_dividends, get_dividends_calendar
 from src.tools.indices import get_index_list, get_index_quote
 from src.tools.market_performers import get_biggest_gainers, get_biggest_losers, get_most_active
@@ -67,6 +67,7 @@ mcp.tool()(search_by_name)
 mcp.tool()(get_ratings_snapshot)
 mcp.tool()(get_financial_estimates)
 mcp.tool()(get_price_target_news)
+mcp.tool()(get_price_target_latest_news)
 mcp.tool()(get_company_dividends)
 mcp.tool()(get_dividends_calendar)
 mcp.tool()(get_index_list)
