@@ -26,7 +26,7 @@ from src.tools.analyst import get_ratings_snapshot, get_financial_estimates, get
 from src.tools.calendar import get_company_dividends, get_dividends_calendar
 from src.tools.indices import get_index_list, get_index_quote
 from src.tools.market_performers import get_biggest_gainers, get_biggest_losers, get_most_active
-from src.tools.market_hours import get_market_hours, get_holidays
+from src.tools.market_hours import get_market_hours
 from src.tools.etf import get_etf_sectors, get_etf_countries, get_etf_holdings
 from src.tools.commodities import get_commodities_list, get_commodities_prices
 from src.tools.crypto import get_crypto_list, get_crypto_quote
@@ -75,8 +75,6 @@ mcp.tool()(get_biggest_gainers)
 mcp.tool()(get_biggest_losers)
 mcp.tool()(get_most_active)
 mcp.tool()(get_market_hours)
-# TODO  fix tool
-#mcp.tool()(get_holidays)
 # TODO  fix tool
 #mcp.tool()(get_etf_sectors)
 # TODO  fix tool
