@@ -1955,28 +1955,6 @@ def mock_financial_ratios_response():
     ]
 
 
-@pytest.fixture
-def mock_income_statement_response():
-    """Mock response for income statement API endpoint"""
-    return [
-        {
-            "date": "2023-06-30",
-            "period": "annual",
-            "revenue": 385000000000,
-            "costOfRevenue": 217000000000,
-            "grossProfit": 168000000000,
-            "researchAndDevelopmentExpenses": 26000000000,
-            "sellingGeneralAndAdministrativeExpenses": 28000000000,
-            "operatingExpenses": 54000000000,
-            "operatingIncome": 114000000000,
-            "interestExpense": 3200000000,
-            "incomeBeforeTax": 119000000000,
-            "incomeTaxExpense": 19400000000,
-            "netIncome": 99600000000,
-            "eps": 6.01,
-            "ebitda": 125000000000
-        }
-    ]
 
 
 @pytest.fixture

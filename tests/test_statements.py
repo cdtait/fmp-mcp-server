@@ -12,7 +12,7 @@ async def test_get_income_statement_tool(mock_request, mock_income_statement_res
     mock_request.return_value = mock_income_statement_response
     
     # Import after patching
-    from src.tools.statements import get_income_statement
+    from src.tools.statements import get_income_statement, format_number
     
     # Execute the tool with default parameters
     result = await get_income_statement(symbol="AAPL")
@@ -20,12 +20,26 @@ async def test_get_income_statement_tool(mock_request, mock_income_statement_res
     # Verify API was called with correct parameters
     mock_request.assert_called_once_with("income-statement", {"symbol": "AAPL", "period": "annual", "limit": 1})
     
+    # Get values from the mock data for assertion
+    mock_data = mock_income_statement_response[0]
+    mock_date = mock_data["date"]
+    mock_revenue = mock_data["revenue"]
+    mock_net_income = mock_data["netIncome"]
+    
     # Assertions about the result
     assert isinstance(result, str)
     assert "# Income Statement for AAPL" in result
-    assert "## Period: 2023-06-30" in result
-    assert "**Revenue**: $385,000,000,000" in result
-    assert "**Net Income**: $99,600,000,000" in result
+    assert f"## Period: {mock_date}" in result
+    assert f"**Revenue**: ${format_number(mock_revenue)}" in result
+    assert f"**Net Income**: ${format_number(mock_net_income)}" in result
+    
+    # Additional checks for specific sections
+    assert "### Revenue Metrics" in result
+    assert "### Expense Breakdown" in result
+    assert "### Income and Profitability" in result
+    assert "### Operating Metrics" in result
+    assert "### Tax and Net Income" in result
+    assert "### Per Share Data" in result
 
 
 @pytest.mark.asyncio
