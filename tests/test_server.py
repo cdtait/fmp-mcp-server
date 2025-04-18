@@ -42,12 +42,6 @@ async def test_tool_registration():
         "get_quote",
         "get_quote_change",
         "get_price_change", 
-        # Statements tools temporarily removed
-        # "get_financial_ratios",
-        # "get_income_statement",
-        # "get_balance_sheet",
-        # "get_cash_flow",
-        # "get_key_metrics",
         "search_by_symbol",
         "search_by_name",
         "get_ratings_snapshot",

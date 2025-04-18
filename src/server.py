@@ -54,12 +54,6 @@ mcp.tool()(get_company_notes)
 mcp.tool()(get_quote)
 mcp.tool()(get_quote_change)
 mcp.tool()(get_price_change)
-# Statements tools temporarily removed
-# mcp.tool()(get_financial_ratios)
-# mcp.tool()(get_income_statement)
-# mcp.tool()(get_balance_sheet)
-# mcp.tool()(get_cash_flow)
-# mcp.tool()(get_key_metrics)
 mcp.tool()(search_by_symbol)
 mcp.tool()(search_by_name)
 mcp.tool()(get_ratings_snapshot)
@@ -91,9 +85,6 @@ mcp.tool()(get_ema)
 # Register resources
 mcp.resource("stock-info://{symbol}")(get_stock_info_resource)
 mcp.resource("market-snapshot://current")(get_market_snapshot_resource)
-# Financial statement resources temporarily removed
-# mcp.resource("financial-statement://{symbol}/{statement_type}/{period}")(get_financial_statement_resource)
-# mcp.resource("ratios://{symbol}")(get_financial_ratios)
 mcp.resource("stock-peers://{symbol}")(get_stock_peers_resource)
 mcp.resource("price-targets://{symbol}")(get_price_targets_resource)
 
