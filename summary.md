@@ -112,3 +112,96 @@ The test suite (`tests/`) covers:
 ## Conclusion
 
 This implementation demonstrates how MCP can be used to expose financial data and analysis capabilities to LLMs in a structured way. By following TDD practices, we've created a robust and maintainable codebase that can be extended with additional features in the future.
+
+# FMP MCP Server - Chat Agent Addition (April 14, 2025)
+
+## Session Summary
+
+In this session, we enhanced the Financial Modeling Prep MCP Server with a new chat agent feature, allowing users to interact with financial data tools through a natural language interface. 
+
+## Key Accomplishments
+
+1. **Created Agent Chat Client**
+   - Implemented `agent_chat_client.py` using OpenAI's Agents SDK
+   - Built an interactive CLI interface with chat loop functionality
+   - Configured the agent to connect to the FMP MCP Server via SSE (Server-Sent Events)
+   - Added support for OpenAI trace view for debugging agent operations
+
+2. **Updated Project Dependencies**
+   - Added required dependencies to support the chat agent:
+     - openai>=1.73.0
+     - openai-agents>=0.0.9
+     - rich>=13.7.0
+   - Updated both `requirements.txt` and `pyproject.toml` files
+
+3. **Updated Documentation**
+   - Enhanced README.md with detailed information about the new chat agent feature
+   - Added setup and usage instructions
+   - Included configuration details for OpenAI API key
+   - Added examples of the chat agent in action
+
+## Client Implementation Details
+
+The agent chat client (`src/agent_chat_client.py`) provides:
+
+- Interactive command-line interface for querying financial data
+- Connection to the FMP MCP server via SSE protocol
+- Access to all FMP financial tools through natural language
+- Clean conversation flow with exit commands
+- OpenAI trace view support for debugging agent behavior
+
+```python
+# Core functionality of the chat loop
+async def run(mcp_server: MCPServer):
+    agent = Agent(
+        name="Assistant",
+        instructions="Use the tools to answer the questions.",
+        mcp_servers=[mcp_server],
+        model_settings=ModelSettings(tool_choice="required"),
+    )
+
+    while True:
+        user_input = input("\nYou: ")
+        if user_input.lower() in ["exit", "quit"]:
+            print("Assistant: Goodbye!")
+            break
+        print(f"Running: {user_input}")
+        result = await Runner.run(starting_agent=agent, input=user_input)
+        print(result.final_output)
+```
+
+## Usage Instructions
+
+1. Start the FMP MCP server in SSE mode:
+   ```bash
+   python -m src.server --sse
+   ```
+
+2. Set up OpenAI API key:
+   ```bash
+   export OPENAI_API_KEY=your_openai_api_key_here
+   ```
+
+3. Run the chat agent:
+   ```bash
+   python src/agent_chat_client.py
+   ```
+
+4. Interact with the agent using natural language:
+   ```
+   You: What is the current price of Apple?
+   Running: What is the current price of Apple?
+   The current price of Apple Inc. (AAPL) is $202.52.
+   ```
+
+5. Type `exit` or `quit` to end the session.
+
+## Next Steps
+
+Potential future enhancements could include:
+
+- Adding conversation memory for more contextual responses
+- Implementing richer formatting for financial data display
+- Supporting batch analysis requests
+- Adding visualization capabilities for chart data
+- Creating a web interface for the chat agent
