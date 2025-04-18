@@ -2217,6 +2217,53 @@ def mock_price_target_latest_news_response():
 
 
 @pytest.fixture
+def mock_income_statement_response():
+    """Mock response for income statement API endpoint"""
+    return [
+        {
+            "date": "2023-06-30",
+            "symbol": "AAPL",
+            "reportedCurrency": "USD",
+            "cik": "0000320193",
+            "filingDate": "2023-08-05",
+            "acceptedDate": "2023-08-05 18:20:00",
+            "fiscalYear": "2023",
+            "period": "annual",
+            "revenue": 385000000000,
+            "costOfRevenue": 217000000000,
+            "grossProfit": 168000000000,
+            "researchAndDevelopmentExpenses": 26000000000,
+            "generalAndAdministrativeExpenses": 0,
+            "sellingAndMarketingExpenses": 0,
+            "sellingGeneralAndAdministrativeExpenses": 28000000000,
+            "otherExpenses": 0,
+            "operatingExpenses": 54000000000,
+            "costAndExpenses": 271000000000,
+            "netInterestIncome": 0,
+            "interestIncome": 0,
+            "interestExpense": 3200000000,
+            "depreciationAndAmortization": 11000000000,
+            "ebitda": 125000000000,
+            "ebit": 114000000000,
+            "nonOperatingIncomeExcludingInterest": 0,
+            "operatingIncome": 114000000000,
+            "totalOtherIncomeExpensesNet": 5000000000,
+            "incomeBeforeTax": 119000000000,
+            "incomeTaxExpense": 19400000000,
+            "netIncomeFromContinuingOperations": 99600000000,
+            "netIncomeFromDiscontinuedOperations": 0,
+            "otherAdjustmentsToNetIncome": 0,
+            "netIncome": 99600000000,
+            "netIncomeDeductions": 0,
+            "bottomLineNetIncome": 99600000000,
+            "eps": 6.01,
+            "epsDiluted": 5.95,
+            "weightedAverageShsOut": 16500000000,
+            "weightedAverageShsOutDil": 16700000000
+        }
+    ]
+
+@pytest.fixture
 def mock_company_dividends_response():
     """Mock response for company dividends API endpoint"""
     return [
