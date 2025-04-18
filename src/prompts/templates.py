@@ -41,17 +41,18 @@ def financial_statement_analysis(symbol: str, statement_type: str) -> str:
     
     statement_name = statement_names.get(statement_type, statement_type.capitalize())
     
-    return f"""Please analyze the {statement_name} for {symbol} and provide insights.
+    return f"""Financial statement analysis functionality is temporarily unavailable.
 
-For your analysis:
-1. Identify the most significant line items and explain their importance
-2. Highlight any notable trends over the past few years
-3. Calculate and interpret key ratios relevant to this statement
-4. Compare the metrics to industry averages if possible
-5. Point out any red flags or positive indicators
-6. Provide context on how these financials impact the company's overall health
+Please note that the {statement_name} analysis for {symbol} cannot be performed at this time.
+The financial statements tools are currently being reimplemented for improved reliability and accuracy.
 
-Be thorough but concise, focusing on the most important aspects that would matter to an investor."""
+Please check back later for this functionality, or use alternative analysis approaches such as:
+- Company profile analysis
+- Stock quote and price change analysis
+- Market performers analysis
+- Technical indicator analysis
+
+Thank you for your understanding."""
 
 
 def stock_comparison(symbols: str) -> str:

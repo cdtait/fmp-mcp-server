@@ -42,16 +42,18 @@ async def test_tool_registration():
         "get_quote",
         "get_quote_change",
         "get_price_change", 
-        "get_financial_ratios",
-        "get_income_statement",
-        "get_balance_sheet",
-        "get_cash_flow",
-        "get_key_metrics",
+        # Statements tools temporarily removed
+        # "get_financial_ratios",
+        # "get_income_statement",
+        # "get_balance_sheet",
+        # "get_cash_flow",
+        # "get_key_metrics",
         "search_by_symbol",
         "search_by_name",
         "get_ratings_snapshot",
         "get_financial_estimates",
         "get_price_target_news",
+        "get_price_target_latest_news",
         "get_company_dividends",
         "get_dividends_calendar",
         "get_index_list",
@@ -59,8 +61,7 @@ async def test_tool_registration():
         "get_biggest_gainers",
         "get_biggest_losers",
         "get_most_active",
-        #"get_market_hours",
-        #"get_holidays",
+        "get_market_hours",
         #"get_etf_sectors",
         #"get_etf_countries",
         #"get_etf_holdings",
@@ -70,9 +71,7 @@ async def test_tool_registration():
         "get_crypto_quote",
         "get_forex_list",
         "get_forex_quotes",
-        #"get_technical_indicators",
-        #"get_technical_summary",
-        "get_ema"  # This is imported but missing from the test
+        "get_ema"
     ]
 
     for tool_name in expected_tools:
@@ -109,8 +108,9 @@ async def test_resource_template_registration():
     # Check that the expected resource patterns are registered
     expected_patterns = [
         "stock-info://{symbol}",
-        "financial-statement://{symbol}/{statement_type}/{period}",
-        "ratios://{symbol}",
+        # Financial statement resources temporarily removed
+        # "financial-statement://{symbol}/{statement_type}/{period}",
+        # "ratios://{symbol}",
         "stock-peers://{symbol}",
         "price-targets://{symbol}"
     ]
