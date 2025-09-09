@@ -24,7 +24,7 @@ from src.tools.calendar import get_company_dividends, get_dividends_calendar
 from src.tools.indices import get_index_list, get_index_quote
 from src.tools.market_performers import get_biggest_gainers, get_biggest_losers, get_most_active
 from src.tools.market_hours import get_market_hours
-from src.tools.etf import get_etf_sectors, get_etf_countries, get_etf_holdings
+# from src.tools.etf import get_etf_sectors, get_etf_countries, get_etf_holdings
 from src.tools.commodities import get_commodities_list, get_commodities_prices, get_historical_price_eod_light
 from src.tools.crypto import get_crypto_list, get_crypto_quote
 from src.tools.forex import get_forex_list, get_forex_quotes
@@ -69,9 +69,7 @@ def register_mcp_components(mcp_instance: FastMCP):
     mcp_instance.tool()(get_market_hours)
     # TODO: fix tool
     # mcp_instance.tool()(get_etf_sectors)
-    # TODO: fix tool
     # mcp_instance.tool()(get_etf_countries)
-    # TODO: fix tool
     # mcp_instance.tool()(get_etf_holdings)
     mcp_instance.tool()(get_commodities_list)
     mcp_instance.tool()(get_commodities_prices)
@@ -100,15 +98,6 @@ def register_mcp_components(mcp_instance: FastMCP):
     mcp_instance.prompt()(economic_indicator_analysis)
 
 
-# Create the MCP server
-mcp = FastMCP(
-    "FMP Financial Data",
-    dependencies=["httpx"]
-)
-
-# Register all components
-register_mcp_components(mcp)
-
 # Run the server if executed directly
 if __name__ == "__main__":
     import argparse
@@ -130,12 +119,10 @@ if __name__ == "__main__":
         print("Error: Cannot specify both --sse and --streamable-http")
         sys.exit(1)
     
-    # Default to stdio if no transport is specified
-    is_stdio = not args.sse and not args.streamable_http
-
     # Create the main MCP server instance
     mcp = FastMCP(
         "FMP Financial Data",
+        description="Financial data tools and resources powered by Financial Modeling Prep API",
         dependencies=["httpx"],
         stateless_http=args.stateless if args.streamable_http else False,
         json_response=args.json_response if args.streamable_http else False
