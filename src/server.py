@@ -122,7 +122,6 @@ if __name__ == "__main__":
     # Create the main MCP server instance
     mcp = FastMCP(
         "FMP Financial Data",
-        description="Financial data tools and resources powered by Financial Modeling Prep API",
         dependencies=["httpx"],
         stateless_http=args.stateless if args.streamable_http else False,
         json_response=args.json_response if args.streamable_http else False
