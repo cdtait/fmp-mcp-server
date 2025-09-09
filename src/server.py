@@ -44,7 +44,6 @@ from src.prompts.templates import (
 # Create the MCP server
 mcp = FastMCP(
     "FMP Financial Data",
-    description="Financial data tools and resources powered by Financial Modeling Prep API",
     dependencies=["httpx"]
 )
 
@@ -170,7 +169,6 @@ if __name__ == "__main__":
         # Create new FastMCP instance with desired configuration
         streamable_mcp = FastMCP(
             "FMP Financial Data",
-            description="Financial data tools and resources powered by Financial Modeling Prep API",
             dependencies=["httpx"],
             stateless_http=args.stateless,
             json_response=args.json_response
