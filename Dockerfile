@@ -8,6 +8,7 @@ COPY requirements.txt .
 RUN adduser -D appuser
 
 # Install build dependencies and Python packages
+ARG CACHE_BUSTER=1
 RUN apk add --no-cache gcc musl-dev linux-headers && \
     pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir --root-user-action=ignore -r requirements.txt && \
