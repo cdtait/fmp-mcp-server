@@ -87,7 +87,7 @@ def register_mcp_components(mcp_instance: FastMCP):
     mcp_instance.resource("market-snapshot://current")(get_market_snapshot_resource)
     mcp_instance.resource("stock-peers://{symbol}")(get_stock_peers_resource)
     mcp_instance.resource("price-targets://{symbol}")(get_price_targets_resource)
-    mcp_instance.resource("financial-statement://{symbol}/{statement_type}")(get_financial_statement_resource)
+    mcp_instance.resource("financial-statement://{symbol}/{statement_type}/{period}")(get_financial_statement_resource)
 
 
     # Register prompts
