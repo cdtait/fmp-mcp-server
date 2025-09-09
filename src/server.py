@@ -165,7 +165,13 @@ if __name__ == "__main__":
         print(f"Starting FMP MCP Server (SSE mode) on http://{args.host}:{args.port}")
         print(f"API Key configured: {'Yes' if os.environ.get('FMP_API_KEY') else 'No - using demo mode'}")
         
-        uvicorn.run(app, host=args.host, port=args.port)
+        try:
+            uvicorn.run(app, host=args.host, port=args.port)
+        except Exception as e:
+            print(f"AN ERROR OCCURRED IN SSE MODE: {e}")
+            import traceback
+            traceback.print_exc()
+            raise
 
     elif args.streamable_http:
         import uvicorn
@@ -189,7 +195,13 @@ if __name__ == "__main__":
         health_route = Route("/health", health_check, methods=["GET"])
         app.router.routes.insert(0, health_route)
         
-        uvicorn.run(app, host=args.host, port=args.port)
+        try:
+            uvicorn.run(app, host=args.host, port=args.port)
+        except Exception as e:
+            print(f"AN ERROR OCCURRED IN STREAMABLE HTTP MODE: {e}")
+            import traceback
+            traceback.print_exc()
+            raise
 
     else: # Stdio mode
         mcp.run()
