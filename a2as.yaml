@@ -1,0 +1,77 @@
+manifest:
+  version: "0.1.2"
+  schema: https://a2as.org/cert/schema
+  subject:
+    name: cdtait/fmp-mcp-server
+    source: https://github.com/cdtait/fmp-mcp-server
+    branch: main
+    commit: "0cac7e78"
+    scope: [src/agent_chat_client.py]
+  issued:
+    by: A2AS.org
+    at: '2026-01-26T16:11:06Z'
+  signatures:
+    digest: sha256:6jdFMILQ-WsSNhHYXNLIYY0MZ5eLmo1EyovaFWbBnWM
+    key: ed25519:wF9pUKHgNrY5YnHch5S3mLYiG3aRv6Up3YE1ndKqQVE
+    sig: ed25519:zQ5ptMxObk699i071qQDARWPA9Wao5X8fGOWD39A9yqksNJa5ysqxBBXwOQSczGTewSqlPhdukv_-j5t9UK7Dw
+
+agents:
+  agent:
+    type: instance
+    models: [gpt-4.1]
+    mcp: [server]
+    params:
+      function: run
+      name: Assistant
+      model_settings: ModelSettings(tool_choice=required)
+      instructions: [Use the tools to answer the questions.]
+
+models:
+  gpt-4.1:
+    type: default
+    agents: [agent]
+
+mcp:
+  server:
+    type: network
+    url: http://localhost:8000/sse
+    agents: [agent]
+    params:
+      class: MCPServerSse
+      name: SSE Python Server
+      alias: [mcp_server]
+
+imports:
+  Agent: agents.Agent
+  Any: typing.Any
+  asyncio: asyncio
+  gen_trace_id: agents.gen_trace_id
+  MCPServer: agents.mcp.MCPServer
+  MCPServerSse: agents.mcp.MCPServerSse
+  ModelSettings: agents.model_settings.ModelSettings
+  os: os
+  Runner: agents.Runner
+  shutil: shutil
+  subprocess: subprocess
+  time: time
+  trace: agents.trace
+
+functions:
+  main:
+    type: async
+    module: src.agent_chat_client
+  run:
+    type: async
+    module: src.agent_chat_client
+    args: [mcp_server]
+
+networks:
+  localhost:
+    type: api
+    actions: [connect]
+    urls: [/sse]
+    protocols: [http]
+    ports: ["8000"]
+    params:
+      caller: [MCPServerSse]
+      links: [server]
