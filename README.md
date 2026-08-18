@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/cdtait-fmp-mcp-server-badge.png)](https://mseep.ai/app/cdtait-fmp-mcp-server)
+
 # Financial Modeling Prep MCP Server
 
 A Model Context Protocol (MCP) server that provides tools, resources, and prompts for financial analysis using the Financial Modeling Prep API.
