@@ -37,7 +37,8 @@ def clean_modules():
         'src.tools.crypto',
         'src.tools.forex',
         'src.tools.technical_indicators',
-        'src.resources.company', 
+        'src.tools.valuation',
+        'src.resources.company',
         'src.resources.market',
         'src.prompts.templates'
     ]
@@ -2544,4 +2545,65 @@ def mock_most_active_response():
             "changesPercentage": -1.32,
             "volume": 87250000
         }
+    ]
+
+@pytest.fixture
+def mock_simple_dcf_response():
+    """Simple DCF response (list of dicts with date, dcf, stockPrice)"""
+    return [
+        {
+            "date": "2024-09-28",
+            "symbol": "AAPL",
+            "dcf": 149.50,
+            "stockPrice": 228.0,
+        }
+    ]
+
+
+@pytest.fixture
+def mock_dcf_response():
+    """Full custom DCF response (2 rows: 1 historical + 1 projected)"""
+    return [
+        {
+            "year": 2020,
+            "symbol": "AAPL",
+            "wacc": 0.0873,
+            "longTermGrowthRate": 0.04,
+            "ufcf": 73500000000,
+            "terminalValue": 2100000000000,
+            "presentTerminalValue": 1800000000000,
+            "equityValuePerShare": 142.10,
+            "costOfEquity": 0.092,
+            "costofDebt": 0.03,
+            "afterTaxCostOfDebt": 0.026,
+            "beta": 1.24,
+            "riskFreeRate": 0.045,
+            "marketRiskPremium": 0.055,
+            "equityWeighting": 0.96,
+            "debtWeighting": 0.04,
+            "taxRate": 0.147,
+            "enterpriseValue": 2850000000000,
+            "netDebt": -50000000000,
+        },
+        {
+            "year": 2025,
+            "symbol": "AAPL",
+            "wacc": 0.0873,
+            "longTermGrowthRate": 0.04,
+            "ufcf": 95000000000,
+            "terminalValue": 2500000000000,
+            "presentTerminalValue": 2100000000000,
+            "equityValuePerShare": 149.00,
+            "costOfEquity": 0.092,
+            "costofDebt": 0.03,
+            "afterTaxCostOfDebt": 0.026,
+            "beta": 1.24,
+            "riskFreeRate": 0.045,
+            "marketRiskPremium": 0.055,
+            "equityWeighting": 0.96,
+            "debtWeighting": 0.04,
+            "taxRate": 0.147,
+            "enterpriseValue": 3100000000000,
+            "netDebt": -50000000000,
+        },
     ]

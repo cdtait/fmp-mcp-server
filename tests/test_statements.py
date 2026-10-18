@@ -148,3 +148,154 @@ async def test_get_income_statement_invalid_limit():
     # Execute with invalid limit (too high)
     result = await get_income_statement(symbol="AAPL", limit=121)
     assert "Error: limit must be between 1 and 120" in result
+
+# ============================================================================
+# EXTENDED STATEMENT & FUNDAMENTALS TESTS
+# ============================================================================
+
+"""
+NOTE ON TEST STRATEGY
+---------------------
+This test file does NOT exhaustively test every statement / metric / ratio tool.
+
+Instead, it follows a *representative coverage strategy*:
+- Core financial statements are tested individually (Income, Balance Sheet, Cash Flow)
+- One tool per extended category is tested to validate:
+  - endpoint wiring
+  - response shape handling
+  - formatting logic
+  - error handling
+
+This keeps the test suite maintainable while protecting against regressions
+in the most failure-prone areas.
+"""
+
+
+@pytest.mark.asyncio
+@patch("src.api.client.fmp_api_request")
+async def test_get_balance_sheet_tool(mock_request):
+    """Representative test for balance sheet statement"""
+
+    mock_request.return_value = [
+        {
+            "date": "2023-09-30",
+            "reportedCurrency": "USD",
+            "totalAssets": 100000,
+            "totalLiabilities": 60000,
+            "totalStockholdersEquity": 40000,
+        }
+    ]
+
+    from src.tools.statements import get_balance_sheet
+
+    result = await get_balance_sheet("AAPL")
+
+    assert "# Balance Sheet for AAPL" in result
+    assert "Total Assets" in result
+    assert "Total Liabilities" in result
+    assert "Total Stockholders’ Equity" in result
+
+
+@pytest.mark.asyncio
+@patch("src.api.client.fmp_api_request")
+async def test_get_cash_flow_statement_tool(mock_request):
+    """Representative test for cash flow statement"""
+
+    mock_request.return_value = [
+        {
+            "date": "2023-09-30",
+            "netIncome": 50000,
+            "operatingCashFlow": 62000,
+            "freeCashFlow": 45000,
+        }
+    ]
+
+    from src.tools.statements import get_cash_flow_statement
+
+    result = await get_cash_flow_statement("AAPL")
+
+    assert "# Cash Flow Statement for AAPL" in result
+    assert "Operating Activities" in result
+    assert "Free Cash Flow" in result
+
+
+@pytest.mark.asyncio
+@patch("src.tools.statements.fetch_fmp_stable")
+async def test_get_income_statement_ttm(mock_fetch):
+    """Representative test for TTM statement (dict response)"""
+
+    mock_fetch.return_value = {
+        "revenue": 380000,
+        "netIncome": 97000,
+    }
+
+    from src.tools.statements import get_income_statement_ttm
+
+    result = await get_income_statement_ttm("AAPL")
+
+    assert "# Income Statement (TTM) for AAPL" in result
+    assert "revenue" in result.lower()
+    assert "netIncome" in result
+
+
+@pytest.mark.asyncio
+@patch("src.tools.statements.fetch_fmp_stable")
+async def test_get_financial_ratios_ttm(mock_fetch):
+    """Representative test for TTM financial ratios"""
+
+    mock_fetch.return_value = {
+        "peRatioTTM": 28.5,
+        "priceToSalesRatioTTM": 7.2,
+    }
+
+    from src.tools.statements import get_financial_ratios_ttm
+
+    result = await get_financial_ratios_ttm("AAPL")
+
+    assert "# Financial Ratios (TTM) for AAPL" in result
+    assert "peRatioTTM" in result
+    assert "priceToSalesRatioTTM" in result
+
+
+@pytest.mark.asyncio
+@patch("src.tools.statements.fetch_fmp_stable")
+async def test_get_financial_scores_snapshot(mock_fetch):
+    """Representative test for snapshot-style endpoint"""
+
+    mock_fetch.return_value = [
+        {
+            "symbol": "AAPL",
+            "altmanZScore": 9.48,
+            "piotroskiScore": 5,
+        }
+    ]
+
+    from src.tools.statements import get_financial_scores
+
+    result = await get_financial_scores("AAPL")
+
+    assert "# Financial Scores for AAPL" in result
+    assert "altmanZScore" in result
+    assert "piotroskiScore" in result
+
+
+@pytest.mark.asyncio
+@patch("src.tools.statements.fetch_fmp_stable")
+async def test_get_revenue_product_segmentation(mock_fetch):
+    """Representative test for revenue segmentation"""
+
+    mock_fetch.return_value = [
+        {
+            "date": "2023-09-30",
+            "iPhone": 200000,
+            "Services": 85000,
+        }
+    ]
+
+    from src.tools.statements import get_revenue_product_segmentation
+
+    result = await get_revenue_product_segmentation("AAPL")
+
+    assert "# Revenue by Product for AAPL" in result
+    assert "iPhone" in result
+    assert "Services" in result

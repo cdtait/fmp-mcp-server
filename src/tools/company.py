@@ -63,7 +63,7 @@ async def get_company_profile(symbol: str) -> str:
         "## Additional Information",
         f"**Website**: {profile.get('website', 'N/A')}",
         f"**Exchange**: {profile.get('exchange', 'N/A')}",
-        f"**Founded**: {profile.get('ipoDate', 'N/A')}"
+        f"**IPO Date**: {profile.get('ipoDate', 'N/A')}"
     ]
     
     return "\n".join(result)
