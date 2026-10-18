@@ -155,6 +155,18 @@ variable "api_key" {
   default     = "placeholder-api-key-set-in-console"
 }
 
+variable "api_key_env_name" {
+  description = "Environment variable name the API key is exposed as inside the container"
+  type        = string
+  default     = "API_KEY"
+}
+
+variable "secret_recovery_window_days" {
+  description = "Days Secrets Manager keeps the secret after destroy (0 = delete immediately, or 7-30)"
+  type        = number
+  default     = 30
+}
+
 # Optional cluster name override
 variable "cluster_name" {
   description = "Optional custom ECS cluster name (defaults to auto-generated)"

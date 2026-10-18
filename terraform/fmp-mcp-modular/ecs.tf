@@ -58,7 +58,7 @@ resource "aws_ecs_task_definition" "main" {
 
       secrets = [
         {
-          name      = "API_KEY"
+          name      = var.api_key_env_name
           valueFrom = "${aws_secretsmanager_secret.api_key.arn}:API_KEY::"
         }
       ]

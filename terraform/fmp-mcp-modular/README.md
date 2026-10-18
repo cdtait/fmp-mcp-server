@@ -211,7 +211,15 @@ terraform apply -state="terraform-eu-west-2.tfstate" -state-out="terraform-eu-we
 
 ### Setting up API Keys
 
-After deployment, set your API key in AWS Secrets Manager:
+The key is stored in Secrets Manager as `{"API_KEY": "..."}` and injected into the
+container as the env var named by `api_key_env_name` (`FMP_API_KEY` for this server,
+which is what `src/api/client.py` reads). The simplest route is to pass it at deploy time:
+
+```bash
+export TF_VAR_api_key="$FINANCIAL_MODELING_PREP_API_KEY"   # or the FMP_API_KEY value from ../../.env
+```
+
+Or set it after deployment in AWS Secrets Manager (keep the JSON field as `API_KEY`):
 
 ```bash
 # Get the secret ARN from terraform output
@@ -1172,6 +1180,51 @@ terraform/fmp-mcp-modular/
 - **Automatic rotation** capabilities (can be enabled)
 - **Encryption at rest and in transit**
 - **Fine-grained IAM access** to secrets
+
+## ⏸️ Pause and Revive (eu-west-2)
+
+Even with `desired_count=0`, an idle stack costs ~$24/month (mostly the ALB and its
+public IP). To stop paying, destroy everything and redeploy when needed — it takes ~5 minutes.
+
+### Pause (tear down)
+
+```bash
+cd terraform/fmp-mcp-modular
+export AWS_PROFILE=taitcraigd
+
+terraform plan -destroy -var-file=terraform-eu-west-2.tfvars -out=destroy.tfplan   # review: ~29 to destroy
+terraform apply destroy.tfplan
+rm -f destroy.tfplan
+```
+
+The `cdtait.cloud` hosted zone is not managed here and is kept (only the `fmp` record is removed).
+The secret is deleted immediately because `secret_recovery_window_days = 0` in the tfvars.
+
+### Revive (redeploy)
+
+```bash
+cd terraform/fmp-mcp-modular
+export AWS_PROFILE=taitcraigd
+export TF_VAR_api_key="$FINANCIAL_MODELING_PREP_API_KEY"   # your FMP key
+
+terraform init                                                                  # first time / after cleaning .terraform
+terraform plan -var-file=terraform-eu-west-2.tfvars -out=deploy.tfplan          # review: ~29 to add
+terraform apply deploy.tfplan
+rm -f deploy.tfplan
+
+terraform output application_url custom_domain_url
+curl -s "$(terraform output -raw application_url)/health"
+```
+
+Notes:
+- If `TF_VAR_api_key` is not set, the placeholder key is stored and the server runs in `demo` mode.
+- If the apply fails with *"secret ... scheduled for deletion"*, the secret was destroyed with a
+  recovery window. Free the name, then re-run the apply:
+  `aws secretsmanager delete-secret --secret-id fmp-mcp-dev-eu-west-2-api-key --force-delete-without-recovery`
+- Each `terraform apply` creates a fresh Cloud Map namespace. If a destroy ever fails part-way,
+  check for leftover `fmp-mcp-dev-*-services` namespaces (`aws servicediscovery list-namespaces`)
+  which each cost $0.50/month as a private hosted zone.
+- Always plan into a fresh file; never apply an old `.tfplan`.
 
 ## 🔄 Cleanup
 
